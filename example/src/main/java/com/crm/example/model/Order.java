@@ -6,10 +6,10 @@ public class Order {
     private final String order_name;
     private final long priority;
     private final String status;
-    private ArrayList<String> comments = new ArrayList<>();
     private final String description;
     private final ArrayList<ITService> ITServices;
     private final ArrayList<Program> programs;
+    private ArrayList<String> comments = new ArrayList<>();
 
     public Order(
             String order_name,
@@ -17,7 +17,7 @@ public class Order {
             String status,
             ArrayList<String> comments,
             String description, ArrayList<ITService> itServices, ArrayList<Program> programs
-    ){
+    ) {
         this.order_name = order_name;
         this.priority = priority;
         this.status = status;
