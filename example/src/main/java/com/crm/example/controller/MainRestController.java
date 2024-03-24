@@ -18,7 +18,6 @@ public class MainRestController {
         this.productService = productService;
     }
 
-
     @GetMapping("/hello")
     public String sayHello() {
         return "Hello world!";
@@ -28,4 +27,5 @@ public class MainRestController {
     public List<Product> getAllProducts() {
         return productService.getListProductsExample();
     }
+
 }
