@@ -8,18 +8,19 @@ public class Client {
     private final String email;
     private final int phone;
     private final String address;
+
     //avatar?
     public Client(String firstName, String secondName,
                   String middleName, int password,
                   String email, int phone,
-                  String address){
-        this.firstName=firstName;
-        this.secondName=secondName;
-        this.middleName=middleName;
-        this.password=password;
-        this.email=email;
-        this.phone=phone;
-        this.address=address;
+                  String address) {
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.middleName = middleName;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
     }
 
     public int getPassword() {
