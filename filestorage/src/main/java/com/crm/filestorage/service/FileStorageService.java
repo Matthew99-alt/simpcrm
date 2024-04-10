@@ -4,8 +4,6 @@ import com.crm.filestorage.config.FileStorageConfig;
 import com.crm.filestorage.dto.FileStorageDTO;
 import com.crm.filestorage.entity.FileStorage;
 import com.crm.filestorage.repository.FileStorageRepository;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,11 +11,12 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FileStorageService {
     public final FileStorageRepository fileStorageRepository;
+    FileStorageConfig fileStorageConfig = new FileStorageConfig();
+    MongoTemplate mongoTemplate = new MongoTemplate(fileStorageConfig.mongoClient(),"test");
 
     public FileStorageService(FileStorageRepository fileStorageRepository) {
         this.fileStorageRepository = fileStorageRepository;
@@ -30,7 +29,7 @@ public class FileStorageService {
     private FileStorage makeAFile(FileStorageDTO fileStorageDTO, boolean idEnable){
         FileStorage fileStorage = new FileStorage();
         if(idEnable){
-            fileStorage.setId(new ObjectId(String.valueOf(fileStorageDTO.getId())));
+            fileStorage.setId(fileStorageDTO.getId());
         }
         fileStorage.setFileLink(fileStorageDTO.getFileLink());
         fileStorage.setFileTitle(fileStorageDTO.getFileTitle());
@@ -44,15 +43,19 @@ public class FileStorageService {
         return fileStorageRepository.save(makeAFile(fileStorageDTO, false));
     }
     public void deleteUser(FileStorageDTO fileStorageDTO) {
-        FileStorageConfig fileStorageConfig = new FileStorageConfig();
-        MongoTemplate mongoTemplate = new MongoTemplate(fileStorageConfig.mongoClient(),"test");
-        mongoTemplate.remove(new Query(Criteria.where("id").is(fileStorageDTO.getId()).where("fileTitle").is(fileStorageDTO.getFileTitle()).where("fileLink").is(fileStorageDTO.getFileLink())), FileStorage.class);
+        List<FileStorage> fileStorage = fileStorageRepository.findByFileTitle(fileStorageDTO.getFileTitle());
+        for(int i=0; i<fileStorage.size();i++) {
+            mongoTemplate.remove(new Query(Criteria.where("_id")
+                            .is(fileStorage.get(i).getId())
+                            .where("fileTitle").is(fileStorage.get(i)
+                            .getFileTitle()).where("fileLink")
+                            .is(fileStorage.get(i).getFileLink())),
+                            FileStorage.class);
+        }
     }
 
-    public FileStorageDTO editUser(FileStorageDTO fileStorageDTO){
-        FileStorageConfig fileStorageConfig = new FileStorageConfig();
-        MongoTemplate mongoTemplate = new MongoTemplate(fileStorageConfig.mongoClient(),"test");
-        FileStorage fileStorage = fileStorageRepository.findByFileTitle(fileStorageDTO.getFileTitle());
-        return fileStorageDTO;
+    public void editUser(FileStorageDTO fileStorageDTO){
+        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(fileStorageDTO.getId())),Update.update("fileTitle",fileStorageDTO.getFileTitle()), FileStorage.class);
+        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(fileStorageDTO.getId())),Update.update("fileLink",fileStorageDTO.getFileLink()), FileStorage.class);
     }
 }

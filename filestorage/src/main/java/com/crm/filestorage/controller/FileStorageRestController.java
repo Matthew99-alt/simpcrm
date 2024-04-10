@@ -5,7 +5,6 @@ import com.crm.filestorage.entity.FileStorage;
 import com.crm.filestorage.service.FileStorageService;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.util.List;
 
 @RestController
@@ -35,5 +34,7 @@ public class FileStorageRestController {
     }
 
     @PutMapping("/edit")
-    public FileStorageDTO editUser(@RequestBody FileStorageDTO fileStorageDTO){ return fileStorageService.editUser(fileStorageDTO);}
+    public void editUser(@RequestBody FileStorageDTO fileStorageDTO){
+        fileStorageService.editUser(fileStorageDTO);
+    }
 }

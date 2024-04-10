@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface FileStorageRepository extends MongoRepository<FileStorage, Long> {
+public interface FileStorageRepository extends MongoRepository<FileStorage, ObjectId> {
     @Override
     List<FileStorage> findAll();
-    FileStorage findByFileTitle(String fileTitle);
-    Optional<FileStorage> findById(ObjectId id);
+
+    List<FileStorage> findByFileTitle(String title);
 }
