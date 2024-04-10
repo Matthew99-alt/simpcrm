@@ -18,7 +18,7 @@ public class StatusService {
     public List<Status> findAllUsers() {
         return statusRepository.findAll();
     }
-
+    public List<Status> findByStatus(String status){return statusRepository.findByStatus(status);}
     private Status makeAStatus(StatusDTO statusDTO, boolean idEnable){
         Status status = new Status();
         if (idEnable) {
@@ -34,7 +34,6 @@ public class StatusService {
     public void deleteStatus(StatusDTO statusDTO) {
         statusRepository.delete(makeAStatus(statusDTO, true));
     }
-
     public Status editStatus(StatusDTO statusDTO){
         return statusRepository.save(makeAStatus(statusDTO, true));
     }

@@ -21,6 +21,11 @@ public class StatusController {
         return statusService.findAllUsers();
     }
 
+    @GetMapping("/title")
+    public List<Status> getByStatus(@RequestBody StatusDTO statusDTO) {
+        return statusService.findByStatus(statusDTO.getStatus());
+    }
+
     @PostMapping("/save")
     public Status saveStatus(@RequestBody StatusDTO statusDTO) {
         return statusService.saveStatus(statusDTO);

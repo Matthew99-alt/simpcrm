@@ -1,7 +1,5 @@
 package com.crm.dto;
 
-import org.springframework.data.relational.core.mapping.Column;
-
 public class ITServiceDTO {
     private Long id;
 

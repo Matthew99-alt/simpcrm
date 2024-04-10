@@ -23,8 +23,8 @@ public class UserController {
     }
 
     @GetMapping("/name")
-    public List<User> getUsersByName(@RequestBody String first_name) {
-        return userService.findByFirstName(first_name);
+    public List<User> getAllUserByFirstName(@RequestBody UserDTO userDTO) {
+        return userService.findByFirstName(userDTO.getFirstName());
     }
 
     @PostMapping("/save")

@@ -10,4 +10,8 @@ import java.util.List;
 public interface OrderRepository extends CrudRepository<Order, Long> {
     @Override
     List<Order> findAll();
+
+    List<Order> findByOrderName(String orderName);
+
+    List<Order> findByPriority(Long priority);
 }

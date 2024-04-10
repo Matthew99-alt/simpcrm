@@ -19,6 +19,11 @@ public class ITServiceService {
         return itServiceRepository.findAll();
     }
 
+    public List<ITService> findByTitle(String title){ return itServiceRepository.findByTitle(title);}
+
+    public List<ITService> findByPrice(Long price){ return itServiceRepository.findByPrice(price);}
+
+    public List<ITService> priceMaxToMin(Long price){ return itServiceRepository.priceMaxToMin(price);}
     private ITService makeAnITService(ITServiceDTO itServiceDTO, boolean idEnable){
         ITService itService = new ITService();
         if(idEnable){
@@ -30,11 +35,12 @@ public class ITServiceService {
 
         return itService;
     }
+
     public ITService saveITService(ITServiceDTO itServiceDTO) {
         return itServiceRepository.save(makeAnITService(itServiceDTO, false));
     }
-    public void deleteITService(ITServiceDTO itServiceDTO) {
 
+    public void deleteITService(ITServiceDTO itServiceDTO) {
         itServiceRepository.delete(makeAnITService(itServiceDTO, true));
     }
 

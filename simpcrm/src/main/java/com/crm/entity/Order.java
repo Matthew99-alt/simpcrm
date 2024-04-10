@@ -9,7 +9,7 @@ public class Order {
     @Id
     private Long id;
     @Column(value = "order_name")
-    private String order_name;
+    private String orderName;
     @Column(value = "priority")
     private Long priority;
     @Column(value = "status_id")
@@ -28,7 +28,7 @@ public class Order {
     }
 
     public String getOrder_name() {
-        return order_name;
+        return orderName;
     }
 
     public Long getPriority() {
@@ -60,7 +60,7 @@ public class Order {
     }
 
     public void setOrder_name(String order_name) {
-        this.order_name = order_name;
+        this.orderName = order_name;
     }
 
     public void setPriority(Long priority) {

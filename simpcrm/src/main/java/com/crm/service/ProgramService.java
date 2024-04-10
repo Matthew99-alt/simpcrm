@@ -20,6 +20,10 @@ public class ProgramService {
         return programRepository.findAll();
     }
 
+    public List<Program> findByTitle(String title){return programRepository.findByTitle(title);}
+
+    public List<Program> findByPrice(Long price){return programRepository.findByPrice(price);}
+
     private Program makeAProgram(ProgramDTO programDTO, boolean idEnable){
         Program program = new Program();
         if(idEnable){

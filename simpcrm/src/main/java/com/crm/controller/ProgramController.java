@@ -21,6 +21,16 @@ public class ProgramController {
         return programService.findAllUsers();
     }
 
+    @GetMapping("/title")
+    public List<Program> getByTitle(@RequestBody ProgramDTO programDTO) {
+        return programService.findByTitle(programDTO.getTitle());
+    }
+
+    @GetMapping("/price")
+    public List<Program> getByPrice(@RequestBody ProgramDTO programDTO) {
+        return programService.findByPrice(programDTO.getPrice());
+    }
+
     @PostMapping("/save")
     public Program saveProgram(@RequestBody ProgramDTO programDTO) {
         return programService.saveProgram(programDTO);

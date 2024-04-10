@@ -10,4 +10,8 @@ import java.util.List;
 public interface ProgramRepository extends CrudRepository<Program, Long> {
     @Override
     List<Program> findAll();
+
+    List<Program> findByTitle(String title);
+
+    List<Program> findByPrice(Long price);
 }

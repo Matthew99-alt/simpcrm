@@ -21,6 +21,21 @@ public class ITServiceController {
         return itServiceService.findAllUsers();
     }
 
+    @GetMapping("/title")
+    public List<ITService> getByTitle(@RequestBody ITServiceDTO itServiceDTO) {
+        return itServiceService.findByTitle(itServiceDTO.getTitle());
+    }
+
+    @GetMapping("/price")
+    public List<ITService> getByPrice(@RequestBody ITServiceDTO itServiceDTO) {
+        return itServiceService.findByPrice(itServiceDTO.getPrice());
+    }
+
+    @GetMapping("/priceWithLimit")
+    public List<ITService> getPriceWithLimit(@RequestBody ITServiceDTO itServiceDTO){
+        return itServiceService.priceMaxToMin(itServiceDTO.getPrice());
+    }
+
     @PostMapping("/save")
     public ITService saveITService(@RequestBody ITServiceDTO itServiceDTO) {
         return itServiceService.saveITService(itServiceDTO);

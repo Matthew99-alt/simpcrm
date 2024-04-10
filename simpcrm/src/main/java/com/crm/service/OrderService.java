@@ -19,6 +19,14 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    public List<Order> findByOrder_name(String order_name) {
+        return orderRepository.findByOrderName(order_name);
+    }
+
+    public List<Order> findByPriority(Long priority) {
+        return orderRepository.findByPriority(priority);
+    }
+
     private Order makeAnOrder(OrderDTO orderDTO, boolean idEnable){
         Order order = new Order();
         if(idEnable){

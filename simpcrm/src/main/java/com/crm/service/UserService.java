@@ -4,6 +4,7 @@ import com.crm.dto.UserDTO;
 import com.crm.entity.User;
 import com.crm.reposotiry.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

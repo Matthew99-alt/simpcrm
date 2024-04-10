@@ -21,6 +21,17 @@ public class OrderController {
         return orderService.findAllUsers();
     }
 
+    @GetMapping("/order_name")
+    public List<Order> getOrderByName(@RequestBody OrderDTO orderDTO) {
+        return orderService.findByOrder_name(orderDTO.getOrder_name());
+    }
+
+    @GetMapping("/priority")
+    public List<Order> getOrderByPriority(@RequestBody OrderDTO orderDTO) {
+        return orderService.findByPriority(orderDTO.getPriority());
+    }
+
+
     @PostMapping("/save")
     public Order saveUser(@RequestBody OrderDTO orderDTO) {
         return orderService.saveOrder(orderDTO);
