@@ -1,0 +1,11 @@
+server:
+  port: 8282
+spring:
+  application:
+    name: file-storage
+  datasource:
+    url: 'mongodb://localhost:27017/db'
+
+  data:
+    mongodb:
+      database: db
