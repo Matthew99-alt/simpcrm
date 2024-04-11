@@ -3,14 +3,18 @@ package com.crm.filestorage.controller;
 import com.crm.filestorage.dto.FileStorageDTO;
 import com.crm.filestorage.entity.FileStorage;
 import com.crm.filestorage.service.FileStorageService;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/rest/fileStorage")
 public class FileStorageRestController {
-
 
     private final FileStorageService fileStorageService;
 
@@ -34,7 +38,7 @@ public class FileStorageRestController {
     }
 
     @PutMapping("/edit")
-    public void editUser(@RequestBody FileStorageDTO fileStorageDTO){
+    public void editUser(@RequestBody FileStorageDTO fileStorageDTO) {
         fileStorageService.editUser(fileStorageDTO);
     }
 }

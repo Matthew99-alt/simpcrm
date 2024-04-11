@@ -10,8 +10,10 @@ import java.util.Optional;
 
 @Repository
 public interface FileStorageRepository extends MongoRepository<FileStorage, ObjectId> {
-    @Override
-    List<FileStorage> findAll();
+
+    //TODO: а что тут переопределял? это не CRUDRepository
+//    @Override
+//    List<FileStorage> findAll();
 
     List<FileStorage> findByFileTitle(String title);
 }

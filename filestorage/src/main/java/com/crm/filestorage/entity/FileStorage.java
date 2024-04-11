@@ -1,19 +1,41 @@
 package com.crm.filestorage.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection="filesTable")
+@Getter
+@Setter
+@ToString
+@Document(collection = "filesTable")
 public class FileStorage {
 
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
-    @Field(name="fileLink")
+    @Field(name = "fileLink")
     private String fileLink;
-    @Field(name="fileTitle")
+    @Field(name = "fileTitle")
     private String fileTitle;
+
+    //TODO: поиграйся с именем поля
+    @Field(name = "documentsByte")
+    private byte[] documentsByte;
+
+    /*
+    public byte[] getDocumentsByte() {
+        return documentsByte;
+    }
+
+    public void setDocumentsByte(byte[] documentsByte) {
+        this.documentsByte = documentsByte;
+    }
 
     public void setId(ObjectId id) {
         this.id = id;
@@ -38,4 +60,6 @@ public class FileStorage {
     public String getFileTitle() {
         return fileTitle;
     }
+
+     */
 }
