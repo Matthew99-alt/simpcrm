@@ -19,9 +19,11 @@ public class UserService {
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
+
     public List<User> findByFirstName(String firstName) {
         return userRepository.findByFirstName(firstName);
     }
+
 
     private User makeAnUser(UserDTO userDTO, boolean idEnable){
         User user = new User();

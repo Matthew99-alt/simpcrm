@@ -1,7 +1,7 @@
 package com.crm.reposotiry;
 
 import com.crm.entity.ITService;
-import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,5 +19,5 @@ public interface ITServiceRepository extends CrudRepository<ITService, Long>{
     List<ITService> findByTitle(String title);
 
     @Query("select i from ITService i where i.price > :price")
-    List<ITService> priceMaxToMin(@Param("price") Long price);
+    List<ITService> findByPriceGreaterThan(@Param("price") Long price);
 }

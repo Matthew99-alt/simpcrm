@@ -23,7 +23,7 @@ public class ITServiceService {
 
     public List<ITService> findByPrice(Long price){ return itServiceRepository.findByPrice(price);}
 
-    public List<ITService> priceMaxToMin(Long price){ return itServiceRepository.priceMaxToMin(price);}
+    public List<ITService> priceMaxToMin(Long price){ return itServiceRepository.findByPriceGreaterThan(price);}
     private ITService makeAnITService(ITServiceDTO itServiceDTO, boolean idEnable){
         ITService itService = new ITService();
         if(idEnable){
