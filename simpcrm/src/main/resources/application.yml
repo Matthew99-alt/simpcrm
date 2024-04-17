@@ -1,3 +1,6 @@
+server:
+  port: 8181
+
 spring:
   datasource:
     url: 'jdbc:postgresql://localhost:5432/'
@@ -5,4 +8,10 @@ spring:
     password: 7890123456Upet
 
   jpa:
-    show-sql=true:
+    show-sql: true
+
+
+service:
+  clients:
+    file-storage-client:
+      url: 'http://localhost:8282'

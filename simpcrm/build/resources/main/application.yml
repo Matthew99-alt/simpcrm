@@ -1,8 +1,17 @@
+server:
+  port: 8181
+
 spring:
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/'
-    username: postgres
-    password: 7890123456Upet
+    url: 'jdbc:postgresql://localhost:5432/example'
+    username: user
+    password: password
 
   jpa:
-    show-sql=true:
+    show-sql: true
+
+
+service:
+  clients:
+    file-storage-client:
+      url: 'http://localhost:8282'

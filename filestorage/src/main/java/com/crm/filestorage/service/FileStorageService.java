@@ -3,10 +3,8 @@ package com.crm.filestorage.service;
 import com.crm.filestorage.dto.FileStorageDTO;
 import com.crm.filestorage.entity.FileStorage;
 import com.crm.filestorage.repository.FileStorageRepository;
-
 import java.io.IOException;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +25,7 @@ public class FileStorageService {
         fileStorageRepository.deleteAll(fileStorage);
     }
 
-    public void editFile( MultipartFile file,String description) throws IOException {
+    public void editFile(MultipartFile file, String description) throws IOException {
         FileStorage fileStorage = fileStorageRepository.findOneByTitle(file.getName());
         FileStorage files = FileStorage
                 .builder()
@@ -48,7 +46,7 @@ public class FileStorageService {
                 .file(file.getBytes())
                 .build();
         fileStorageRepository.save(files);
-        if(files.getId() != null){
+        if (files.getId() != null) {
             return "File uploaded successfully into database";
         }
         return null;
