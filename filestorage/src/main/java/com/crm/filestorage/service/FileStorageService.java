@@ -1,22 +1,18 @@
 package com.crm.filestorage.service;
 
-import com.crm.filestorage.config.FileStorageConfig;
 import com.crm.filestorage.dto.FileStorageDTO;
 import com.crm.filestorage.entity.FileStorage;
 import com.crm.filestorage.repository.FileStorageRepository;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileStorageService {
-    public final FileStorageRepository fileStorageRepository;
-    FileStorageConfig fileStorageConfig = new FileStorageConfig();
-    MongoTemplate mongoTemplate = new MongoTemplate(fileStorageConfig.mongoClient(),"test");
+    private final FileStorageRepository fileStorageRepository;
 
     public FileStorageService(FileStorageRepository fileStorageRepository) {
         this.fileStorageRepository = fileStorageRepository;
@@ -26,36 +22,36 @@ public class FileStorageService {
         return fileStorageRepository.findAll();
     }
 
-    private FileStorage makeAFile(FileStorageDTO fileStorageDTO, boolean idEnable){
-        FileStorage fileStorage = new FileStorage();
-        if(idEnable){
-            fileStorage.setId(fileStorageDTO.getId());
+    public void deleteFile(FileStorageDTO fileStorageDTO) {
+        List<FileStorage> fileStorage = fileStorageRepository.findByTitle(fileStorageDTO.getTitle());
+        fileStorageRepository.deleteAll(fileStorage);
+    }
+
+    public void editFile( MultipartFile file,String description) throws IOException {
+        FileStorage fileStorage = fileStorageRepository.findOneByTitle(file.getName());
+        FileStorage files = FileStorage
+                .builder()
+                .id(fileStorage.getId())
+                .title(file.getName())
+                .description(description)
+                .file(file.getBytes())
+                .build();
+        fileStorageRepository.save(files);
+    }
+
+    public String addFile(MultipartFile file, String description) throws IOException {
+        FileStorage files = FileStorage
+                .builder()
+                .title(file.getName())
+                .size(file.getSize())
+                .description(description)
+                .file(file.getBytes())
+                .build();
+        fileStorageRepository.save(files);
+        if(files.getId() != null){
+            return "File uploaded successfully into database";
         }
-        fileStorage.setFileLink(fileStorageDTO.getFileLink());
-        fileStorage.setFileTitle(fileStorageDTO.getFileTitle());
-
-        return fileStorage;
+        return null;
     }
 
-
-
-    public FileStorage saveUser(FileStorageDTO fileStorageDTO) {
-        return fileStorageRepository.save(makeAFile(fileStorageDTO, false));
-    }
-    public void deleteUser(FileStorageDTO fileStorageDTO) {
-        List<FileStorage> fileStorage = fileStorageRepository.findByFileTitle(fileStorageDTO.getFileTitle());
-        for(int i=0; i<fileStorage.size();i++) {
-            mongoTemplate.remove(new Query(Criteria.where("_id")
-                            .is(fileStorage.get(i).getId())
-                            .where("fileTitle").is(fileStorage.get(i)
-                            .getFileTitle()).where("fileLink")
-                            .is(fileStorage.get(i).getFileLink())),
-                            FileStorage.class);
-        }
-    }
-
-    public void editUser(FileStorageDTO fileStorageDTO){
-        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(fileStorageDTO.getId())),Update.update("fileTitle",fileStorageDTO.getFileTitle()), FileStorage.class);
-        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(fileStorageDTO.getId())),Update.update("fileLink",fileStorageDTO.getFileLink()), FileStorage.class);
-    }
 }

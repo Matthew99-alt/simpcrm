@@ -1,35 +1,23 @@
 package com.crm.filestorage.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.bson.types.Binary;
 import org.bson.types.ObjectId;
+import org.springframework.web.multipart.MultipartFile;
 
+@Getter
+@Setter
 public class FileStorageDTO {
+
     private ObjectId id;
 
-    private String fileLink;
+    private String size;
 
-    private String fileTitle;
+    private String title;
 
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
+    private String description;
 
-    public void setFileLink(String fileLink) {
-        this.fileLink = fileLink;
-    }
+    private byte[] file;
 
-    public void setFileTitle(String fileTitle) {
-        this.fileTitle = fileTitle;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public String getFileLink() {
-        return fileLink;
-    }
-
-    public String getFileTitle() {
-        return fileTitle;
-    }
 }
