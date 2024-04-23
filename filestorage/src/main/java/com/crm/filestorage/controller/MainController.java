@@ -14,7 +14,6 @@ public class MainController {
         return new HealthCheck(true);
     }
 
-
     @Getter
     public static class HealthCheck {
         private final Boolean healthy;

@@ -14,6 +14,4 @@ import java.util.Optional;
 @Repository
 public interface FileStorageRepository extends MongoRepository<FileStorage, ObjectId> {
     List<FileStorage> findByTitle(String title);
-
-    FileStorage findOneByTitle(String title);
 }

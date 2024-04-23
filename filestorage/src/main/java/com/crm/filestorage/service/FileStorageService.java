@@ -3,9 +3,21 @@ package com.crm.filestorage.service;
 import com.crm.filestorage.dto.FileStorageDTO;
 import com.crm.filestorage.entity.FileStorage;
 import com.crm.filestorage.repository.FileStorageRepository;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+
+import jakarta.servlet.http.HttpServletResponse;
+import org.bson.types.ObjectId;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -25,13 +37,15 @@ public class FileStorageService {
         fileStorageRepository.deleteAll(fileStorage);
     }
 
-    public void editFile(MultipartFile file, String description) throws IOException {
-        FileStorage fileStorage = fileStorageRepository.findOneByTitle(file.getName());
+    public void editFile(MultipartFile file,
+                         String description,
+                         ObjectId id) throws IOException {
         FileStorage files = FileStorage
                 .builder()
-                .id(fileStorage.getId())
-                .title(file.getName())
+                .id(id)
+                .title(file.getOriginalFilename())
                 .description(description)
+                .size(file.getSize())
                 .file(file.getBytes())
                 .build();
         fileStorageRepository.save(files);
@@ -40,7 +54,7 @@ public class FileStorageService {
     public String addFile(MultipartFile file, String description) throws IOException {
         FileStorage files = FileStorage
                 .builder()
-                .title(file.getName())
+                .title(file.getOriginalFilename())
                 .size(file.getSize())
                 .description(description)
                 .file(file.getBytes())
@@ -52,4 +66,23 @@ public class FileStorageService {
         return null;
     }
 
+    public ResponseEntity<InputStreamResource> downladFile(@PathVariable ObjectId fileId) {
+        Optional<FileStorage> optionalFileDocument = fileStorageRepository.findById(fileId);
+
+        if (optionalFileDocument.isPresent()) {
+            FileStorage fileStorage = optionalFileDocument.get();
+            byte[] fileBytes = fileStorage.getFile();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDispositionFormData("attachment", fileStorage.getTitle());
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+            InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(fileBytes));
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(fileBytes.length)
+                    .body(resource);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
