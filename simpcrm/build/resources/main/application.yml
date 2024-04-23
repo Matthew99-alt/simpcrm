@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/example'
-    username: user
-    password: password
+    url: 'jdbc:postgresql://localhost:5432/'
+    username: postgres
+    password: 7890123456Upet
 
   jpa:
     show-sql: true
