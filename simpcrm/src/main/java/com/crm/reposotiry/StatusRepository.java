@@ -12,5 +12,7 @@ public interface StatusRepository extends CrudRepository<Status, Long> {
     @Override
     List<Status> findAll();
 
+    String findTitleById(Long id);
+
     List<Status> findByStatus(String status);
 }

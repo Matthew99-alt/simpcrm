@@ -48,4 +48,8 @@ public class HealthCheckerService {
     public String addFile(MultipartFile file, String description) throws IOException {
         return fileStorageClient.uploadFile(file, description);
     }
+
+    public String getFileTitle(FileStorage fileStorage){
+        return fileStorageClient.getFileTitle(fileStorage);
+    }
 }

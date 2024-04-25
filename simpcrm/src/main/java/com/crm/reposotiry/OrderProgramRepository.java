@@ -11,4 +11,5 @@ public interface OrderProgramRepository extends CrudRepository<OrderProgram, Lon
     @Override
     List<OrderProgram> findAll();
 
+    List<Long> findProgramIdByOrderId(Long id);
 }

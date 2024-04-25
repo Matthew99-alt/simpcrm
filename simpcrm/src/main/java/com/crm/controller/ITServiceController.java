@@ -18,7 +18,7 @@ public class ITServiceController {
 
     @GetMapping("/all")
     public List<ITService> getAllITServices() {
-        return itServiceService.findAllUsers();
+        return itServiceService.findAllServices();
     }
 
     @GetMapping("/title")

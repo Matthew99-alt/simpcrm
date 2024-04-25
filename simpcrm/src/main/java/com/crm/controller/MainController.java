@@ -29,6 +29,11 @@ public class MainController {
     public HealthCheckResponse healthCheckMongoApp() {
         return healthCheckerService.checkMongoApp();
     }
+    //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    @GetMapping("/fileTitle")
+    String getFileTitle(@RequestBody FileStorage fileStorage){
+        return healthCheckerService.getFileTitle(fileStorage);
+    }
 
     @GetMapping("/getAllFiles")
     public List<FileStorage> getAllFilesFromMongoApp() {
@@ -57,6 +62,7 @@ public class MainController {
                       @RequestParam("description") String description) throws IOException{
         return healthCheckerService.addFile(file,description);
     };
+
 
     public record HealthCheckResponse(Boolean healthy, String description) {
 

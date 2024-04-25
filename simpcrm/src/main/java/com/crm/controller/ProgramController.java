@@ -18,7 +18,7 @@ public class ProgramController {
 
     @GetMapping("/all")
     public List<Program> getAllProgram() {
-        return programService.findAllUsers();
+        return programService.findAllPrograms();
     }
 
     @GetMapping("/title")

@@ -15,7 +15,7 @@ public class ITServiceService {
         this.itServiceRepository = itServiceRepository;
     }
 
-    public List<ITService> findAllUsers() {
+    public List<ITService> findAllServices() {
         return itServiceRepository.findAll();
     }
 

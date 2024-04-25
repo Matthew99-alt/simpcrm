@@ -11,4 +11,9 @@ import java.util.List;
 public interface OrderITServiceRepository extends CrudRepository<OrderITService, Long> {
     @Override
     List<OrderITService> findAll();
+
+    List<OrderITService> findAllById(Long id);
+    List<Long> findITServiceIdByOrderId(Long id);
+
+    List<OrderITService> findByTitle(String title);
 }

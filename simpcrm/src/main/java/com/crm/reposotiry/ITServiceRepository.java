@@ -14,6 +14,8 @@ public interface ITServiceRepository extends CrudRepository<ITService, Long>{
     @Override
     List<ITService> findAll();
 
+    String findTitleById(Long id);
+
     List<ITService> findByPrice(Long price);
 
     List<ITService> findByTitle(String title);

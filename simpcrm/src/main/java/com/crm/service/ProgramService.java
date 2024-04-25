@@ -16,7 +16,7 @@ public class ProgramService {
         this.programRepository = programRepository;
     }
 
-    public List<Program> findAllUsers() {
+    public List<Program> findAllPrograms() {
         return programRepository.findAll();
     }
 

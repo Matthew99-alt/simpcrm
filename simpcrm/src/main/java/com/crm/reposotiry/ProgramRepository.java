@@ -1,5 +1,6 @@
 package com.crm.reposotiry;
 
+import com.crm.entity.OrderProgram;
 import com.crm.entity.Program;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,8 @@ public interface ProgramRepository extends CrudRepository<Program, Long> {
     List<Program> findAll();
 
     List<Program> findByTitle(String title);
+
+    String findTitleById(Long id);
 
     List<Program> findByPrice(Long price);
 }
