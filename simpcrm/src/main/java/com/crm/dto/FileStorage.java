@@ -2,13 +2,13 @@ package com.crm.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 
 @Data
 @NoArgsConstructor
 public class FileStorage {
 
-    private ObjectId id;
+    //TODO: а нужен ли ObjectId здесь?? посмотри то тебе отвечает FeignClient в отладке
+    private String id;
 
     private Long size;
 

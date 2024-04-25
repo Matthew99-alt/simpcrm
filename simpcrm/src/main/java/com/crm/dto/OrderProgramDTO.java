@@ -1,6 +1,5 @@
 package com.crm.dto;
 
-import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 

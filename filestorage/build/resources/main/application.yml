@@ -1,9 +1,0 @@
-server:
-  port: 8282
-spring:
-  application:
-    name: file-storage
-  data:
-    mongodb:
-      database: db
-      uri: 'mongodb://localhost:27017/'

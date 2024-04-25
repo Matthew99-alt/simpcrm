@@ -16,14 +16,14 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping("/all")
-    public List<Order> getAllOrder() {
-        return orderService.findAllUsers();
+    @GetMapping("/getAllOrders")
+    public List<Order> getAllOrders() {
+        return orderService.findAllOrders();
     }
 
     @GetMapping("/order_name")
     public List<Order> getOrderByName(@RequestBody OrderDTO orderDTO) {
-        return orderService.findByOrder_name(orderDTO.getOrder_name());
+        return orderService.findByOrderName(orderDTO.getOrderName());
     }
 
     @GetMapping("/priority")
@@ -33,7 +33,7 @@ public class OrderController {
 
 
     @PostMapping("/save")
-    public Order saveUser(@RequestBody OrderDTO orderDTO) {
+    public OrderDTO saveUser(@RequestBody OrderDTO orderDTO) {
         return orderService.saveOrder(orderDTO);
     }
 

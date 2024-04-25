@@ -1,19 +1,19 @@
 package com.crm.reposotiry;
 
 import com.crm.entity.Order;
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface OrderRepository extends CrudRepository<Order, Long> {
-    @Override
+public interface OrderRepository extends JpaRepository<Order, Long> {
+
     List<Order> findAll();
 
     Order findOneById(Long id);
 
     List<Order> findByUserId(Long userId);
+
     List<Order> findByOrderName(String orderName);
 
     List<Order> findByPriority(Long priority);

@@ -1,9 +1,8 @@
 package com.crm.dto;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Setter
 @Getter
@@ -11,7 +10,7 @@ public class OrderDTO {
 
     private Long id;
 
-    private String order_name;
+    private String orderName;
 
     private Long priority;
 
@@ -19,9 +18,9 @@ public class OrderDTO {
 
     private String description;
 
-    private List<String> ITServicesTitles;
+    private List<String> itServicesTitles;
 
-    private List<String> ProgramsTitles;
+    private List<String> programsTitles;
 
     private String comments;
 

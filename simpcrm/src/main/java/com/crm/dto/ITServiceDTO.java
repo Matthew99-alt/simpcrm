@@ -2,7 +2,6 @@ package com.crm.dto;
 
 public class ITServiceDTO {
     private Long id;
-
     private String title;
 
     private Long price;

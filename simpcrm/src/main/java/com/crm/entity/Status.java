@@ -1,29 +1,16 @@
 package com.crm.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
-@Table(name = "status")
+@Setter
+@Getter
+//@Table(name = "status")
 public class Status {
     @Id
     public Long id;
-    @Column(value = "status")
+//    @Column(value = "status")
     public String status;
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }
