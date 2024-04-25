@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.bson.types.ObjectId;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +29,10 @@ public class FileStorageService {
 
     public List<FileStorage> findAll() {
         return fileStorageRepository.findAll();
+    }
+
+    public String findById(ObjectId id){
+        return fileStorageRepository.findById(id).get().getTitle();
     }
 
     public void deleteFile(FileStorageDTO fileStorageDTO) {

@@ -6,7 +6,6 @@ import com.crm.filestorage.service.FileStorageService;
 import java.io.IOException;
 import java.util.List;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.bson.types.ObjectId;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +25,11 @@ public class FileStorageRestController {
     @GetMapping("/all")
     public List<FileStorage> getAllFiles() {
         return fileStorageService.findAll();
+    }
+
+    @GetMapping("/fileTitle")
+    public String getFileTitle(@RequestBody FileStorageDTO fileStorageDTO) {
+        return fileStorageService.findById(fileStorageDTO.getId());
     }
 
     @PostMapping("/upload")
