@@ -12,12 +12,14 @@ public class FileStorageDTO {
 
     private ObjectId id;
 
-    private String size;
+    private Long size;
 
     private String title;
 
     private String description;
 
     private byte[] file;
+
+    private Long orderId;
 
 }

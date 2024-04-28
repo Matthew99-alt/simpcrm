@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableFeignClients
 @EnableJpaRepositories
-//@EnableJdbcRepositories
 @SpringBootApplication
 public class Application {
 

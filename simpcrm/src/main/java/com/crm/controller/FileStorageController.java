@@ -35,9 +35,9 @@ public class FileStorageController {
         return fileStorageService.checkMongoApp();
     }
 
-    @GetMapping("/fileTitle")
-    String getFileTitle(@RequestBody FileStorage fileStorage) {
-        return fileStorageService.getFileTitle(fileStorage);
+    @GetMapping("/fileByOrderId")
+    List<FileStorage> getFileTitle(@RequestParam Long orderId) {
+        return fileStorageService.getFileById(orderId);
     }
 
     @GetMapping("/getAllFiles")

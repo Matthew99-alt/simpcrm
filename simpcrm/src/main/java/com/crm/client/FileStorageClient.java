@@ -26,11 +26,12 @@ public interface FileStorageClient {
     @GetMapping("/rest/fileStorage/all")
     List<FileStorage> getAllFiles();
 
+    @GetMapping("/rest/fileStorage/fileByOrderId")
+    List<FileStorage> getFileByOrderId(Long orderId);
+
     @GetMapping("/rest/fileStorage/files/{fileId}")
     ResponseEntity<byte[]> downloadFile(@PathVariable String fileId) throws IOException;
 
-    @GetMapping(value = "/rest/fileStorage/fileTitle", consumes = MediaType.APPLICATION_JSON_VALUE)
-    String getFileTitle(@RequestBody FileStorage fileStorage);
 
     @DeleteMapping("/rest/fileStorage/delete")
     void deleteFile(@RequestBody FileStorage FileStorage);

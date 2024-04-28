@@ -42,7 +42,7 @@ public class FileStorageService {
         return fileStorageClient.uploadFile(file, description);
     }
 
-    public String getFileTitle(FileStorage fileStorage) {
-        return fileStorageClient.getFileTitle(fileStorage);
+    public List<FileStorage> getFileById(Long orderId) {
+        return fileStorageClient.getFileByOrderId(orderId);
     }
 }

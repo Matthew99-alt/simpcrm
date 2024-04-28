@@ -27,9 +27,9 @@ public class FileStorageRestController {
         return fileStorageService.findAll();
     }
 
-    @GetMapping("/fileTitle")
-    public String getFileTitle(@RequestBody FileStorageDTO fileStorageDTO) {
-        return fileStorageService.findById(fileStorageDTO.getId());
+    @GetMapping("/fileByOrderId")
+    public List<FileStorageDTO> getFileByOrderId(@RequestParam(name = "orderId") Long orderId) {
+        return fileStorageService.findByIdOrderId(orderId);
     }
 
     @PostMapping("/upload")
@@ -41,7 +41,7 @@ public class FileStorageRestController {
 
     @GetMapping("/files/{fileId}")
     public ResponseEntity<InputStreamResource> downloadFile(@PathVariable ObjectId fileId) throws IOException {
-        return fileStorageService.downladFile(fileId);
+        return fileStorageService.downloadFile(fileId);
     }
 
     @DeleteMapping("/delete")

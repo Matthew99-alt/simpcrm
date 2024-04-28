@@ -3,12 +3,10 @@ package com.crm.filestorage.service;
 import com.crm.filestorage.dto.FileStorageDTO;
 import com.crm.filestorage.entity.FileStorage;
 import com.crm.filestorage.repository.FileStorageRepository;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import org.bson.types.ObjectId;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -31,8 +29,22 @@ public class FileStorageService {
         return fileStorageRepository.findAll();
     }
 
-    public String findById(ObjectId id){
-        return fileStorageRepository.findById(id).get().getTitle();
+    public List<FileStorageDTO> findByIdOrderId(long id) {
+        return fileStorageRepository.findAllByOrderId(id).stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    private FileStorageDTO convertToDto(FileStorage fileSTorage) {
+        FileStorageDTO fileStorageDTO = new FileStorageDTO();
+        fileStorageDTO.setId(fileSTorage.getId());
+        fileStorageDTO.setDescription(fileSTorage.getDescription());
+        fileStorageDTO.setFile(fileSTorage.getFile());
+        fileStorageDTO.setSize(fileSTorage.getSize());
+        fileStorageDTO.setTitle(fileSTorage.getTitle());
+        fileStorageDTO.setOrderId(fileSTorage.getOrderId());
+
+        return fileStorageDTO;
     }
 
     public void deleteFile(FileStorageDTO fileStorageDTO) {
@@ -69,7 +81,7 @@ public class FileStorageService {
         return null;
     }
 
-    public ResponseEntity<InputStreamResource> downladFile(@PathVariable ObjectId fileId) {
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable ObjectId fileId) {
         Optional<FileStorage> optionalFileDocument = fileStorageRepository.findById(fileId);
 
         if (optionalFileDocument.isPresent()) {

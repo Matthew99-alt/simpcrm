@@ -34,4 +34,7 @@ public class FileStorage {
     @Field(name = "file")
     private byte[] file;
 
+    @Field(name = "order_id")
+    private Long orderId;
+
 }
