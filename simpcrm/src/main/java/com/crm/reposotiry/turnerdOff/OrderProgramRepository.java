@@ -1,8 +1,6 @@
 package com.crm.reposotiry.turnerdOff;
 
-import com.crm.entity.OrderProgram;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import com.crm.entity.turnedOff.OrderProgram;
 
 import java.util.List;
 

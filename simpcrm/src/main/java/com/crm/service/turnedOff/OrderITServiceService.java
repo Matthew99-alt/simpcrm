@@ -1,7 +1,7 @@
 package com.crm.service.turnedOff;
 
-import com.crm.dto.OrderITServiceDTO;
-import com.crm.entity.OrderITService;
+import com.crm.dto.turnedOff.OrderITServiceDTO;
+import com.crm.entity.turnedOff.OrderITService;
 import com.crm.reposotiry.turnerdOff.OrderITServiceRepository;
 
 import java.util.List;

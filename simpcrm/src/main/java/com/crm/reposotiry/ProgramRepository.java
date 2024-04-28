@@ -1,15 +1,14 @@
-package com.crm.reposotiry.turnerdOff;
+package com.crm.reposotiry;
 
-import com.crm.entity.OrderProgram;
 import com.crm.entity.Program;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-//@Repository
-public interface ProgramRepository { //extends CrudRepository<Program, Long> {
-//    @Override
+@Repository
+public interface ProgramRepository extends JpaRepository<Program, Long> {
+
     List<Program> findAll();
 
     List<Program> findByTitle(String title);

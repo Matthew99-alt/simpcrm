@@ -1,14 +1,14 @@
-package com.crm.controller.turnedOff;
+package com.crm.controller;
 
 import com.crm.dto.UserDTO;
 import com.crm.entity.User;
-import com.crm.service.turnedOff.UserService;
+import com.crm.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//@RestController
-//@RequestMapping("/rest/user")
+@RestController
+@RequestMapping("/rest/user")
 public class UserController {
 
     private final UserService userService;

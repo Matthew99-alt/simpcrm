@@ -4,8 +4,10 @@ import com.crm.dto.OrderDTO;
 import com.crm.entity.Order;
 import com.crm.reposotiry.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -64,9 +66,9 @@ public class OrderService {
         order.setDescription(orderDTO.getDescription());
         order.setPriority(orderDTO.getPriority());
         order.setComments(orderDTO.getComments());
-        order.setClientId(0L);
-        order.setStatusId(0L);
-        order.setUserId(0L);
+        order.setClientId(2L);
+        order.setStatusId(2L);
+        order.setUserId(2L);
         return order;
     }
 }

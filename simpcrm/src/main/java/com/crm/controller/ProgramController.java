@@ -1,14 +1,14 @@
-package com.crm.controller.turnedOff;
+package com.crm.controller;
 
 import com.crm.dto.ProgramDTO;
 import com.crm.entity.Program;
-import com.crm.service.turnedOff.ProgramService;
+import com.crm.service.ProgramService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//@RestController
-//@RequestMapping("/rest/program")
+@RestController
+@RequestMapping("/rest/program")
 public class ProgramController {
     private final ProgramService programService;
 

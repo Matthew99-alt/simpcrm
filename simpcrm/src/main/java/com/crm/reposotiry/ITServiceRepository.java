@@ -1,17 +1,16 @@
-package com.crm.reposotiry.turnerdOff;
+package com.crm.reposotiry;
 
 import com.crm.entity.ITService;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-//@Repository
-public interface ITServiceRepository{ // extends CrudRepository<ITService, Long>{
+@Repository
+public interface ITServiceRepository extends JpaRepository<ITService, Long> {
 
-//    @Override
     List<ITService> findAll();
 
     String findTitleById(Long id);

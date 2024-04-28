@@ -1,7 +1,7 @@
 package com.crm.controller.turnedOff;
 
-import com.crm.dto.OrderITServiceDTO;
-import com.crm.entity.OrderITService;
+import com.crm.dto.turnedOff.OrderITServiceDTO;
+import com.crm.entity.turnedOff.OrderITService;
 import com.crm.service.turnedOff.OrderITServiceService;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,17 +1,18 @@
-package com.crm.service.turnedOff;
+package com.crm.service;
 
 import com.crm.dto.ITServiceDTO;
 import com.crm.entity.ITService;
-import com.crm.reposotiry.turnerdOff.ITServiceRepository;
+import com.crm.entity.User;
+import com.crm.reposotiry.ITServiceRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-//@Service
+@Service
+@RequiredArgsConstructor
 public class ITServiceService {
     public final ITServiceRepository itServiceRepository;
-
-    public ITServiceService(ITServiceRepository itServiceRepository) {
-        this.itServiceRepository = itServiceRepository;
-    }
 
     public List<ITService> findAllServices() {
         return itServiceRepository.findAll();
@@ -29,11 +30,7 @@ public class ITServiceService {
         return itServiceRepository.findByPriceGreaterThan(price);
     }
 
-    private ITService makeAnITService(ITServiceDTO itServiceDTO, boolean idEnable) {
-        ITService itService = new ITService();
-        if (idEnable) {
-            itService.setId(itServiceDTO.getId());
-        }
+    private ITService makeAnITService(ITServiceDTO itServiceDTO, ITService itService) {
         itService.setPrice(itServiceDTO.getPrice());
         itService.setTitle(itServiceDTO.getTitle());
         itService.setDescription(itServiceDTO.getDescription());
@@ -42,18 +39,18 @@ public class ITServiceService {
     }
 
     public ITService saveITService(ITServiceDTO itServiceDTO) {
-//        return itServiceRepository.save(makeAnITService(itServiceDTO, false));
-        return null;
+        ITService itService = new ITService();
+        return itServiceRepository.save(makeAnITService(itServiceDTO, itService));
     }
 
     public void deleteITService(ITServiceDTO itServiceDTO) {
-//        itServiceRepository.delete(makeAnITService(itServiceDTO, true));
-
+        itServiceRepository.deleteById(itServiceDTO.getId());
     }
 
     public ITService editUser(ITServiceDTO itServiceDTO) {
-//        return itServiceRepository.save(makeAnITService(itServiceDTO, true));
-        return null;
+        ITService itService = new ITService();
+        itService.setId(itServiceDTO.getId());
+        return itServiceRepository.save(makeAnITService(itServiceDTO, itService));
     }
 
 }

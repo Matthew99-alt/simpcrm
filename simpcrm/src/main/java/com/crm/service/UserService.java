@@ -1,18 +1,17 @@
-package com.crm.service.turnedOff;
+package com.crm.service;
 
 import com.crm.dto.UserDTO;
 import com.crm.entity.User;
-import com.crm.reposotiry.turnerdOff.UserRepository;
+import com.crm.reposotiry.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-//@Service
+@Service
+@RequiredArgsConstructor
 public class UserService {
     public final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
@@ -23,11 +22,7 @@ public class UserService {
     }
 
 
-    private User makeAnUser(UserDTO userDTO, boolean idEnable){
-        User user = new User();
-        if(idEnable){
-            user.setId(userDTO.getId());
-        }
+    private User makeAnUser(UserDTO userDTO, User user){
         user.setFirstName(userDTO.getFirstName());
         user.setSecondName(userDTO.getSecondName());
         user.setMiddleName(userDTO.getMiddleName());
@@ -39,16 +34,17 @@ public class UserService {
     }
 
     public User saveUser(UserDTO userDTO) {
-//        return userRepository.save(makeAnUser(userDTO, false));
-        return null;
+        User user = new User();
+        return userRepository.save(makeAnUser(userDTO, user));
     }
     public void deleteUser(UserDTO userDTO) {
-//        userRepository.delete(makeAnUser(userDTO, true));
+        userRepository.deleteById(userDTO.getId());
     }
 
     public User editUser(UserDTO userDTO){
-//        return userRepository.save(makeAnUser(userDTO, true));
-        return null;
+        User user = new User();
+        user.setId(userDTO.getId());
+        return userRepository.save(makeAnUser(userDTO, user));
     }
 
 }

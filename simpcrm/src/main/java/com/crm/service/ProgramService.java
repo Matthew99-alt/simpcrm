@@ -1,18 +1,18 @@
-package com.crm.service.turnedOff;
+package com.crm.service;
 
 import com.crm.dto.ProgramDTO;
 import com.crm.entity.Program;
-import com.crm.reposotiry.turnerdOff.ProgramRepository;
+import com.crm.reposotiry.ProgramRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-//@Service
+@Service
+@RequiredArgsConstructor
 public class ProgramService {
 
     public final ProgramRepository programRepository;
-
-    public ProgramService(ProgramRepository programRepository) {
-        this.programRepository = programRepository;
-    }
 
     public List<Program> findAllPrograms() {
         return programRepository.findAll();
@@ -26,11 +26,7 @@ public class ProgramService {
         return programRepository.findByPrice(price);
     }
 
-    private Program makeAProgram(ProgramDTO programDTO, boolean idEnable) {
-        Program program = new Program();
-        if (idEnable) {
-            program.setId(programDTO.getId());
-        }
+    private Program makeAProgram(ProgramDTO programDTO, Program program) {
         program.setTitle(programDTO.getTitle());
         program.setDescription(programDTO.getDescription());
         program.setPrice(programDTO.getPrice());
@@ -39,16 +35,17 @@ public class ProgramService {
     }
 
     public Program saveProgram(ProgramDTO programDTO) {
-//        return programRepository.save(makeAProgram(programDTO, false));
-        return null;
+        Program program = new Program();
+        return programRepository.save(makeAProgram(programDTO, program));
     }
 
     public void deleteProgram(ProgramDTO programDTO) {
-//        programRepository.delete(makeAProgram(programDTO, true));
+        programRepository.deleteById(programDTO.getId());
     }
 
     public Program editProgram(ProgramDTO programDTO) {
-//        return programRepository.save(makeAProgram(programDTO, true));
-        return null;
+        Program program = new Program();
+        program.setId(programDTO.getId());
+        return programRepository.save(makeAProgram(programDTO, program));
     }
 }

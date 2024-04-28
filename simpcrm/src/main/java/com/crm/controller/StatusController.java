@@ -1,14 +1,14 @@
-package com.crm.controller.turnedOff;
+package com.crm.controller;
 
 import com.crm.dto.StatusDTO;
 import com.crm.entity.Status;
-import com.crm.service.turnedOff.StatusService;
+import com.crm.service.StatusService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//@RestController
-//@RequestMapping("/rest/status")
+@RestController
+@RequestMapping("/rest/status")
 public class StatusController {
     private final StatusService statusService;
 

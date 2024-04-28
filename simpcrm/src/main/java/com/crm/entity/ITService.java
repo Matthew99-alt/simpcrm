@@ -1,24 +1,25 @@
 package com.crm.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
 @Getter
 @Setter
-//@Table(name = "IT_services")
+@Entity(name = "it_services")
 public class ITService {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column(value = "title")
+    @Column(name = "title")
     private String title;
 
-//    @Column(value = "price")
+    @Column(name = "price")
     private Long price;
 
-//    @Column(value = "description")
+    @Column(name = "description")
     private String description;
 
 }

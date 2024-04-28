@@ -13,23 +13,32 @@ import lombok.Setter;
 @Setter
 @Entity(name = "draft_order")
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "order_name")
     private String orderName;
+
     @Column(name = "priority")
     private Long priority;
+
     @Column(name = "status_id")
     private Long statusId;
+
     @Column(name = "description")
     private String description;
+
     @Column(name = "comments")
     private String comments;
+
     @Column(name = "client_id")
     private Long clientId;
+
     @Column(name = "user_id")
     private Long userId;
+
 }
 
 

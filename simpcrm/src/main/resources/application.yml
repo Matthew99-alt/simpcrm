@@ -3,17 +3,15 @@ server:
 
 spring:
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/example'
-    username: user
-    password: password
-#    url: 'jdbc:postgresql://localhost:5432/'
-#    username: postgres
-#    password: 7890123456Upet
+#    url: 'jdbc:postgresql://localhost:5432/example'
+#    username: user
+#    password: password
+    url: 'jdbc:postgresql://localhost:5432/postgres'
+    username: postgres
+    password: 7890123456Upet
   jpa:
     show-sql: true
     #    defer-datasource-initialization: true - убрали настройку потому что отключили Hibernate и создаем и наполняем таблицы сами
-    hibernate:
-      ddl-auto: create-drop
 
 
 service:
