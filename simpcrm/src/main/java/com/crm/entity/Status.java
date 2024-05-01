@@ -14,7 +14,7 @@ public class Status {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    @Column(name = "status")
+    @Column(name = "status") // title
     public String status;
 
     @JsonIgnore

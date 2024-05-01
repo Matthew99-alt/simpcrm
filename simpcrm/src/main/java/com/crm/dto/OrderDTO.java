@@ -15,7 +15,7 @@ public class OrderDTO {
 
     private Long priority;
 
-    private String statusTitle;
+    private String statusTitle; //TODO Статус это отдельный объект и название, как раз и есть его свойство
 
     private String description;
 
@@ -25,17 +25,16 @@ public class OrderDTO {
 
     private String comments;
 
-    private String clientFirstName;
+    private String clientFirstName; // TODO: отдельная сущность Client (или User с каким-то типом)
 
-    private String clientSecondName;
+    private String clientSecondName; // свойство client
 
-    private String clientMiddleName;
+    private String clientMiddleName; // свойство client
 
-    private String userFirstName;
+    private String userFirstName; // TODO: отдельная сущность User
 
-    private String userSecondName;
+    private String userSecondName; // свойство User
 
-    private String userMiddleName;
-
+    private String userMiddleName; // свойство User
 
 }

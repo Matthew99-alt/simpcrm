@@ -1,4 +1,4 @@
-package com.crm.controller;
+package com.crm.controller.rest;
 
 import com.crm.dto.UserDTO;
 import com.crm.entity.User;
@@ -22,7 +22,7 @@ public class UserController {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/name")
+    @GetMapping("/name") // todo: rename plz
     public UserDTO getAllUserByFirstName(@RequestBody UserDTO userDTO) {
         return userService.findByFirstNameAndSecondNameAndMiddleName(userDTO.getFirstName(), userDTO.getSecondName(), userDTO.getMiddleName());
     }

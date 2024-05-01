@@ -1,4 +1,4 @@
-package com.crm.controller;
+package com.crm.controller.rest;
 
 import com.crm.dto.StatusDTO;
 import com.crm.entity.Status;

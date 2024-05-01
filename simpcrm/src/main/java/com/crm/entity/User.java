@@ -26,10 +26,13 @@ public class User {
     private Long phone;
     @Column(name = "address")
     private String address;
-    @JsonIgnore
-    @OneToMany(mappedBy = "client")
-    public List<Order> client;
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    public List<Order> users;
+
+    // TODO: добавить колонку Тип Пользователя.
+//
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "client")
+//    public List<Order> client; // TODO: delete
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "user")
+//    public List<Order> users; // TODO: delete
 }

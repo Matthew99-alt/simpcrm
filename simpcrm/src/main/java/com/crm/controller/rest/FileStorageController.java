@@ -1,4 +1,4 @@
-package com.crm.controller;
+package com.crm.controller.rest;
 
 import com.crm.dto.FileStorage;
 import com.crm.service.FileStorageService;
