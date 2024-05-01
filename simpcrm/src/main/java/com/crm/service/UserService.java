@@ -6,6 +6,7 @@ import com.crm.reposotiry.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,14 +14,31 @@ import java.util.List;
 public class UserService {
     public final UserRepository userRepository;
 
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        ArrayList<UserDTO> userDTOS = new ArrayList<>();
+        for (User user : users) {
+            userDTOS.add(makeAnUserDTO(new UserDTO(), user));
+        }
+        return userDTOS;
     }
 
-    public List<User> findByFirstName(String firstName) {
-        return userRepository.findByFirstName(firstName);
+    public UserDTO findByFirstNameAndSecondNameAndMiddleName(String firstName, String secondName, String middleName) {
+        User user = userRepository.findByFirstNameAndSecondNameAndMiddleName(firstName, secondName, middleName);
+        return makeAnUserDTO(new UserDTO(),user);
     }
 
+    private UserDTO makeAnUserDTO(UserDTO userDTO, User user){
+        userDTO.setId(user.getId());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setSecondName(user.getSecondName());
+        userDTO.setMiddleName(user.getMiddleName());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setPhone(user.getPhone());
+        userDTO.setEmail(user.getEmail());
+
+        return userDTO;
+    }
 
     private User makeAnUser(UserDTO userDTO, User user){
         user.setFirstName(userDTO.getFirstName());
@@ -33,18 +51,19 @@ public class UserService {
         return user;
     }
 
-    public User saveUser(UserDTO userDTO) {
+    public UserDTO saveUser(UserDTO userDTO) {
         User user = new User();
-        return userRepository.save(makeAnUser(userDTO, user));
+        userRepository.save(makeAnUser(userDTO, user));
+        return userDTO;
     }
-    public void deleteUser(UserDTO userDTO) {
-        userRepository.deleteById(userDTO.getId());
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 
-    public User editUser(UserDTO userDTO){
+    public UserDTO editUser(UserDTO userDTO){
         User user = new User();
         user.setId(userDTO.getId());
-        return userRepository.save(makeAnUser(userDTO, user));
+        userRepository.save(makeAnUser(userDTO, user));
+        return userDTO;
     }
-
 }

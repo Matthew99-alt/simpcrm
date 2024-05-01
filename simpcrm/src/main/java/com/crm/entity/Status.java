@@ -1,12 +1,11 @@
 package com.crm.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.Id;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -18,4 +17,7 @@ public class Status {
     @Column(name = "status")
     public String status;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "status")
+    public List<Order> orders;
 }

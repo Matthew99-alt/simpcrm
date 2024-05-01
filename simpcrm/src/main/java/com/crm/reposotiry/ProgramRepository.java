@@ -11,7 +11,7 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
 
     List<Program> findAll();
 
-    List<Program> findByTitle(String title);
+    Program findByTitle(String title);
 
     String findTitleById(Long id);
 

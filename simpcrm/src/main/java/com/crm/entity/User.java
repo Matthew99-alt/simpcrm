@@ -1,8 +1,11 @@
 package com.crm.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -23,5 +26,10 @@ public class User {
     private Long phone;
     @Column(name = "address")
     private String address;
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "client")
+    public List<Order> client;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    public List<Order> users;
 }

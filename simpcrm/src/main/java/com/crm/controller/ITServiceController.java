@@ -18,35 +18,35 @@ public class ITServiceController {
     }
 
     @GetMapping("/all")
-    public List<ITService> getAllITServices() {
+    public List<ITServiceDTO> getAllITServices() {
         return itServiceService.findAllServices();
     }
 
     @GetMapping("/title")
-    public List<ITService> getByTitle(@RequestBody ITServiceDTO itServiceDTO) {
+    public ITServiceDTO getByTitle(@RequestBody ITServiceDTO itServiceDTO) {
         return itServiceService.findByTitle(itServiceDTO.getTitle());
     }
 
     @GetMapping("/price")
-    public List<ITService> getByPrice(@RequestBody ITServiceDTO itServiceDTO) {
+    public List<ITServiceDTO> getByPrice(@RequestBody ITServiceDTO itServiceDTO) {
         return itServiceService.findByPrice(itServiceDTO.getPrice());
     }
 
     @GetMapping("/priceWithLimit")
-    public List<ITService> getPriceWithLimit(@RequestBody ITServiceDTO itServiceDTO){
+    public List<ITServiceDTO> getPriceWithLimit(@RequestBody ITServiceDTO itServiceDTO){
         return itServiceService.priceMaxToMin(itServiceDTO.getPrice());
     }
 
     @PostMapping("/save")
-    public ITService saveITService(@RequestBody ITServiceDTO itServiceDTO) {
+    public ITServiceDTO saveITService(@RequestBody ITServiceDTO itServiceDTO) {
         return itServiceService.saveITService(itServiceDTO);
     }
 
     @DeleteMapping("/delete")
-    public void deleteUser(@RequestBody ITServiceDTO itServiceDTO) {
-        itServiceService.deleteITService(itServiceDTO);
+    public void deleteITService(@RequestParam Long id) {
+        itServiceService.deleteITService(id);
     }
 
     @PutMapping("/edit")
-    public ITService editUser(@RequestBody ITServiceDTO itServiceDTO){ return itServiceService.editUser(itServiceDTO);}
+    public ITServiceDTO editITService(@RequestBody ITServiceDTO itServiceDTO){ return itServiceService.editITService(itServiceDTO);}
 }

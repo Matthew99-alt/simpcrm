@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FileStorage {
 
-    //TODO: а нужен ли ObjectId здесь?? посмотри то тебе отвечает FeignClient в отладке
     private String id;
 
     private Long size;
@@ -17,4 +16,6 @@ public class FileStorage {
     private String description;
 
     private byte[] file;
+
+    private Long objectId;
 }

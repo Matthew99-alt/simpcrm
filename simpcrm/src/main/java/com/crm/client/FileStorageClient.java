@@ -1,7 +1,8 @@
+
 package com.crm.client;
 
 import com.crm.dto.FileStorage;
-import com.crm.dto.HealthCheckFileStorageResponse;
+
 import java.io.IOException;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -20,9 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 @FeignClient(name = "file-storage-client", url = "${service.clients.file-storage-client.url}")
 public interface FileStorageClient {
 
-    @GetMapping(value = "/main/health", consumes = MediaType.APPLICATION_JSON_VALUE)
-    HealthCheckFileStorageResponse healthCheckFileStorageApp();
-
     @GetMapping("/rest/fileStorage/all")
     List<FileStorage> getAllFiles();
 
@@ -39,9 +37,9 @@ public interface FileStorageClient {
     @PutMapping(value = "/rest/fileStorage/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void editFile(@RequestPart MultipartFile file,
                   @RequestParam("description") String description,
-                  @RequestParam("id") String id);
+                  @RequestParam("id") String id, @RequestParam("orderId") Long orderId);
 
     @PostMapping(value = "/rest/fileStorage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     String uploadFile(@RequestPart MultipartFile file,
-                      @RequestParam("description") String description) throws IOException;
+                      @RequestParam("description") String description, @RequestParam("orderId") Long orderId) throws IOException;
 }

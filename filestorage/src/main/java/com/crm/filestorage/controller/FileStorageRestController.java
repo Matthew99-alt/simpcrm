@@ -6,6 +6,7 @@ import com.crm.filestorage.service.FileStorageService;
 import java.io.IOException;
 import java.util.List;
 
+import com.crm.filestorage.uploadClasses.UploadClass;
 import org.bson.types.ObjectId;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,8 @@ public class FileStorageRestController {
     @PostMapping("/upload")
     //TODO: сделать класс-тело запроса, поместить в него ровно те же поля
     // @RequestBody - class uploadFileRequest
-    public String uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("description") String description) throws IOException {
-        return fileStorageService.addFile(file, description);
+    public String uploadFile(@ModelAttribute UploadClass uploadClass) throws IOException {
+        return fileStorageService.addFile(uploadClass);
     }
 
     @GetMapping("/files/{fileId}")
@@ -45,16 +46,13 @@ public class FileStorageRestController {
     }
 
     @DeleteMapping("/delete")
-    public void deleteUser(@RequestBody FileStorageDTO fileStorageDTO) {
-        fileStorageService.deleteFile(fileStorageDTO);
+    public void deleteFile(@RequestParam ObjectId id) {
+        fileStorageService.deleteFile(id);
     }
 
     @PutMapping("/edit")
-    public void editFile(@RequestParam("file") MultipartFile file,
-                         @RequestParam("description") String description,
-                         @RequestParam("id") ObjectId id)
+    public void editFile(@ModelAttribute UploadClass uploadClass)
             throws IOException {
-        fileStorageService.editFile(file, description, id);
+        fileStorageService.editFile(uploadClass.getFile(), uploadClass.getDescription(), uploadClass.getId(), uploadClass.getOrderId());
     }
-
 }

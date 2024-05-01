@@ -1,3 +1,4 @@
+
 package com.crm.service;
 
 import com.crm.dto.ITServiceDTO;
@@ -7,6 +8,7 @@ import com.crm.reposotiry.ITServiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,20 +16,44 @@ import java.util.List;
 public class ITServiceService {
     public final ITServiceRepository itServiceRepository;
 
-    public List<ITService> findAllServices() {
-        return itServiceRepository.findAll();
+    public List<ITServiceDTO> findAllServices() {
+        List<ITService> itServices = itServiceRepository.findAll();
+        ArrayList<ITServiceDTO> itServiceDTOS = new ArrayList<>();
+        for(int i=0; i<itServices.size(); i++){
+            itServiceDTOS.add(makeAnITServiceDTO(new ITServiceDTO(), itServices.get(i)));
+        }
+        return itServiceDTOS;
     }
 
-    public List<ITService> findByTitle(String title) {
-        return itServiceRepository.findByTitle(title);
+    public ITServiceDTO findByTitle(String title) {
+        return makeAnITServiceDTO(new ITServiceDTO(),itServiceRepository.findByTitle(title));
     }
 
-    public List<ITService> findByPrice(Long price) {
-        return itServiceRepository.findByPrice(price);
+    public List<ITServiceDTO> findByPrice(Long price) {
+        List<ITService> itServices = itServiceRepository.findByPrice(price);
+        ArrayList<ITServiceDTO> itServiceDTOS = new ArrayList<>();
+        for(int i=0; i<itServices.size(); i++){
+            itServiceDTOS.add(makeAnITServiceDTO(new ITServiceDTO(), itServices.get(i)));
+        }
+        return itServiceDTOS;
     }
 
-    public List<ITService> priceMaxToMin(Long price) {
-        return itServiceRepository.findByPriceGreaterThan(price);
+    public List<ITServiceDTO> priceMaxToMin(Long price) {
+        List<ITService> itServices =  itServiceRepository.findByPriceGreaterThan(price);
+        ArrayList<ITServiceDTO> itServiceDTOS = new ArrayList<>();
+        for(int i=0; i<itServices.size(); i++){
+            itServiceDTOS.add(makeAnITServiceDTO(new ITServiceDTO(), itServices.get(i)));
+        }
+        return itServiceDTOS;
+    }
+
+    private ITServiceDTO makeAnITServiceDTO(ITServiceDTO itServiceDTO, ITService itService){
+        itServiceDTO.setId(itService.getId());
+        itServiceDTO.setPrice(itService.getPrice());
+        itServiceDTO.setTitle(itService.getTitle());
+        itServiceDTO.setDescription(itService.getDescription());
+
+        return itServiceDTO;
     }
 
     private ITService makeAnITService(ITServiceDTO itServiceDTO, ITService itService) {
@@ -38,19 +64,21 @@ public class ITServiceService {
         return itService;
     }
 
-    public ITService saveITService(ITServiceDTO itServiceDTO) {
+    public ITServiceDTO saveITService(ITServiceDTO itServiceDTO) {
         ITService itService = new ITService();
-        return itServiceRepository.save(makeAnITService(itServiceDTO, itService));
+        itServiceRepository.save(makeAnITService(itServiceDTO, itService));
+        return itServiceDTO;
     }
 
-    public void deleteITService(ITServiceDTO itServiceDTO) {
-        itServiceRepository.deleteById(itServiceDTO.getId());
+    public void deleteITService(Long id) {
+        itServiceRepository.deleteById(id);
     }
 
-    public ITService editUser(ITServiceDTO itServiceDTO) {
+    public ITServiceDTO editITService(ITServiceDTO itServiceDTO) {
         ITService itService = new ITService();
         itService.setId(itServiceDTO.getId());
-        return itServiceRepository.save(makeAnITService(itServiceDTO, itService));
+        itServiceRepository.save(makeAnITService(itServiceDTO, itService));
+        return itServiceDTO;
     }
 
 }

@@ -17,7 +17,7 @@ public interface ITServiceRepository extends JpaRepository<ITService, Long> {
 
     List<ITService> findByPrice(Long price);
 
-    List<ITService> findByTitle(String title);
+    ITService findByTitle(String title);
 
 //    @Query("select i from ITService i where i.price > :price")
     List<ITService> findByPriceGreaterThan(@Param("price") Long price);

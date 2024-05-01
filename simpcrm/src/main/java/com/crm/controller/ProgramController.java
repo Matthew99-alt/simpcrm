@@ -17,31 +17,31 @@ public class ProgramController {
     }
 
     @GetMapping("/all")
-    public List<Program> getAllProgram() {
+    public List<ProgramDTO> getAllProgram() {
         return programService.findAllPrograms();
     }
 
     @GetMapping("/title")
-    public List<Program> getByTitle(@RequestBody ProgramDTO programDTO) {
+    public ProgramDTO getByTitle(@RequestBody ProgramDTO programDTO) {
         return programService.findByTitle(programDTO.getTitle());
     }
 
     @GetMapping("/price")
-    public List<Program> getByPrice(@RequestBody ProgramDTO programDTO) {
+    public List<ProgramDTO> getByPrice(@RequestBody ProgramDTO programDTO) {
         return programService.findByPrice(programDTO.getPrice());
     }
 
     @PostMapping("/save")
-    public Program saveProgram(@RequestBody ProgramDTO programDTO) {
+    public ProgramDTO saveProgram(@RequestBody ProgramDTO programDTO) {
         return programService.saveProgram(programDTO);
     }
 
     @DeleteMapping("/delete")
-    public void deleteUser(@RequestBody ProgramDTO programDTO) {
-        programService.deleteProgram(programDTO);
+    public void deleteProgram(@RequestParam Long id) {
+        programService.deleteProgram(id);
     }
 
     @PutMapping("/edit")
-    public Program editUser(@RequestBody ProgramDTO programDTO){ return programService.editProgram(programDTO);}
+    public ProgramDTO editProgram(@RequestBody ProgramDTO programDTO){ return programService.editProgram(programDTO);}
 
 }

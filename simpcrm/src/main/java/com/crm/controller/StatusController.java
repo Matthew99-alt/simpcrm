@@ -17,25 +17,25 @@ public class StatusController {
     }
 
     @GetMapping("/all")
-    public List<Status> getAllStatus() {
-        return statusService.findAllUsers();
+    public List<StatusDTO> getAllStatuses() {
+        return statusService.findAllStatuses();
     }
 
     @GetMapping("/title")
-    public List<Status> getByStatus(@RequestBody StatusDTO statusDTO) {
+    public StatusDTO getByStatus(@RequestBody StatusDTO statusDTO) {
         return statusService.findByStatus(statusDTO.getStatus());
     }
 
     @PostMapping("/save")
-    public Status saveStatus(@RequestBody StatusDTO statusDTO) {
+    public StatusDTO saveStatus(@RequestBody StatusDTO statusDTO) {
         return statusService.saveStatus(statusDTO);
     }
 
     @DeleteMapping("/delete")
-    public void deleteStatus(@RequestBody StatusDTO statusDTO) {
-        statusService.deleteStatus(statusDTO);
+    public void deleteStatus(@RequestParam Long id) {
+        statusService.deleteStatus(id);
     }
 
     @PutMapping("/edit")
-    public Status editStatus(@RequestBody StatusDTO statusDTO){ return statusService.editStatus(statusDTO);}
+    public StatusDTO editStatus(@RequestBody StatusDTO statusDTO){ return statusService.editStatus(statusDTO);}
 }

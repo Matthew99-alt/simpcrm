@@ -18,25 +18,25 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return userService.findAllUsers();
     }
 
     @GetMapping("/name")
-    public List<User> getAllUserByFirstName(@RequestBody UserDTO userDTO) {
-        return userService.findByFirstName(userDTO.getFirstName());
+    public UserDTO getAllUserByFirstName(@RequestBody UserDTO userDTO) {
+        return userService.findByFirstNameAndSecondNameAndMiddleName(userDTO.getFirstName(), userDTO.getSecondName(), userDTO.getMiddleName());
     }
 
     @PostMapping("/save")
-    public User saveUser(@RequestBody UserDTO userDTO) {
+    public UserDTO saveUser(@RequestBody UserDTO userDTO) {
         return userService.saveUser(userDTO);
     }
 
     @DeleteMapping("/delete")
-    public void deleteUser(@RequestBody UserDTO userDTO) {
-        userService.deleteUser(userDTO);
+    public void deleteUser(@RequestParam Long id) {
+        userService.deleteUser(id);
     }
 
     @PutMapping("/edit")
-    public User editUser(@RequestBody UserDTO userDTO){ return userService.editUser(userDTO);}
+    public UserDTO editUser(@RequestBody UserDTO userDTO){ return userService.editUser(userDTO);}
 }

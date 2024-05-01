@@ -1,3 +1,4 @@
+
 package com.crm.service;
 
 import com.crm.dto.ProgramDTO;
@@ -6,6 +7,7 @@ import com.crm.reposotiry.ProgramRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,16 +16,36 @@ public class ProgramService {
 
     public final ProgramRepository programRepository;
 
-    public List<Program> findAllPrograms() {
-        return programRepository.findAll();
+    public List<ProgramDTO> findAllPrograms() {
+        List<Program> programs = programRepository.findAll();
+        ArrayList<ProgramDTO> programDTOS = new ArrayList<>();
+        for (Program program : programs) {
+            programDTOS.add(makeAProgramDTO(new ProgramDTO(), program));
+        }
+        return programDTOS;
     }
 
-    public List<Program> findByTitle(String title) {
-        return programRepository.findByTitle(title);
+    public ProgramDTO findByTitle(String title) {
+        Program program = programRepository.findByTitle(title);
+        return makeAProgramDTO(new ProgramDTO(), program);
     }
 
-    public List<Program> findByPrice(Long price) {
-        return programRepository.findByPrice(price);
+    public List<ProgramDTO> findByPrice(Long price) {
+        List<Program> programs = programRepository.findByPrice(price);
+        ArrayList<ProgramDTO> programDTOS = new ArrayList<>();
+        for (Program program : programs) {
+            programDTOS.add(makeAProgramDTO(new ProgramDTO(), program));
+        }
+        return programDTOS;
+    }
+
+    private ProgramDTO makeAProgramDTO(ProgramDTO programDTO, Program program) {
+        programDTO.setId(program.getId());
+        programDTO.setTitle(program.getTitle());
+        programDTO.setDescription(program.getDescription());
+        programDTO.setPrice(program.getPrice());
+
+        return programDTO;
     }
 
     private Program makeAProgram(ProgramDTO programDTO, Program program) {
@@ -34,18 +56,20 @@ public class ProgramService {
         return program;
     }
 
-    public Program saveProgram(ProgramDTO programDTO) {
+    public ProgramDTO saveProgram(ProgramDTO programDTO) {
         Program program = new Program();
-        return programRepository.save(makeAProgram(programDTO, program));
+        programRepository.save(makeAProgram(programDTO, program));
+        return programDTO;
     }
 
-    public void deleteProgram(ProgramDTO programDTO) {
-        programRepository.deleteById(programDTO.getId());
+    public void deleteProgram(Long id) {
+        programRepository.deleteById(id);
     }
 
-    public Program editProgram(ProgramDTO programDTO) {
+    public ProgramDTO editProgram(ProgramDTO programDTO) {
         Program program = new Program();
         program.setId(programDTO.getId());
-        return programRepository.save(makeAProgram(programDTO, program));
+        programRepository.save(makeAProgram(programDTO, program));
+        return programDTO;
     }
 }

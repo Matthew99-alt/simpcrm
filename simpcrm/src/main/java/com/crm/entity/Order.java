@@ -1,12 +1,10 @@
 package com.crm.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 
 @Getter
@@ -24,8 +22,9 @@ public class Order {
     @Column(name = "priority")
     private Long priority;
 
-    @Column(name = "status_id")
-    private Long statusId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="status_id", referencedColumnName = "id")
+    private Status status;
 
     @Column(name = "description")
     private String description;
@@ -33,22 +32,28 @@ public class Order {
     @Column(name = "comments")
     private String comments;
 
-    @Column(name = "client_id")
-    private Long clientId;
+    @ManyToOne
+    @JoinColumn(name="client_id", referencedColumnName = "id")
+    private User client;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name="user_id", referencedColumnName = "id")
+    private User user;
+
+    @ManyToMany
+    @JoinTable(
+            name="order_it_service",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "it_service_id")
+    )
+    private List<ITService> itServices;
+
+    @ManyToMany
+    @JoinTable(
+            name="order_program",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "program_id")
+    )
+    private List<Program> programs;
 
 }
-
-
-
-/*
-//TODO: ПОСЛЕ того как заработает Order как есть, переделать
-// Status так же рабочим
-// ТОЛЬКО ПОСЛЕ ЭТОГО сделать привязку как ниже
-
-@Column(value = "status_id")
-    @JoinColumn(name = "id")
-    private Status statusId;
- */

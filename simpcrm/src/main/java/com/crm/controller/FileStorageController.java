@@ -25,16 +25,6 @@ public class FileStorageController {
 
     private final FileStorageService fileStorageService;
 
-    @GetMapping("/health")
-    public HealthCheckResponse healthCheck() {
-        return new HealthCheckResponse(true, "Это проверка сервиса simp crm");
-    }
-
-    @GetMapping("/healthCheckMongoApp")
-    public HealthCheckResponse healthCheckMongoApp() {
-        return fileStorageService.checkMongoApp();
-    }
-
     @GetMapping("/fileByOrderId")
     List<FileStorage> getFileTitle(@RequestParam Long orderId) {
         return fileStorageService.getFileById(orderId);
@@ -58,17 +48,15 @@ public class FileStorageController {
     @PutMapping("/edit")
     public void editFile(@RequestParam("file") MultipartFile file,
                          @RequestParam("description") String description,
-                         @RequestParam("id") String id) {
-        fileStorageService.editFile(file, description, id);
+                         @RequestParam("id") String id,
+                         @RequestParam("orderId") Long orderId) {
+        fileStorageService.editFile(file, description, id, orderId);
     }
 
     @PostMapping("/upload")
     String uploadFile(@RequestParam("file") MultipartFile file,
-                      @RequestParam("description") String description) throws IOException {
-        return fileStorageService.addFile(file, description);
-    }
-
-    //TODO: вынеси отдельно или удали, если не нужен
-    public record HealthCheckResponse(Boolean healthy, String description) {
+                      @RequestParam("description") String description,
+                      @RequestParam("orderId") Long orderId) throws IOException {
+        return fileStorageService.addFile(file, description, orderId);
     }
 }

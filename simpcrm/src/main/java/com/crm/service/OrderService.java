@@ -1,8 +1,10 @@
 package com.crm.service;
 
 import com.crm.dto.OrderDTO;
+import com.crm.entity.ITService;
 import com.crm.entity.Order;
-import com.crm.reposotiry.OrderRepository;
+import com.crm.entity.Program;
+import com.crm.reposotiry.*;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.ArrayList;
@@ -17,16 +19,21 @@ public class OrderService {
 
     public final OrderRepository orderRepository;
 
-    public List<Order> findAllOrders() {
-        return orderRepository.findAll();
-    }
+    public final ITServiceRepository itServicesRepository;
 
-    public List<Order> findByOrderName(String orderName) {
-        return orderRepository.findByOrderName(orderName);
-    }
+    public final ProgramRepository programRepository;
 
-    public List<Order> findByPriority(Long priority) {
-        return orderRepository.findByPriority(priority);
+    public final StatusRepository statusRepository;
+
+    public final UserRepository userRepository;
+
+    public List<OrderDTO> findAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        ArrayList<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order order : orders) {
+            orderDTOList.add(makeOrderDTOFromOrder(order));
+        }
+        return orderDTOList;
     }
 
     public OrderDTO saveOrder(OrderDTO orderDTO) {
@@ -34,13 +41,14 @@ public class OrderService {
         return makeOrderDTOFromOrder(savedOrder);
     }
 
-    public void deleteOrder(OrderDTO orderDTO) {
-        orderRepository.deleteById(orderDTO.getId());
+    public void deleteOrder(Long id) {
+        orderRepository.deleteById(id);
     }
 
-    public Order editOrder(OrderDTO orderDTO) {
+    public OrderDTO editOrder(OrderDTO orderDTO) {
         Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(EntityNotFoundException::new);
-        return orderRepository.save(makeOrderFromOrderDTO(orderDTO, order));
+        orderRepository.save(makeOrderFromOrderDTO(orderDTO, order));
+        return orderDTO;
     }
 
     private OrderDTO makeOrderDTOFromOrder(Order savedOrder) {
@@ -49,13 +57,17 @@ public class OrderService {
         responseOrderDto.setId(savedOrder.getId());
         responseOrderDto.setOrderName(savedOrder.getOrderName());
         responseOrderDto.setPriority(savedOrder.getPriority());
-        responseOrderDto.setStatusTitle("Mock Status Title");
+        responseOrderDto.setStatusTitle(savedOrder.getStatus().getStatus());
         responseOrderDto.setDescription(savedOrder.getDescription());
-        responseOrderDto.setComments("Mock Comments");
-        responseOrderDto.setClientTitle("Mock Client Title");
-        responseOrderDto.setUserTitle("Mock User Title");
-        responseOrderDto.setItServicesTitles(new ArrayList<>());
-        responseOrderDto.setProgramsTitles(new ArrayList<>());
+        responseOrderDto.setComments(savedOrder.getComments());
+        responseOrderDto.setClientFirstName(savedOrder.getClient().getFirstName());
+        responseOrderDto.setClientSecondName(savedOrder.getClient().getSecondName());
+        responseOrderDto.setClientMiddleName(savedOrder.getClient().getMiddleName());
+        responseOrderDto.setUserFirstName(savedOrder.getUser().getFirstName());
+        responseOrderDto.setUserSecondName(savedOrder.getUser().getSecondName());
+        responseOrderDto.setUserMiddleName(savedOrder.getUser().getMiddleName());
+        responseOrderDto.setItServices(getITServicesTitles(savedOrder.getItServices()));
+        responseOrderDto.setPrograms(getProgramTitles(savedOrder.getPrograms()));
 
         return responseOrderDto;
     }
@@ -66,9 +78,41 @@ public class OrderService {
         order.setDescription(orderDTO.getDescription());
         order.setPriority(orderDTO.getPriority());
         order.setComments(orderDTO.getComments());
-        order.setClientId(2L);
-        order.setStatusId(2L);
-        order.setUserId(2L);
+        order.setClient(userRepository.findByFirstNameAndSecondNameAndMiddleName(orderDTO.getClientFirstName(), orderDTO.getClientSecondName(), orderDTO.getClientMiddleName()));
+        order.setStatus(statusRepository.findByStatus(orderDTO.getStatusTitle()));
+        order.setUser(userRepository.findByFirstNameAndSecondNameAndMiddleName(orderDTO.getUserFirstName(),orderDTO.getUserSecondName(),orderDTO.getUserMiddleName()));
+        order.setItServices(getITServicesList(orderDTO.getItServices()));
+        order.setPrograms(getProgramList(orderDTO.getPrograms()));
         return order;
     }
+
+    private ArrayList<String> getITServicesTitles(List<ITService> itServicesList){
+        ArrayList<String> itServicesListWithTitles = new ArrayList<>();
+        for (ITService itService : itServicesList) {
+            itServicesListWithTitles.add(itService.getTitle());
+        }
+        return itServicesListWithTitles;
+    }
+    private ArrayList<ITService> getITServicesList(List<String> itServicesList){
+        ArrayList<ITService> itServices = new ArrayList<>();
+        for (String s : itServicesList) {
+            itServices.add(itServicesRepository.findByTitle(s));
+        }
+        return itServices;
+    }
+    private ArrayList<String> getProgramTitles(List<Program> programList){
+        ArrayList<String> programListWithTitles = new ArrayList<>();
+        for (Program program : programList) {
+            programListWithTitles.add(program.getTitle());
+        }
+        return programListWithTitles;
+    }
+    private ArrayList<Program> getProgramList(List<String> programList){
+        ArrayList<Program> programs = new ArrayList<>();
+        for (String s : programList) {
+            programs.add(programRepository.findByTitle(s));
+        }
+        return programs;
+    }
+
 }
