@@ -46,7 +46,7 @@ public class FileStorageRestController {
     }
 
     @DeleteMapping("/delete")
-    public void deleteFile(@RequestParam ObjectId id) {
+    public void deleteFile(@RequestParam("id") ObjectId id) {
         fileStorageService.deleteFile(id);
     }
 

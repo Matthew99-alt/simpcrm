@@ -1,6 +1,11 @@
 package com.crm.dto;
 
 import java.util.List;
+
+import com.crm.entity.ITService;
+import com.crm.entity.Program;
+import com.crm.entity.Status;
+import com.crm.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,26 +20,17 @@ public class OrderDTO {
 
     private Long priority;
 
-    private String statusTitle; //TODO Статус это отдельный объект и название, как раз и есть его свойство
+    private Status status;
 
     private String description;
 
-    private List<String> itServices;
+    private List<ITServiceDTO> itServices;
 
-    private List<String> programs;
+    private List<ProgramDTO> programs;
 
     private String comments;
 
-    private String clientFirstName; // TODO: отдельная сущность Client (или User с каким-то типом)
+    private User client;
 
-    private String clientSecondName; // свойство client
-
-    private String clientMiddleName; // свойство client
-
-    private String userFirstName; // TODO: отдельная сущность User
-
-    private String userSecondName; // свойство User
-
-    private String userMiddleName; // свойство User
-
+    private User users;
 }

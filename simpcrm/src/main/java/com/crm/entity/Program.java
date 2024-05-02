@@ -20,7 +20,4 @@ public class Program {
     private String description;
     @Column(name = "price")
     private Long price;
-    @JsonIgnore
-    @ManyToMany(mappedBy = "programs")
-    List<Order> orders;
 }

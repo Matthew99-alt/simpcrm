@@ -17,7 +17,4 @@ public class Status {
     @Column(name = "status") // title
     public String status;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "status")
-    public List<Order> orders;
 }

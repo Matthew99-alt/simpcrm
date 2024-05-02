@@ -4,18 +4,12 @@ import com.crm.dto.FileStorage;
 import com.crm.service.FileStorageService;
 import java.io.IOException;
 import java.util.List;
+
+import com.crm.uploadClass.UploadClass;
 import lombok.RequiredArgsConstructor;
 //import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -41,22 +35,17 @@ public class FileStorageController {
     }
 
     @DeleteMapping("/delete")
-    public void deleteFile(@RequestBody FileStorage fileStorage) {
-        fileStorageService.deleteFile(fileStorage);
+    public void deleteFile(@RequestParam("id") String id) {
+        fileStorageService.deleteFile(id);
     }
 
     @PutMapping("/edit")
-    public void editFile(@RequestParam("file") MultipartFile file,
-                         @RequestParam("description") String description,
-                         @RequestParam("id") String id,
-                         @RequestParam("orderId") Long orderId) {
-        fileStorageService.editFile(file, description, id, orderId);
+    public void editFile(@ModelAttribute UploadClass uploadClass) throws IOException {
+        fileStorageService.editFile(uploadClass);
     }
 
     @PostMapping("/upload")
-    String uploadFile(@RequestParam("file") MultipartFile file,
-                      @RequestParam("description") String description,
-                      @RequestParam("orderId") Long orderId) throws IOException {
-        return fileStorageService.addFile(file, description, orderId);
+    String uploadFile(@ModelAttribute UploadClass uploadClass) throws IOException {
+        return fileStorageService.addFile(uploadClass);
     }
 }

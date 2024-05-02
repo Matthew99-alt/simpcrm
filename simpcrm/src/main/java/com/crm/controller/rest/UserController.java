@@ -22,9 +22,9 @@ public class UserController {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/name") // todo: rename plz
-    public UserDTO getAllUserByFirstName(@RequestBody UserDTO userDTO) {
-        return userService.findByFirstNameAndSecondNameAndMiddleName(userDTO.getFirstName(), userDTO.getSecondName(), userDTO.getMiddleName());
+    @GetMapping("/userType")
+    public List<UserDTO> getByUserType(@RequestParam String userType) {
+        return userService.findByUserType(userType);
     }
 
     @PostMapping("/save")
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public void deleteUser(@RequestParam Long id) {
+    public void deleteUser(@RequestParam("id") Long id) {
         userService.deleteUser(id);
     }
 

@@ -39,7 +39,7 @@ public class ProgramService {
         return programDTOS;
     }
 
-    private ProgramDTO makeAProgramDTO(ProgramDTO programDTO, Program program) {
+    public ProgramDTO makeAProgramDTO(ProgramDTO programDTO, Program program) {
         programDTO.setId(program.getId());
         programDTO.setTitle(program.getTitle());
         programDTO.setDescription(program.getDescription());
@@ -48,7 +48,7 @@ public class ProgramService {
         return programDTO;
     }
 
-    private Program makeAProgram(ProgramDTO programDTO, Program program) {
+    public Program makeAProgram(ProgramDTO programDTO, Program program) {
         program.setTitle(programDTO.getTitle());
         program.setDescription(programDTO.getDescription());
         program.setPrice(programDTO.getPrice());

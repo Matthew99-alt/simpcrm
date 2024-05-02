@@ -24,8 +24,4 @@ public class ITService {
 
     @Column(name = "description")
     private String description;
-
-    @JsonIgnore
-    @ManyToMany(mappedBy = "itServices")
-    List<Order> orders;
 }

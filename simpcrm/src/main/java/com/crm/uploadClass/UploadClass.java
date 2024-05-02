@@ -1,8 +1,7 @@
-package com.crm.filestorage.uploadClasses;
+package com.crm.uploadClass;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -13,8 +12,8 @@ public class UploadClass {
 
     String description;
 
-    Long orderId;
+    String id;
 
-    ObjectId id;
+    Long orderId;
 
 }

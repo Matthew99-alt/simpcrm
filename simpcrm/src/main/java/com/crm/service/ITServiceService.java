@@ -19,8 +19,8 @@ public class ITServiceService {
     public List<ITServiceDTO> findAllServices() {
         List<ITService> itServices = itServiceRepository.findAll();
         ArrayList<ITServiceDTO> itServiceDTOS = new ArrayList<>();
-        for(int i=0; i<itServices.size(); i++){
-            itServiceDTOS.add(makeAnITServiceDTO(new ITServiceDTO(), itServices.get(i)));
+        for (ITService itService : itServices) {
+            itServiceDTOS.add(makeAnITServiceDTO(new ITServiceDTO(), itService));
         }
         return itServiceDTOS;
     }
@@ -47,7 +47,7 @@ public class ITServiceService {
         return itServiceDTOS;
     }
 
-    private ITServiceDTO makeAnITServiceDTO(ITServiceDTO itServiceDTO, ITService itService){
+    public ITServiceDTO makeAnITServiceDTO(ITServiceDTO itServiceDTO, ITService itService){
         itServiceDTO.setId(itService.getId());
         itServiceDTO.setPrice(itService.getPrice());
         itServiceDTO.setTitle(itService.getTitle());
@@ -56,7 +56,7 @@ public class ITServiceService {
         return itServiceDTO;
     }
 
-    private ITService makeAnITService(ITServiceDTO itServiceDTO, ITService itService) {
+    public ITService makeAnITService(ITServiceDTO itServiceDTO, ITService itService) {
         itService.setPrice(itServiceDTO.getPrice());
         itService.setTitle(itServiceDTO.getTitle());
         itService.setDescription(itServiceDTO.getDescription());

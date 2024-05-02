@@ -17,5 +17,5 @@ public class FileStorage {
 
     private byte[] file;
 
-    private Long objectId;
+    private Long orderId;
 }

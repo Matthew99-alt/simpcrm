@@ -26,13 +26,7 @@ public class User {
     private Long phone;
     @Column(name = "address")
     private String address;
+    @Column(name = "user_type")
+    private String userType;
 
-    // TODO: добавить колонку Тип Пользователя.
-//
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "client")
-//    public List<Order> client; // TODO: delete
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user")
-//    public List<Order> users; // TODO: delete
 }

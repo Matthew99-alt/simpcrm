@@ -24,9 +24,13 @@ public class UserService {
         return userDTOS;
     }
 
-    public UserDTO findByFirstNameAndSecondNameAndMiddleName(String firstName, String secondName, String middleName) {
-        User user = userRepository.findByFirstNameAndSecondNameAndMiddleName(firstName, secondName, middleName);
-        return makeAnUserDTO(new UserDTO(), user);
+    public List<UserDTO> findByUserType(String userType) {
+        List<User> userList = userRepository.findByUserType(userType);
+        ArrayList<UserDTO> userDTOList = new ArrayList<>();
+        for (User user : userList) {
+            userDTOList.add(makeAnUserDTO(new UserDTO(), user));
+        }
+        return userDTOList;
     }
 
     private UserDTO makeAnUserDTO(UserDTO userDTO, User user) {
@@ -37,17 +41,20 @@ public class UserService {
         userDTO.setAddress(user.getAddress());
         userDTO.setPhone(user.getPhone());
         userDTO.setEmail(user.getEmail());
+        userDTO.setUserType(user.getUserType());
 
         return userDTO;
     }
 
     private User makeAnUser(UserDTO userDTO, User user) {
+        userDTO.setId(user.getId());
         user.setFirstName(userDTO.getFirstName());
         user.setSecondName(userDTO.getSecondName());
         user.setMiddleName(userDTO.getMiddleName());
         user.setAddress(userDTO.getAddress());
         user.setPhone(userDTO.getPhone());
         user.setEmail(userDTO.getEmail());
+        user.setUserType(userDTO.getUserType());
 
         return user;
     }
@@ -55,6 +62,7 @@ public class UserService {
     public UserDTO saveUser(UserDTO userDTO) {
         User user = new User();
         userRepository.save(makeAnUser(userDTO, user));
+        userDTO.setId(user.getId());
         return userDTO;
     }
 

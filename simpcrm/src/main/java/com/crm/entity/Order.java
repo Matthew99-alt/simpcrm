@@ -22,7 +22,7 @@ public class Order {
     @Column(name = "priority")
     private Long priority;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name="status_id", referencedColumnName = "id")
     private Status status;
 
@@ -32,15 +32,15 @@ public class Order {
     @Column(name = "comments")
     private String comments;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name="client_id", referencedColumnName = "id")
     private User client;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name="user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(
             name="order_it_service",
             joinColumns = @JoinColumn(name = "order_id"),
@@ -48,7 +48,7 @@ public class Order {
     )
     private List<ITService> itServices;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(
             name="order_program",
             joinColumns = @JoinColumn(name = "order_id"),
