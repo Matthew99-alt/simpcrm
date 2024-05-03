@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class UploadClass {
 
-    MultipartFile file;
+    byte[] file;
 
     String description;
 

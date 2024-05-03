@@ -20,7 +20,7 @@ public class FileStorageController {
     private final FileStorageService fileStorageService;
 
     @GetMapping("/fileByOrderId")
-    List<FileStorage> getFileTitle(@RequestParam Long orderId) {
+    List<FileStorage> getFileByOrderId(@RequestParam Long orderId) {
         return fileStorageService.getFileById(orderId);
     }
 
