@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import com.crm.filestorage.uploadClasses.UploadClass;
+import com.crm.filestorage.uploadClasses.UploadFileRequest;
 import org.bson.types.ObjectId;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -70,7 +70,7 @@ public class FileStorageService {
         fileStorageRepository.save(files);
     }
 
-    public String addFile(UploadClass uploadClass) throws IOException {
+    public String addFile(UploadFileRequest uploadClass) throws IOException {
         FileStorage files = FileStorage
                 .builder()
                 .title(uploadClass.getFile().getOriginalFilename())

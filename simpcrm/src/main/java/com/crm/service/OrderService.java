@@ -1,17 +1,22 @@
 package com.crm.service;
 
+import com.crm.client.FileStorageClient;
+import com.crm.dto.FileStorage;
 import com.crm.dto.ITServiceDTO;
 import com.crm.dto.OrderDTO;
 import com.crm.dto.ProgramDTO;
 import com.crm.entity.ITService;
 import com.crm.entity.Order;
 import com.crm.entity.Program;
-import com.crm.reposotiry.*;
+import com.crm.reposotiry.ITServiceRepository;
+import com.crm.reposotiry.OrderRepository;
+import com.crm.reposotiry.ProgramRepository;
+import com.crm.reposotiry.StatusRepository;
+import com.crm.reposotiry.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,32 +24,28 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrderService {
 
-    public final OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final ITServiceRepository itServicesRepository;
+    private final ProgramRepository programRepository;
+    private final StatusRepository statusRepository;
+    private final UserRepository userRepository;
+    private final ITServiceService itServiceService;
+    private final ProgramService programService;
+    private final FileStorageClient fileStorageClient;
 
-    public final ITServiceRepository itServicesRepository;
-
-    public final ProgramRepository programRepository;
-
-    public final StatusRepository statusRepository;
-
-    public final UserRepository userRepository;
-
-    public final ITServiceService itServiceService;
-
-    public final ProgramService programService;
 
     public List<OrderDTO> findAllOrders() {
         List<Order> orders = orderRepository.findAll();
         ArrayList<OrderDTO> orderDTOList = new ArrayList<>();
         for (Order order : orders) {
-            orderDTOList.add(makeOrderDTOFromOrder(order));
+            orderDTOList.add(makeOrderDTOFromOrder(order, Collections.emptyList()));
         }
         return orderDTOList;
     }
 
     public OrderDTO saveOrder(OrderDTO orderDTO) {
         Order savedOrder = orderRepository.save(makeOrderFromOrderDTO(orderDTO, new Order()));
-        return makeOrderDTOFromOrder(savedOrder);
+        return makeOrderDTOFromOrder(savedOrder, Collections.emptyList());
     }
 
     public void deleteOrder(Long id) {
@@ -57,11 +58,17 @@ public class OrderService {
         return orderDTO;
     }
 
-    public OrderDTO findById(Long id){
-        return makeOrderDTOFromOrder(orderRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+    public OrderDTO findOrderById(Long id) {
+        return makeOrderDTOFromOrder(orderRepository.findById(id).orElseThrow(EntityNotFoundException::new), Collections.emptyList());
     }
 
-    private OrderDTO makeOrderDTOFromOrder(Order savedOrder) {
+    public OrderDTO findOrderByIdWithFiles(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        List<FileStorage> filesByOrderId = fileStorageClient.getFileByOrderId(order.getId());
+        return makeOrderDTOFromOrder(order, filesByOrderId);
+    }
+
+    private OrderDTO makeOrderDTOFromOrder(Order savedOrder, List<FileStorage> filesByOrderId) {
         OrderDTO responseOrderDto = new OrderDTO();
 
         responseOrderDto.setId(savedOrder.getId());
@@ -74,6 +81,7 @@ public class OrderService {
         responseOrderDto.setUsers(savedOrder.getUser());
         responseOrderDto.setItServices(getITServicesDTO(savedOrder.getItServices()));
         responseOrderDto.setPrograms(getProgramDTO(savedOrder.getPrograms()));
+        responseOrderDto.setFiles(filesByOrderId);
 
         return responseOrderDto;
     }
@@ -86,7 +94,7 @@ public class OrderService {
         order.setComments(orderDTO.getComments());
         order.setClient(userRepository.findById(orderDTO.getClient().getId()).orElseThrow(EntityNotFoundException::new));
         order.setStatus(statusRepository.findById(orderDTO.getStatus().getId()).orElseThrow(EntityNotFoundException::new));
-        if(orderDTO.getUsers()!=null){
+        if (orderDTO.getUsers() != null) {
             order.setUser(userRepository.findById(orderDTO.getUsers().getId()).orElseThrow(EntityNotFoundException::new));
         }
         order.setItServices(getITServices(orderDTO.getItServices()));
@@ -94,22 +102,23 @@ public class OrderService {
         return order;
     }
 
-    private ArrayList<ITServiceDTO> getITServicesDTO(List<ITService> itServicesList){
+    private ArrayList<ITServiceDTO> getITServicesDTO(List<ITService> itServicesList) {
         ArrayList<ITServiceDTO> itServicesDTOList = new ArrayList<>();
         for (ITService itService : itServicesList) {
             itServicesDTOList.add(itServiceService.makeAnITServiceDTO(new ITServiceDTO(), itService));
         }
         return itServicesDTOList;
     }
-    private ArrayList<ProgramDTO> getProgramDTO(List<Program> programList){
+
+    private ArrayList<ProgramDTO> getProgramDTO(List<Program> programList) {
         ArrayList<ProgramDTO> programDTOList = new ArrayList<>();
         for (Program program : programList) {
-            programDTOList.add(programService.makeAProgramDTO(new ProgramDTO(),program));
+            programDTOList.add(programService.makeAProgramDTO(new ProgramDTO(), program));
         }
         return programDTOList;
     }
 
-    private ArrayList<ITService> getITServices(List<ITServiceDTO> itServicesDTOList){
+    private ArrayList<ITService> getITServices(List<ITServiceDTO> itServicesDTOList) {
         ArrayList<ITService> itServicesList = new ArrayList<>();
         for (ITServiceDTO itServiceDTO : itServicesDTOList) {
             itServicesList.add(itServicesRepository.findById(itServiceDTO.getId())
@@ -117,7 +126,8 @@ public class OrderService {
         }
         return itServicesList;
     }
-    private ArrayList<Program> getProgram(List<ProgramDTO> programDTOList){
+
+    private ArrayList<Program> getProgram(List<ProgramDTO> programDTOList) {
         ArrayList<Program> programList = new ArrayList<>();
         for (ProgramDTO programDTO : programDTOList) {
             programList.add(programRepository.findById(programDTO.getId())

@@ -1,9 +1,7 @@
 package com.crm.controller.html;
 
 import com.crm.dto.OrderDTO;
-import com.crm.dto.UserDTO;
 import com.crm.service.OrderService;
-import com.crm.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +28,7 @@ public class OrderControllerView {
 
     @GetMapping("/personalPage/{orderId}")
     public String getOrders(@PathVariable("orderId") Long orderId, Model model) {
-        OrderDTO orderDTO = orderService.findById(orderId);
+        OrderDTO orderDTO = orderService.findOrderById(orderId);
         model.addAttribute("order", orderDTO);
         return "user/personal_order.html";
     }

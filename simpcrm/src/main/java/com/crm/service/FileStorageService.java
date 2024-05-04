@@ -2,15 +2,12 @@ package com.crm.service;
 
 import com.crm.client.FileStorageClient;
 import com.crm.dto.FileStorage;
+import com.crm.uploadClass.UploadClass;
 import java.io.IOException;
 import java.util.List;
-
-import com.crm.uploadClass.UploadClass;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor

@@ -7,14 +7,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class UploadClass {
+public class UploadFileRequest {
 
-    MultipartFile file;
+    private MultipartFile file;
 
-    String description;
+    private String description;
 
-    Long orderId;
+    private Long orderId;
 
-    ObjectId id;
+    private ObjectId id;
 
 }

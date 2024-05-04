@@ -1,14 +1,10 @@
 package com.crm.dto;
 
-import java.util.List;
-
-import com.crm.entity.ITService;
-import com.crm.entity.Program;
 import com.crm.entity.Status;
 import com.crm.entity.User;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Setter
 @Getter
@@ -33,4 +29,6 @@ public class OrderDTO {
     private User client;
 
     private User users;
+
+    private List<FileStorage> files;
 }

@@ -16,22 +16,22 @@ import org.springframework.web.multipart.MultipartFile;
 @FeignClient(name = "file-storage-client", url = "${service.clients.file-storage-client.url}")
 public interface FileStorageClient {
 
-    @GetMapping("/rest/fileStorage/all")
+    @GetMapping("/all")
     List<FileStorage> getAllFiles();
 
-    @GetMapping("/rest/fileStorage/fileByOrderId")
+    @GetMapping("/fileByOrderId")
     List<FileStorage> getFileByOrderId(Long orderId);
 
-    @GetMapping("/rest/fileStorage/files/{fileId}")
+    @GetMapping("/{fileId}")
     ResponseEntity<byte[]> downloadFile(@PathVariable String fileId) throws IOException;
 
 
-    @DeleteMapping("/rest/fileStorage/delete")
+    @DeleteMapping("/delete")
     void deleteFile(@RequestParam("id") String id);
 
-    @PutMapping(value = "/rest/fileStorage/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void editFile(@ModelAttribute UploadClass uploadClass) throws IOException;
 
-    @PostMapping(value = "/rest/fileStorage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     String uploadFile(@ModelAttribute UploadClass uploadClass) throws IOException;
 }
