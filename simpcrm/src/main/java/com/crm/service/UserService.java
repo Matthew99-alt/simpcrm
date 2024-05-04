@@ -70,6 +70,14 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public UserDTO editUser(Long userId, String firstName, String email, Long phone) {
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        user.setFirstName(firstName);
+        user.setEmail(email);
+        user.setPhone(phone);
+        return makeAnUserDTO(new UserDTO(), userRepository.save(user));
+    }
+
     public UserDTO editUser(UserDTO userDTO) {
         User user = new User();
         user.setId(userDTO.getId());

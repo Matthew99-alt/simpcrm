@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование пользователя</title>
+    <style>
+        /* Стили для красивого отображения */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Редактирование пользователя</h1>
+<!--    <form action="/users/update/{userId}" method="post">-->
+<!--        <input type="hidden" th:field="*{user.id}">-->
+
+<!--        <label for="name">Имя:</label>-->
+<!--        <input type="text" th:field="*{user.firstName}" id="name" th:value="${user.firstName}" required>-->
+
+<!--        <label for="email">Email:</label>-->
+<!--        <input type="email" th:field="*{user.email}" id="email" th:value="${user.email}" required>-->
+
+<!--        <label for="phone">Телефон:</label>-->
+<!--        <input type="tel" th:field="*{user.phone}" id="phone" th:value="${user.phone}" required>-->
+
+<!--        <input type="submit" value="Сохранить">-->
+<!--    </form>-->
+
+    <form id="updateForm" th:action="@{/users/update}" method="post">
+        <input type="hidden" id="userId" th:name="userId" th:value="${user.id}" />
+        <label for="name">Имя:</label>
+        <input type="text" id="name" name="firstName" th:value="${user.firstName}" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" th:value="${user.email}" required>
+        <label for="phone">Телефон:</label>
+        <input type="tel" id="phone" name="phone" th:value="${user.phone}" required>
+        <button type="submit">Сохранить</button>
+    </form>
+</div>
+
+</body>
+</html>

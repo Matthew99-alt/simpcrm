@@ -13,7 +13,7 @@ spring:
     show-sql: true
     #    defer-datasource-initialization: true - убрали настройку потому что отключили Hibernate и создаем и наполняем таблицы сами
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 
 
 service:

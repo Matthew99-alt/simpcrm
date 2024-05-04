@@ -80,6 +80,11 @@
                     <button class="button">Карточка пользователя</button>
                 </a>
             </td>
+            <td>
+                <a th:href="@{/users/personalEditPage/{userId}(userId=${user.id})}" class="button-link">
+                    <button class="button">Карточка редактирования пользователя</button>
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>
