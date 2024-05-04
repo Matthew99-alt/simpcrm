@@ -4,6 +4,7 @@ package com.crm.service;
 import com.crm.dto.ProgramDTO;
 import com.crm.entity.Program;
 import com.crm.reposotiry.ProgramRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,11 @@ public class ProgramService {
 
     public ProgramDTO findByTitle(String title) {
         Program program = programRepository.findByTitle(title);
+        return makeAProgramDTO(new ProgramDTO(), program);
+    }
+
+    public ProgramDTO findById(Long id){
+        Program program = programRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return makeAProgramDTO(new ProgramDTO(), program);
     }
 

@@ -34,6 +34,8 @@ public class FileStorageRestController {
     }
 
     @PostMapping("/upload")
+    //TODO: сделать класс-тело запроса, поместить в него ровно те же поля
+    // @RequestBody - class uploadFileRequest
     public String uploadFile(@ModelAttribute UploadClass uploadClass) throws IOException {
         return fileStorageService.addFile(uploadClass);
     }

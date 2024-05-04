@@ -5,6 +5,7 @@ import com.crm.dto.ITServiceDTO;
 import com.crm.entity.ITService;
 import com.crm.entity.User;
 import com.crm.reposotiry.ITServiceRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,11 @@ public class ITServiceService {
 
     public ITServiceDTO findByTitle(String title) {
         return makeAnITServiceDTO(new ITServiceDTO(),itServiceRepository.findByTitle(title));
+    }
+
+    public ITServiceDTO findById(Long id){
+        return makeAnITServiceDTO(new ITServiceDTO(),itServiceRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new));
     }
 
     public List<ITServiceDTO> findByPrice(Long price) {

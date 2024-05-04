@@ -3,6 +3,7 @@ package com.crm.service;
 import com.crm.dto.StatusDTO;
 import com.crm.entity.Status;
 import com.crm.reposotiry.StatusRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +50,8 @@ public class StatusService {
         status.setId(statusDTO.getId());
         statusRepository.save(makeAStatus(statusDTO, status));
         return statusDTO;
+    }
+    public StatusDTO findById(Long id){
+        return makeAStatusDTO(new StatusDTO(),statusRepository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 }

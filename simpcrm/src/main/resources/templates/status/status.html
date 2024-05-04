@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Личный кабинет</title>
+    <title>Список статусов</title>
     <style>
         /* Стили для красивого отображения */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-color: #f4f4f4;
             color: #333;
             margin: 0;
             padding: 0;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
@@ -24,40 +24,58 @@
         h1 {
             text-align: center;
             margin-bottom: 20px;
-            color: #007bff;
         }
-        .user-info {
-            margin-bottom: 20px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .user-info p {
-            margin: 10px 0;
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .button-link {
+            text-decoration: none;
+        }
+
         .button {
             display: inline-block;
             padding: 10px 20px;
             background-color: #007bff;
             color: #fff;
-            text-decoration: none;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
         }
+
         .button:hover {
             background-color: #0056b3;
         }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Личный кабинет</h1>
-    <div class="user-info">
-        <p><strong>Имя:</strong> <span th:text="${user.firstName}"></span></p>
-        <p><strong>Фамилия:</strong> <span th:text="${user.secondName}"></span></p>
-        <p><strong>Отчество:</strong> <span th:text="${user.middleName}"></span></p>
-        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
-        <p><strong>Телефон:</strong> <span th:text="${user.phone}"></span></p>
-        <p><strong>Адрес:</strong> <span th:text="${user.address}"></span></p>
-    </div>
-    <a href="/users/all" class="button">Выйти</a>
+    <h1>Список статусов</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Статус</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="status : ${statuses}">
+            <td th:text="${status.id}"></td>
+            <td th:text="${status.status}"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
 </body>

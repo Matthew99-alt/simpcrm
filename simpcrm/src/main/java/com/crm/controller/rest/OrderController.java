@@ -2,11 +2,8 @@ package com.crm.controller.rest;
 
 import com.crm.dto.OrderDTO;
 import com.crm.service.OrderService;
-
-import java.io.IOException;
 import java.util.List;
 
-import jakarta.servlet.annotation.MultipartConfig;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +21,7 @@ public class OrderController {
     }
 
     @PostMapping("/save")
-    public OrderDTO saveOrder(@ModelAttribute OrderDTO orderDTO) throws IOException {
+    public OrderDTO saveOrder(@RequestBody OrderDTO orderDTO) {
         return orderService.saveOrder(orderDTO);
     }
 
@@ -34,7 +31,7 @@ public class OrderController {
     }
 
     @PutMapping("/edit")
-    public OrderDTO editOrder(@ModelAttribute OrderDTO orderDTO) throws IOException {
+    public OrderDTO editOrder(@RequestBody OrderDTO orderDTO) {
         return orderService.editOrder(orderDTO);
     }
 }
