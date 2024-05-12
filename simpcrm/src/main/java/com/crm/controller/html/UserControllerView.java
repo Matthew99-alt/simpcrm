@@ -48,8 +48,9 @@ public class UserControllerView {
         return "redirect:/users/personalPage/" + updatedUser.getId();
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteUser(@PathVariable Long id){
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
+        return "redirect:/users/all";
     }
 }
