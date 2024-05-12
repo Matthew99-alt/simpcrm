@@ -91,12 +91,12 @@
             <td th:text="${order.description}"></td>
             <td>
                 <ul>
-                    <span th:each="itService : ${order.itServices}" th:text="${itService.title} + ', '"></span>
+                    <span th:each="amenities : ${order.amenities}" th:text="${amenities.title} + ', '"></span>
                 </ul>
             </td>
             <td>
                 <ul>
-                    <span th:each="program : ${order.programs}" th:text="${program.title} + ', '"></span>
+                    <span th:each="merchandise : ${order.merchandises}" th:text="${merchandise.title} + ', '"></span>
                 </ul>
             </td>
             <td th:text="${order.comments}"></td>

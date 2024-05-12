@@ -22,11 +22,6 @@ public class UserController {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/userType")
-    public List<UserDTO> getByUserType(@RequestParam String userType) {
-        return userService.findByUserType(userType);
-    }
-
     @PostMapping("/save")
     public UserDTO saveUser(@RequestBody UserDTO userDTO) {
         return userService.saveUser(userDTO);

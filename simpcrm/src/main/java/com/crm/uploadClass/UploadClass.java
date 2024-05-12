@@ -8,12 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class UploadClass {
 
-    MultipartFile file;
+    private MultipartFile file;
 
-    String description;
+    private String description;
 
-    String id;
+    private String id;
 
-    Long orderId;
+    private Long orderId;
 
 }

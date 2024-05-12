@@ -42,18 +42,26 @@ public class Order {
 
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(
-            name="order_it_service",
+            name="order_amenities",
             joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "it_service_id")
+            inverseJoinColumns = @JoinColumn(name = "amenities_id")
     )
-    private List<ITService> itServices;
+    private List<Amenities> amenities;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(
-            name="order_program",
+            name="order_merchandise",
             joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "program_id")
+            inverseJoinColumns = @JoinColumn(name = "merchandise_id")
     )
-    private List<Program> programs;
+    private List<Merchandise> merchandises;
 
+    @Column(name = "total_number_of_merchandises")
+    private int totalNumberOfMerchandises;
+
+    @Column(name = "total_number_of_amenities")
+    private int totalNumberOfAmenities;
+
+    @Column(name = "total_cost")
+    private double totalCost;
 }

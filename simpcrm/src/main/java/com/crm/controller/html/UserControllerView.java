@@ -5,11 +5,7 @@ import com.crm.service.UserService;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/users")
@@ -42,16 +38,18 @@ public class UserControllerView {
         return "user/edit_user.html";
     }
 
-
     @PostMapping("/update")
-    public String updateUser(@RequestParam Long userId,
-                             @RequestParam String firstName,
-                             @RequestParam String email,
-                             @RequestParam Long phone,
-                             Model model) {
-        UserDTO userDTO = userService.editUser(userId, firstName, email, phone);
-        model.addAttribute("user", userDTO);
-        return "redirect:/users/personalPage/" + userDTO.getId();
+    public String updateUser(@ModelAttribute UserDTO user,
+                         @RequestParam("userId") Long userId,
+                         Model model) {
+        user.setId(userId); // Устанавливаем ID пользователя в объект UserDTO
+        UserDTO updatedUser = userService.editUser(user);
+        model.addAttribute("user", updatedUser);
+        return "redirect:/users/personalPage/" + updatedUser.getId();
     }
 
+    @DeleteMapping("/delete/{id}")
+    public void deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+    }
 }

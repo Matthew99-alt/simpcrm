@@ -1,21 +1,18 @@
 package com.crm.service;
 
-import com.crm.client.FileStorageClient;
-import com.crm.dto.FileStorage;
-import com.crm.dto.ITServiceDTO;
+import com.crm.dto.AmenitiesDTO;
 import com.crm.dto.OrderDTO;
-import com.crm.dto.ProgramDTO;
-import com.crm.entity.ITService;
+import com.crm.dto.MerchandiseDTO;
+import com.crm.entity.Amenities;
+import com.crm.entity.Merchandise;
 import com.crm.entity.Order;
-import com.crm.entity.Program;
-import com.crm.reposotiry.ITServiceRepository;
+import com.crm.reposotiry.AmenitiesRepository;
 import com.crm.reposotiry.OrderRepository;
-import com.crm.reposotiry.ProgramRepository;
+import com.crm.reposotiry.MerchandiseRepository;
 import com.crm.reposotiry.StatusRepository;
 import com.crm.reposotiry.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,27 +22,25 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ITServiceRepository itServicesRepository;
-    private final ProgramRepository programRepository;
+    private final AmenitiesRepository itServicesRepository;
+    private final MerchandiseRepository merchandiseRepository;
     private final StatusRepository statusRepository;
     private final UserRepository userRepository;
-    private final ITServiceService itServiceService;
-    private final ProgramService programService;
-    private final FileStorageClient fileStorageClient;
-
+    private final AmenitiesService amenitiesService;
+    private final MerchandiseService merchandiseService;
 
     public List<OrderDTO> findAllOrders() {
         List<Order> orders = orderRepository.findAll();
         ArrayList<OrderDTO> orderDTOList = new ArrayList<>();
         for (Order order : orders) {
-            orderDTOList.add(makeOrderDTOFromOrder(order, Collections.emptyList()));
+            orderDTOList.add(makeOrderDTOFromOrder(order));
         }
         return orderDTOList;
     }
 
     public OrderDTO saveOrder(OrderDTO orderDTO) {
         Order savedOrder = orderRepository.save(makeOrderFromOrderDTO(orderDTO, new Order()));
-        return makeOrderDTOFromOrder(savedOrder, Collections.emptyList());
+        return makeOrderDTOFromOrder(savedOrder);
     }
 
     public void deleteOrder(Long id) {
@@ -59,16 +54,10 @@ public class OrderService {
     }
 
     public OrderDTO findOrderById(Long id) {
-        return makeOrderDTOFromOrder(orderRepository.findById(id).orElseThrow(EntityNotFoundException::new), Collections.emptyList());
+        return makeOrderDTOFromOrder(orderRepository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
-    public OrderDTO findOrderByIdWithFiles(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        List<FileStorage> filesByOrderId = fileStorageClient.getFileByOrderId(order.getId());
-        return makeOrderDTOFromOrder(order, filesByOrderId);
-    }
-
-    private OrderDTO makeOrderDTOFromOrder(Order savedOrder, List<FileStorage> filesByOrderId) {
+    private OrderDTO makeOrderDTOFromOrder(Order savedOrder) {
         OrderDTO responseOrderDto = new OrderDTO();
 
         responseOrderDto.setId(savedOrder.getId());
@@ -79,9 +68,11 @@ public class OrderService {
         responseOrderDto.setComments(savedOrder.getComments());
         responseOrderDto.setClient(savedOrder.getClient());
         responseOrderDto.setUsers(savedOrder.getUser());
-        responseOrderDto.setItServices(getITServicesDTO(savedOrder.getItServices()));
-        responseOrderDto.setPrograms(getProgramDTO(savedOrder.getPrograms()));
-        responseOrderDto.setFiles(filesByOrderId);
+        responseOrderDto.setAmenities(getAmenitiesDTO(savedOrder.getAmenities()));
+        responseOrderDto.setMerchandises(getMerchandiseDTO(savedOrder.getMerchandises()));
+        responseOrderDto.setTotalNumberOfAmenities(savedOrder.getTotalNumberOfAmenities());
+        responseOrderDto.setTotalNumberOfMerchandise(savedOrder.getTotalNumberOfMerchandises());
+        responseOrderDto.setTotalCostOfOrder(savedOrder.getTotalCost());
 
         return responseOrderDto;
     }
@@ -97,42 +88,77 @@ public class OrderService {
         if (orderDTO.getUsers() != null) {
             order.setUser(userRepository.findById(orderDTO.getUsers().getId()).orElseThrow(EntityNotFoundException::new));
         }
-        order.setItServices(getITServices(orderDTO.getItServices()));
-        order.setPrograms(getProgram(orderDTO.getPrograms()));
+        order.setAmenities(getAmenities(orderDTO.getAmenities()));
+        order.setMerchandises(getMerchandise(orderDTO.getMerchandises()));
+        order.setTotalNumberOfMerchandises(orderDTO.getMerchandises().size());
+        order.setTotalNumberOfAmenities(orderDTO.getAmenities().size());
+        order.setTotalCost(getAmenitiesPrices(orderDTO.getAmenities())+getMerchandisesPrices(orderDTO.getMerchandises()));
+        editMerchandiseNumber(orderDTO.getMerchandises());
+
+        if(orderDTO.getTotalNumberOfMerchandise()+orderDTO.getTotalNumberOfAmenities()>5){
+            order.setTotalCost(order.getTotalCost()*0.8);
+        }
+
         return order;
     }
 
-    private ArrayList<ITServiceDTO> getITServicesDTO(List<ITService> itServicesList) {
-        ArrayList<ITServiceDTO> itServicesDTOList = new ArrayList<>();
-        for (ITService itService : itServicesList) {
-            itServicesDTOList.add(itServiceService.makeAnITServiceDTO(new ITServiceDTO(), itService));
+    private ArrayList<AmenitiesDTO> getAmenitiesDTO(List<Amenities> itServicesList) {
+        ArrayList<AmenitiesDTO> itServicesDTOList = new ArrayList<>();
+        for (Amenities amenities : itServicesList) {
+            itServicesDTOList.add(amenitiesService.makeAmenitiesDTO(new AmenitiesDTO(), amenities));
         }
         return itServicesDTOList;
     }
 
-    private ArrayList<ProgramDTO> getProgramDTO(List<Program> programList) {
-        ArrayList<ProgramDTO> programDTOList = new ArrayList<>();
-        for (Program program : programList) {
-            programDTOList.add(programService.makeAProgramDTO(new ProgramDTO(), program));
+    private ArrayList<MerchandiseDTO> getMerchandiseDTO(List<Merchandise> merchandiseList) {
+        ArrayList<MerchandiseDTO> merchandiseDTOList = new ArrayList<>();
+        for (Merchandise merchandise : merchandiseList) {
+            merchandiseDTOList.add(merchandiseService.makeAMerchandiseDTO(new MerchandiseDTO(), merchandise));
         }
-        return programDTOList;
+        return merchandiseDTOList;
     }
 
-    private ArrayList<ITService> getITServices(List<ITServiceDTO> itServicesDTOList) {
-        ArrayList<ITService> itServicesList = new ArrayList<>();
-        for (ITServiceDTO itServiceDTO : itServicesDTOList) {
-            itServicesList.add(itServicesRepository.findById(itServiceDTO.getId())
+    private ArrayList<Amenities> getAmenities(List<AmenitiesDTO> itServicesDTOList) {
+        ArrayList<Amenities> itServicesList = new ArrayList<>();
+        for (AmenitiesDTO amenitiesDTO : itServicesDTOList) {
+            itServicesList.add(itServicesRepository.findById(amenitiesDTO.getId())
                     .orElseThrow(EntityNotFoundException::new));
         }
         return itServicesList;
     }
 
-    private ArrayList<Program> getProgram(List<ProgramDTO> programDTOList) {
-        ArrayList<Program> programList = new ArrayList<>();
-        for (ProgramDTO programDTO : programDTOList) {
-            programList.add(programRepository.findById(programDTO.getId())
+    private ArrayList<Merchandise> getMerchandise(List<MerchandiseDTO> merchandiseDTOList) {
+        ArrayList<Merchandise> merchandiseList = new ArrayList<>();
+        for (MerchandiseDTO merchandiseDTO : merchandiseDTOList) {
+            merchandiseList.add(merchandiseRepository.findById(merchandiseDTO.getId())
                     .orElseThrow(EntityNotFoundException::new));
         }
-        return programList;
+        return merchandiseList;
+    }
+
+    private double getAmenitiesPrices(List<AmenitiesDTO> amenitiesDTOS){
+        double amenitiesPrice = 0L;
+        for(int i = 0; i<amenitiesDTOS.size(); i++){
+            amenitiesPrice = amenitiesPrice +
+                    amenitiesDTOS.get(i).getPrice() * amenitiesDTOS.get(i).getRatio();
+        }
+        return amenitiesPrice;
+    }
+
+    private double getMerchandisesPrices(List<MerchandiseDTO> merchandiseDTOS){
+        double merchandisesPrice = 0L;
+        for(int i = 0; i<merchandiseDTOS.size(); i++){
+            merchandisesPrice = merchandisesPrice +
+                    merchandiseDTOS.get(i).getPrice() * merchandiseDTOS.get(i).getRatio();
+        }
+        return merchandisesPrice;
+    }
+
+    private void editMerchandiseNumber(List<MerchandiseDTO> merchandises){
+        for(int i=0; i<merchandises.size(); i++){
+            MerchandiseDTO merchandiseDTO = merchandises.get(i);
+            merchandiseDTO.setNumberInWarehouse(merchandises.get(i).getNumberInWarehouse()-1);
+            merchandiseService.editMerchandise(merchandiseDTO);
+        }
     }
 }

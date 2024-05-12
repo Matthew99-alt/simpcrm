@@ -20,11 +20,10 @@ public interface FileStorageClient {
     List<FileStorage> getAllFiles();
 
     @GetMapping("/fileByOrderId")
-    List<FileStorage> getFileByOrderId(Long orderId);
+    FileStorage getFileByOrderId(Long orderId);
 
     @GetMapping("/{fileId}")
     ResponseEntity<byte[]> downloadFile(@PathVariable String fileId) throws IOException;
-
 
     @DeleteMapping("/delete")
     void deleteFile(@RequestParam("id") String id);

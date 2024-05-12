@@ -16,9 +16,9 @@ public class User {
     private Long id;
     @Column(name = "first_name")
     private String firstName;
-    @Column(name = "middle_name")
-    private String secondName;
     @Column(name = "second_name")
+    private String secondName;
+    @Column(name = "middle_name")
     private String middleName;
     @Column(name = "email")
     private String email;
@@ -28,5 +28,6 @@ public class User {
     private String address;
     @Column(name = "user_type")
     private String userType;
-
+    @Column(name = "locality")
+    private String locality;
 }

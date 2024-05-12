@@ -20,9 +20,9 @@ public class OrderDTO {
 
     private String description;
 
-    private List<ITServiceDTO> itServices;
+    private List<AmenitiesDTO> amenities;
 
-    private List<ProgramDTO> programs;
+    private List<MerchandiseDTO> merchandises;
 
     private String comments;
 
@@ -30,5 +30,10 @@ public class OrderDTO {
 
     private User users;
 
-    private List<FileStorage> files;
+    private int totalNumberOfMerchandise;
+
+    private int totalNumberOfAmenities;
+
+    private double totalCostOfOrder;
+
 }

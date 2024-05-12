@@ -21,11 +21,6 @@ public class StatusController {
         return statusService.findAllStatuses();
     }
 
-    @GetMapping("/title")
-    public StatusDTO getByStatus(@RequestBody StatusDTO statusDTO) {
-        return statusService.findByStatus(statusDTO.getStatus());
-    }
-
     @PostMapping("/save")
     public StatusDTO saveStatus(@RequestBody StatusDTO statusDTO) {
         return statusService.saveStatus(statusDTO);

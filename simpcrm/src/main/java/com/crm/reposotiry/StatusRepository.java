@@ -11,7 +11,4 @@ public interface StatusRepository  extends JpaRepository<Status, Long> {
 
     List<Status> findAll();
 
-    String findTitleById(Long id);
-
-    Status findByStatus(String status);
 }

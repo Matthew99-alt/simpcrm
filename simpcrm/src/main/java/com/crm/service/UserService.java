@@ -24,15 +24,6 @@ public class UserService {
         return userDTOS;
     }
 
-    public List<UserDTO> findByUserType(String userType) {
-        List<User> userList = userRepository.findByUserType(userType);
-        ArrayList<UserDTO> userDTOList = new ArrayList<>();
-        for (User user : userList) {
-            userDTOList.add(makeAnUserDTO(new UserDTO(), user));
-        }
-        return userDTOList;
-    }
-
     private UserDTO makeAnUserDTO(UserDTO userDTO, User user) {
         userDTO.setId(user.getId());
         userDTO.setFirstName(user.getFirstName());
@@ -42,6 +33,7 @@ public class UserService {
         userDTO.setPhone(user.getPhone());
         userDTO.setEmail(user.getEmail());
         userDTO.setUserType(user.getUserType());
+        userDTO.setLocality(user.getLocality());
 
         return userDTO;
     }
@@ -55,6 +47,7 @@ public class UserService {
         user.setPhone(userDTO.getPhone());
         user.setEmail(userDTO.getEmail());
         user.setUserType(userDTO.getUserType());
+        user.setLocality(userDTO.getLocality());
 
         return user;
     }
@@ -70,19 +63,19 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public UserDTO editUser(UserDTO userDTO) {
+        User user = new User();
+        user.setId(userDTO.getId());
+        userRepository.save(makeAnUser(userDTO, user));
+        return userDTO;
+    }
+
     public UserDTO editUser(Long userId, String firstName, String email, Long phone) {
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
         user.setFirstName(firstName);
         user.setEmail(email);
         user.setPhone(phone);
         return makeAnUserDTO(new UserDTO(), userRepository.save(user));
-    }
-
-    public UserDTO editUser(UserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.getId());
-        userRepository.save(makeAnUser(userDTO, user));
-        return userDTO;
     }
 
     public UserDTO findById(Long userId) {

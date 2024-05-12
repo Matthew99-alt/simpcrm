@@ -25,10 +25,5 @@ public class StatusControllerView {
         return "status/status.html";
     }
 
-    @GetMapping("/personalPage/{statusId}")
-    public String getStatus(@PathVariable("statusId") Long statusId, Model model) {
-        StatusDTO statusDTO = statusService.findById(statusId);
-        model.addAttribute("statuses", statusDTO);
-        return "status/status_page.html";
-    }
+
 }

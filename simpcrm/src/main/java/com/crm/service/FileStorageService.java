@@ -35,7 +35,7 @@ public class FileStorageService {
         return fileStorageClient.uploadFile(uploadClass);
     }
 
-    public List<FileStorage> getFileById(Long orderId) {
+    public FileStorage getFileById(Long orderId) {
         return fileStorageClient.getFileByOrderId(orderId);
     }
 }

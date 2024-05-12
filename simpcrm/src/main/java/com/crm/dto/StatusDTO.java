@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class StatusDTO {
 
-    public Long id;
+    private Long id;
 
-    public String status;
+    private String status;
 
 }

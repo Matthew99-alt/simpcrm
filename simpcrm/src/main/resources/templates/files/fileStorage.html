@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список услуг</title>
+    <title>Список файлов</title>
     <style>
         /* Стили для красивого отображения */
         body {
@@ -61,22 +61,24 @@
 <body>
 
 <div class="container">
-    <h1>Список услуг</h1>
+    <h1>Список файлов</h1>
     <table>
         <thead>
         <tr>
             <th>Id</th>
             <th>Название</th>
-            <th>Цена</th>
+            <th>Вес</th>
             <th>Описание</th>
+            <th>OrderId</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="itservice : ${itservices}">
-            <td th:text="${itservice.id}"></td>
-            <td th:text="${itservice.title}"></td>
-            <td th:text="${itservice.price}"></td>
-            <td th:text="${itservice.description}"></td>
+        <tr th:each="file : ${files}">
+            <td th:text="${file.id}"></td>
+            <td th:text="${file.title}"></td>
+            <td th:text="${file.size}"></td>
+            <td th:text="${file.description}"></td>
+            <td th:text="${file.orderId}"></td>
         </tr>
         </tbody>
     </table>

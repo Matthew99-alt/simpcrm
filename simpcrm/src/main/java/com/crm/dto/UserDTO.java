@@ -22,4 +22,6 @@ public class UserDTO {
     private String address;
 
     private String userType;
+
+    private String locality;
 }
