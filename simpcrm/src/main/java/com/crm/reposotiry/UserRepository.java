@@ -1,14 +1,14 @@
 package com.crm.reposotiry;
 
-import com.crm.entity.User;
+import com.crm.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    List<User> findAll();
+    List<UserEntity> findAll();
 
 }

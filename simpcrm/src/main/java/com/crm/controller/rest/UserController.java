@@ -1,7 +1,6 @@
 package com.crm.controller.rest;
 
 import com.crm.dto.UserDTO;
-import com.crm.entity.User;
 import com.crm.service.UserService;
 import org.springframework.web.bind.annotation.*;
 

@@ -67,7 +67,7 @@ public class OrderService {
         responseOrderDto.setDescription(savedOrder.getDescription());
         responseOrderDto.setComments(savedOrder.getComments());
         responseOrderDto.setClient(savedOrder.getClient());
-        responseOrderDto.setUsers(savedOrder.getUser());
+        responseOrderDto.setUsers(savedOrder.getUserEntity());
         responseOrderDto.setAmenities(getAmenitiesDTO(savedOrder.getAmenities()));
         responseOrderDto.setMerchandises(getMerchandiseDTO(savedOrder.getMerchandises()));
         responseOrderDto.setTotalNumberOfAmenities(savedOrder.getTotalNumberOfAmenities());
@@ -86,7 +86,7 @@ public class OrderService {
         order.setClient(userRepository.findById(orderDTO.getClient().getId()).orElseThrow(EntityNotFoundException::new));
         order.setStatus(statusRepository.findById(orderDTO.getStatus().getId()).orElseThrow(EntityNotFoundException::new));
         if (orderDTO.getUsers() != null) {
-            order.setUser(userRepository.findById(orderDTO.getUsers().getId()).orElseThrow(EntityNotFoundException::new));
+            order.setUserEntity(userRepository.findById(orderDTO.getUsers().getId()).orElseThrow(EntityNotFoundException::new));
         }
         order.setAmenities(getAmenities(orderDTO.getAmenities()));
         order.setMerchandises(getMerchandise(orderDTO.getMerchandises()));

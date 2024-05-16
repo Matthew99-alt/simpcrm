@@ -101,7 +101,7 @@
             </td>
             <td th:text="${order.comments}"></td>
             <td th:text="${order.client != null ? order.client.firstName + ' ' + order.client.secondName + ' ' + order.client.middleName : ''}"></td>
-            <td th:text="${order.users != null ? order.users.firstName + ' ' + order.users.secondName + ' ' + order.users.middleName : ''}"></td>
+            <td th:text="${order.userEntityEntities != null ? order.userEntityEntities.firstName + ' ' + order.userEntityEntities.secondName + ' ' + order.userEntityEntities.middleName : ''}"></td>
         </tr>
         </tbody>
     </table>

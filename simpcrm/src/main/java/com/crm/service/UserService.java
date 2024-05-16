@@ -1,7 +1,7 @@
 package com.crm.service;
 
 import com.crm.dto.UserDTO;
-import com.crm.entity.User;
+import com.crm.entity.UserEntity;
 import com.crm.reposotiry.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -16,46 +16,46 @@ public class UserService {
     private final UserRepository userRepository;
 
     public List<UserDTO> findAllUsers() {
-        List<User> users = userRepository.findAll();
+        List<UserEntity> userEntityEntities = userRepository.findAll();
         ArrayList<UserDTO> userDTOS = new ArrayList<>();
-        for (User user : users) {
-            userDTOS.add(makeAnUserDTO(new UserDTO(), user));
+        for (UserEntity userEntity : userEntityEntities) {
+            userDTOS.add(makeAnUserDTO(new UserDTO(), userEntity));
         }
         return userDTOS;
     }
 
-    private UserDTO makeAnUserDTO(UserDTO userDTO, User user) {
-        userDTO.setId(user.getId());
-        userDTO.setFirstName(user.getFirstName());
-        userDTO.setSecondName(user.getSecondName());
-        userDTO.setMiddleName(user.getMiddleName());
-        userDTO.setAddress(user.getAddress());
-        userDTO.setPhone(user.getPhone());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setUserType(user.getUserType());
-        userDTO.setLocality(user.getLocality());
+    private UserDTO makeAnUserDTO(UserDTO userDTO, UserEntity userEntity) {
+        userDTO.setId(userEntity.getId());
+        userDTO.setFirstName(userEntity.getFirstName());
+        userDTO.setSecondName(userEntity.getSecondName());
+        userDTO.setMiddleName(userEntity.getMiddleName());
+        userDTO.setAddress(userEntity.getAddress());
+        userDTO.setPhone(userEntity.getPhone());
+        userDTO.setEmail(userEntity.getEmail());
+        userDTO.setUserType(userEntity.getUserType());
+        userDTO.setLocality(userEntity.getLocality());
 
         return userDTO;
     }
 
-    private User makeAnUser(UserDTO userDTO, User user) {
-        userDTO.setId(user.getId());
-        user.setFirstName(userDTO.getFirstName());
-        user.setSecondName(userDTO.getSecondName());
-        user.setMiddleName(userDTO.getMiddleName());
-        user.setAddress(userDTO.getAddress());
-        user.setPhone(userDTO.getPhone());
-        user.setEmail(userDTO.getEmail());
-        user.setUserType(userDTO.getUserType());
-        user.setLocality(userDTO.getLocality());
+    private UserEntity makeAnUser(UserDTO userDTO, UserEntity userEntity) {
+        userDTO.setId(userEntity.getId());
+        userEntity.setFirstName(userDTO.getFirstName());
+        userEntity.setSecondName(userDTO.getSecondName());
+        userEntity.setMiddleName(userDTO.getMiddleName());
+        userEntity.setAddress(userDTO.getAddress());
+        userEntity.setPhone(userDTO.getPhone());
+        userEntity.setEmail(userDTO.getEmail());
+        userEntity.setUserType(userDTO.getUserType());
+        userEntity.setLocality(userDTO.getLocality());
 
-        return user;
+        return userEntity;
     }
 
     public UserDTO saveUser(UserDTO userDTO) {
-        User user = new User();
-        userRepository.save(makeAnUser(userDTO, user));
-        userDTO.setId(user.getId());
+        UserEntity userEntity = new UserEntity();
+        userRepository.save(makeAnUser(userDTO, userEntity));
+        userDTO.setId(userEntity.getId());
         return userDTO;
     }
 
@@ -64,22 +64,22 @@ public class UserService {
     }
 
     public UserDTO editUser(UserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.getId());
-        userRepository.save(makeAnUser(userDTO, user));
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userDTO.getId());
+        userRepository.save(makeAnUser(userDTO, userEntity));
         return userDTO;
     }
 
     public UserDTO editUser(Long userId, String firstName, String email, Long phone) {
-        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
-        user.setFirstName(firstName);
-        user.setEmail(email);
-        user.setPhone(phone);
-        return makeAnUserDTO(new UserDTO(), userRepository.save(user));
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        userEntity.setFirstName(firstName);
+        userEntity.setEmail(email);
+        userEntity.setPhone(phone);
+        return makeAnUserDTO(new UserDTO(), userRepository.save(userEntity));
     }
 
     public UserDTO findById(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
-        return makeAnUserDTO(new UserDTO(), user);
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        return makeAnUserDTO(new UserDTO(), userEntity);
     }
 }

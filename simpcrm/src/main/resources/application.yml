@@ -14,6 +14,7 @@ spring:
     #    defer-datasource-initialization: true - убрали настройку потому что отключили Hibernate и создаем и наполняем таблицы сами
     hibernate:
       ddl-auto: update
+
 service:
   clients:
     file-storage-client:

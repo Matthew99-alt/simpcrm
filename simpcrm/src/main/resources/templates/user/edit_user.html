@@ -58,24 +58,24 @@
 
 <div class="container">
     <h1>Редактирование пользователя</h1>
-    <form id="updateForm" th:action="@{/users/update}" method="post">
-        <input type="hidden" id="userId" th:name="userId" th:value="${user.id}" />
+    <form id="updateForm" th:action="@{/userEntityEntities/update}" method="post">
+        <input type="hidden" id="userId" th:name="userId" th:value="${userEntity.id}" />
         <label for="firstName">Имя:</label>
-        <input type="text" id="firstName" name="firstName" th:value="${user.firstName}" required>
+        <input type="text" id="firstName" name="firstName" th:value="${userEntity.firstName}" required>
         <label for="secondName">Фамилия:</label>
-        <input type="text" id="secondName" name="secondName" th:value="${user.secondName}" required>
+        <input type="text" id="secondName" name="secondName" th:value="${userEntity.secondName}" required>
         <label for="middleName">Отчество:</label>
-        <input type="text" id="middleName" name="middleName" th:value="${user.middleName}" required>
+        <input type="text" id="middleName" name="middleName" th:value="${userEntity.middleName}" required>
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" th:value="${user.email}" required>
+        <input type="email" id="email" name="email" th:value="${userEntity.email}" required>
         <label for="phone">Телефон:</label>
-        <input type="tel" id="phone" name="phone" th:value="${user.phone}" required>
+        <input type="tel" id="phone" name="phone" th:value="${userEntity.phone}" required>
         <label for="address">Адрес:</label>
-        <input type="text" id="address" name="address" th:value="${user.address}" required>
+        <input type="text" id="address" name="address" th:value="${userEntity.address}" required>
         <label for="userType">Тип пользователя:</label>
-        <input type="text" id="userType" name="userType" th:value="${user.userType}" required>
+        <input type="text" id="userType" name="userType" th:value="${userEntity.userType}" required>
         <label for="locality">Город проживания:</label>
-        <input type="text" id="locality" name="locality" th:value="${user.locality}" required>
+        <input type="text" id="locality" name="locality" th:value="${userEntity.locality}" required>
         <button type="submit">Сохранить</button>
     </form>
 </div>

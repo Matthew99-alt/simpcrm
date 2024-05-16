@@ -76,22 +76,22 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.firstName}"></td>
-            <td th:text="${user.secondName}"></td>
-            <td th:text="${user.middleName}"></td>
+        <tr th:each="userEntity : ${userEntityEntities}">
+            <td th:text="${userEntity.firstName}"></td>
+            <td th:text="${userEntity.secondName}"></td>
+            <td th:text="${userEntity.middleName}"></td>
             <td>
-                <a th:href="@{/users/personalPage/{userId}(userId=${user.id})}" class="button-link">
+                <a th:href="@{/userEntityEntities/personalPage/{userId}(userId=${userEntity.id})}" class="button-link">
                     <button class="button">Карточка пользователя</button>
                 </a>
             </td>
             <td>
-                <a th:href="@{/users/personalEditPage/{userId}(userId=${user.id})}" class="button-link">
+                <a th:href="@{/userEntityEntities/personalEditPage/{userId}(userId=${userEntity.id})}" class="button-link">
                     <button class="button">Карточка редактирования пользователя</button>
                 </a>
             </td>
             <td>
-                <a th:href="@{/users/delete/{userId}(userId=${user.id})}" class="button-link">
+                <a th:href="@{/userEntityEntities/delete/{userId}(userId=${userEntity.id})}" class="button-link">
                     <button class="button">Удалить пользователя</button>
                 </a>
             </td>

@@ -34,11 +34,11 @@ public class Order {
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name="client_id", referencedColumnName = "id")
-    private User client;
+    private UserEntity client;
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name="user_id", referencedColumnName = "id")
-    private User user;
+    private UserEntity userEntity;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(

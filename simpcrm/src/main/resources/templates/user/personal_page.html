@@ -26,10 +26,10 @@
             margin-bottom: 20px;
             color: #007bff;
         }
-        .user-info {
+        .userEntity-info {
             margin-bottom: 20px;
         }
-        .user-info p {
+        .userEntity-info p {
             margin: 10px 0;
         }
         .button {
@@ -49,15 +49,15 @@
 
 <div class="container">
     <h1>Личный кабинет</h1>
-    <div class="user-info">
-        <p><strong>Имя:</strong> <span th:text="${user.firstName}"></span></p>
-        <p><strong>Фамилия:</strong> <span th:text="${user.secondName}"></span></p>
-        <p><strong>Отчество:</strong> <span th:text="${user.middleName}"></span></p>
-        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
-        <p><strong>Телефон:</strong> <span th:text="${user.phone}"></span></p>
-        <p><strong>Адрес:</strong> <span th:text="${user.address}"></span></p>
+    <div class="userEntity-info">
+        <p><strong>Имя:</strong> <span th:text="${userEntity.firstName}"></span></p>
+        <p><strong>Фамилия:</strong> <span th:text="${userEntity.secondName}"></span></p>
+        <p><strong>Отчество:</strong> <span th:text="${userEntity.middleName}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${userEntity.email}"></span></p>
+        <p><strong>Телефон:</strong> <span th:text="${userEntity.phone}"></span></p>
+        <p><strong>Адрес:</strong> <span th:text="${userEntity.address}"></span></p>
     </div>
-    <a href="/users/all" class="button">Выйти</a>
+    <a href="/userEntityEntities/all" class="button">Выйти</a>
 </div>
 
 </body>
