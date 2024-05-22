@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class FileStorageDTO {
 
-    private ObjectId id;
+    private String id;
 
     private Long size;
 

@@ -1,7 +1,6 @@
 package com.crm.controller.rest;
 
 import com.crm.dto.StatusDTO;
-import com.crm.entity.Status;
 import com.crm.service.StatusService;
 import org.springframework.web.bind.annotation.*;
 

@@ -15,7 +15,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/fileStorage")
 @RequiredArgsConstructor
-public class FileStorageView {
+public class
+FileStorageView {
 
     private final FileStorageService fileStorageService;
 

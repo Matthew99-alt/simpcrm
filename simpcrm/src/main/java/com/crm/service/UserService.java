@@ -70,14 +70,6 @@ public class UserService {
         return userDTO;
     }
 
-    public UserDTO editUser(Long userId, String firstName, String email, Long phone) {
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
-        userEntity.setFirstName(firstName);
-        userEntity.setEmail(email);
-        userEntity.setPhone(phone);
-        return makeAnUserDTO(new UserDTO(), userRepository.save(userEntity));
-    }
-
     public UserDTO findById(Long userId) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
         return makeAnUserDTO(new UserDTO(), userEntity);

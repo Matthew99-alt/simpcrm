@@ -21,7 +21,7 @@ public class Authority {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "username", referencedColumnName = "username")
+    @JoinColumn(name = "id")
     private User username;
 
     @Column

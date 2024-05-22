@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MerchandiseService {
 
-    public final MerchandiseRepository merchandiseRepository;
+    private final MerchandiseRepository merchandiseRepository;
 
     public List<MerchandiseDTO> findAllPrograms() {
         List<Merchandise> merchandises = merchandiseRepository.findAll();

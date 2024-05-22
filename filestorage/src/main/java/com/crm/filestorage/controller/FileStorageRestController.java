@@ -35,7 +35,7 @@ public class FileStorageRestController {
     }
 
     @GetMapping("/fileByOrderId")
-    public List<FileStorageDTO> getFileByOrderId(@RequestParam(name = "orderId") Long orderId) {
+    public FileStorageDTO getFileByOrderId(@RequestParam(name = "orderId") Long orderId) {
         return fileStorageService.findByIdOrderId(orderId);
     }
 

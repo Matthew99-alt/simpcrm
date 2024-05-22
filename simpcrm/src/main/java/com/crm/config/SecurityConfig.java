@@ -35,8 +35,15 @@ public class SecurityConfig {
                 .roles("ADMIN")
                 .authorities("ADMIN")
                 .build();
+        UserDetails user = User.builder()
+                .username("user")
+                .password(encoder.encode("usr_psw"))
+                .roles("USER")
+                .authorities("USER")
+                .build();
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-//        jdbcUserDetailsManager.createUser(admin);
+        //jdbcUserDetailsManager.createUser(admin);
+        //jdbcUserDetailsManager.createUser(user);
         return jdbcUserDetailsManager;
     }
 
@@ -47,10 +54,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (authorize) -> authorize
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
-                                .requestMatchers("/admin").hasAuthority("ADMIN")
-                                .requestMatchers("/users").hasAuthority("USER")
+                                .requestMatchers( "/rest/amenities/**","/fileStorage/**","/rest/merchandise/**","/rest/status/**","/rest/user/**").hasAuthority("ADMIN")
+                                .requestMatchers("/rest/order/**").permitAll()
                                 .anyRequest().authenticated()
                 )
+                .csrf(csrf -> csrf.disable()) // Отключение CSRF через новый метод
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults());
         return http.build();

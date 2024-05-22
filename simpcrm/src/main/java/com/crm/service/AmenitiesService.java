@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AmenitiesService {
-    public final AmenitiesRepository amenitiesRepository;
+    private final AmenitiesRepository amenitiesRepository;
 
     public List<AmenitiesDTO> findAllAmenities() {
         List<Amenities> amenities = amenitiesRepository.findAll();

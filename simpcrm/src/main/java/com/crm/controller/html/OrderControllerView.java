@@ -42,7 +42,7 @@ public class OrderControllerView {
     @ResponseBody
     public ResponseEntity<byte[]> getFile(@PathVariable("orderId") Long orderId) throws IOException {
         FileStorage fileStorage = fileStorageService.getFileById(orderId);
-        return fileStorageService.downloadFile(fileStorage.getId());
+        return fileStorageService.downloadFile(fileStorage.getTitle());
     }
 
     @DeleteMapping("/delete/{orderId}")

@@ -32,15 +32,15 @@ public class FileStorageService {
         return fileStorageRepository.findAll();
     }
 
-    public List<FileStorageDTO> findByIdOrderId(long id) {
-        return fileStorageRepository.findAllByOrderId(id).stream()
-                .map(this::convertToDto)
-                .toList();
+    public FileStorageDTO findByIdOrderId(Long id) {
+        FileStorage fileStorage = fileStorageRepository.findByOrderId(id);
+        return convertToDto(fileStorage);
     }
 
     private FileStorageDTO convertToDto(FileStorage fileSTorage) {
         FileStorageDTO fileStorageDTO = new FileStorageDTO();
-        fileStorageDTO.setId(fileSTorage.getId());
+        //Э? Это нормально?
+        fileStorageDTO.setId(fileSTorage.getId().toString());
         fileStorageDTO.setDescription(fileSTorage.getDescription());
         fileStorageDTO.setFile(fileSTorage.getFile());
         fileStorageDTO.setSize(fileSTorage.getSize());

@@ -42,7 +42,7 @@ public class UserControllerView {
     public String updateUser(@ModelAttribute UserDTO user,
                          @RequestParam("userId") Long userId,
                          Model model) {
-        user.setId(userId); // Устанавливаем ID пользователя в объект UserDTO
+        user.setId(userId); // set ID of a user in object of UserDTO
         UserDTO updatedUser = userService.editUser(user);
         model.addAttribute("user", updatedUser);
         return "redirect:/users/personalPage/" + updatedUser.getId();

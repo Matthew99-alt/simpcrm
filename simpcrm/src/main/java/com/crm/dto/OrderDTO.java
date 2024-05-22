@@ -3,6 +3,8 @@ package com.crm.dto;
 import com.crm.entity.Status;
 import com.crm.entity.UserEntity;
 import java.util.List;
+
+import com.crm.uploadClass.UploadClass;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,5 +37,4 @@ public class OrderDTO {
     private int totalNumberOfAmenities;
 
     private double totalCostOfOrder;
-
 }

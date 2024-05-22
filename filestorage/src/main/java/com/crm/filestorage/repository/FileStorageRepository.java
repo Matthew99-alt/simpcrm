@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface
 FileStorageRepository extends MongoRepository<FileStorage, ObjectId> {
 
-    List<FileStorage> findAllByOrderId(Long orderId);
+    FileStorage findByOrderId(Long orderId);
 
 }

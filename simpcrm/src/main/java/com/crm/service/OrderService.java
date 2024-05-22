@@ -11,7 +11,10 @@ import com.crm.reposotiry.OrderRepository;
 import com.crm.reposotiry.MerchandiseRepository;
 import com.crm.reposotiry.StatusRepository;
 import com.crm.reposotiry.UserRepository;
+import com.crm.uploadClass.UploadClass;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final AmenitiesService amenitiesService;
     private final MerchandiseService merchandiseService;
+    private final FileStorageService fileStorageService;
 
     public List<OrderDTO> findAllOrders() {
         List<Order> orders = orderRepository.findAll();
@@ -38,13 +42,19 @@ public class OrderService {
         return orderDTOList;
     }
 
-    public OrderDTO saveOrder(OrderDTO orderDTO) {
-        Order savedOrder = orderRepository.save(makeOrderFromOrderDTO(orderDTO, new Order()));
+    public OrderDTO saveOrder(OrderDTO orderDTO) throws IOException {
+        Order order = new Order();
+        Order savedOrder = orderRepository.save(makeOrderFromOrderDTO(orderDTO, order));
+        orderDTO.setId(order.getId());
         return makeOrderDTOFromOrder(savedOrder);
+
     }
 
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
+        if(fileStorageService.getFileById(id).getId()!=null){
+            fileStorageService.deleteFile(fileStorageService.getFileById(id).getId());
+        }
     }
 
     public OrderDTO editOrder(OrderDTO orderDTO) {
@@ -138,26 +148,25 @@ public class OrderService {
 
     private double getAmenitiesPrices(List<AmenitiesDTO> amenitiesDTOS){
         double amenitiesPrice = 0L;
-        for(int i = 0; i<amenitiesDTOS.size(); i++){
+        for (AmenitiesDTO amenitiesDTO : amenitiesDTOS) {
             amenitiesPrice = amenitiesPrice +
-                    amenitiesDTOS.get(i).getPrice() * amenitiesDTOS.get(i).getRatio();
+                    amenitiesDTO.getPrice() * amenitiesDTO.getRatio();
         }
         return amenitiesPrice;
     }
 
     private double getMerchandisesPrices(List<MerchandiseDTO> merchandiseDTOS){
         double merchandisesPrice = 0L;
-        for(int i = 0; i<merchandiseDTOS.size(); i++){
+        for (MerchandiseDTO merchandiseDTO : merchandiseDTOS) {
             merchandisesPrice = merchandisesPrice +
-                    merchandiseDTOS.get(i).getPrice() * merchandiseDTOS.get(i).getRatio();
+                    merchandiseDTO.getPrice() * merchandiseDTO.getRatio();
         }
         return merchandisesPrice;
     }
 
     private void editMerchandiseNumber(List<MerchandiseDTO> merchandises){
-        for(int i=0; i<merchandises.size(); i++){
-            MerchandiseDTO merchandiseDTO = merchandises.get(i);
-            merchandiseDTO.setNumberInWarehouse(merchandises.get(i).getNumberInWarehouse()-1);
+        for (MerchandiseDTO merchandiseDTO : merchandises) {
+            merchandiseDTO.setNumberInWarehouse(merchandiseDTO.getNumberInWarehouse() - 1);
             merchandiseService.editMerchandise(merchandiseDTO);
         }
     }
