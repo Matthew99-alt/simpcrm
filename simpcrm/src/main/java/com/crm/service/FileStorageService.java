@@ -19,8 +19,12 @@ public class FileStorageService {
         return fileStorageClient.getAllFiles();
     }
 
-    public void deleteFile(String id) {
+    public void deleteFileById(String id) {
         fileStorageClient.deleteFile(id);
+    }
+
+    public void deleteFileByOrderId(Long orderId) {
+        fileStorageClient.deleteFileByOrderId(orderId);
     }
 
     public void editFile(UploadClass uploadClass) throws IOException {

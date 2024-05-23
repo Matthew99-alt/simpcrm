@@ -51,8 +51,11 @@ public class FileStorageService {
     }
 
     public void deleteFile(ObjectId id) {
-        FileStorage fileStorage = fileStorageRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        fileStorageRepository.delete(fileStorage);
+        fileStorageRepository.deleteById(id);
+    }
+
+    public void deleteFileByOrderId(Long orderId) {
+        fileStorageRepository.deleteByOrderId(orderId);
     }
 
     public void editFile(MultipartFile file,

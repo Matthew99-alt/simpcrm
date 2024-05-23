@@ -28,6 +28,9 @@ public interface FileStorageClient {
     @DeleteMapping("/delete")
     void deleteFile(@RequestParam("id") String id);
 
+    @DeleteMapping("/deleteByOrderId")
+    void deleteFileByOrderId(@RequestParam("orderId") Long orderId);
+
     @PutMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void editFile(@ModelAttribute UploadClass uploadClass) throws IOException;
 

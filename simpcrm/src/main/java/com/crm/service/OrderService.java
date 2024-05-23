@@ -1,29 +1,32 @@
 package com.crm.service;
 
 import com.crm.dto.AmenitiesDTO;
-import com.crm.dto.OrderDTO;
 import com.crm.dto.MerchandiseDTO;
+import com.crm.dto.OrderDTO;
 import com.crm.entity.Amenities;
 import com.crm.entity.Merchandise;
 import com.crm.entity.Order;
 import com.crm.reposotiry.AmenitiesRepository;
-import com.crm.reposotiry.OrderRepository;
 import com.crm.reposotiry.MerchandiseRepository;
+import com.crm.reposotiry.OrderRepository;
 import com.crm.reposotiry.StatusRepository;
 import com.crm.reposotiry.UserRepository;
 import com.crm.uploadClass.UploadClass;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
 
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private final AmenitiesRepository itServicesRepository;
     private final MerchandiseRepository merchandiseRepository;
@@ -32,6 +35,8 @@ public class OrderService {
     private final AmenitiesService amenitiesService;
     private final MerchandiseService merchandiseService;
     private final FileStorageService fileStorageService;
+
+    private final ObjectMapper objectMapper;
 
     public List<OrderDTO> findAllOrders() {
         List<Order> orders = orderRepository.findAll();
@@ -42,19 +47,31 @@ public class OrderService {
         return orderDTOList;
     }
 
-    public OrderDTO saveOrder(OrderDTO orderDTO) throws IOException {
-        Order order = new Order();
-        Order savedOrder = orderRepository.save(makeOrderFromOrderDTO(orderDTO, order));
-        orderDTO.setId(order.getId());
-        return makeOrderDTOFromOrder(savedOrder);
+    public OrderDTO saveOrder(String orderDTOStr, MultipartFile file) {
+        try {
+            OrderDTO orderDTO = objectMapper.readValue(orderDTOStr, OrderDTO.class);
+            Order savedOrder = orderRepository.save(makeOrderFromOrderDTO(orderDTO, new Order()));
+            orderDTO.setId(savedOrder.getId());
 
+            if (file != null) {
+                UploadClass uploadClass = new UploadClass();
+                uploadClass.setFile(file);
+
+                uploadClass.setOrderId(savedOrder.getId());
+                fileStorageService.addFile(uploadClass);
+            }
+
+            return orderDTO;
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+        }
+
+        throw new RuntimeException("Не удалось сохранить заявку");
     }
 
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
-        if(fileStorageService.getFileById(id).getId()!=null){
-            fileStorageService.deleteFile(fileStorageService.getFileById(id).getId());
-        }
+        fileStorageService.deleteFileByOrderId(id);
     }
 
     public OrderDTO editOrder(OrderDTO orderDTO) {
@@ -102,11 +119,12 @@ public class OrderService {
         order.setMerchandises(getMerchandise(orderDTO.getMerchandises()));
         order.setTotalNumberOfMerchandises(orderDTO.getMerchandises().size());
         order.setTotalNumberOfAmenities(orderDTO.getAmenities().size());
-        order.setTotalCost(getAmenitiesPrices(orderDTO.getAmenities())+getMerchandisesPrices(orderDTO.getMerchandises()));
+        order.setTotalCost(
+                getAmenitiesPrices(orderDTO.getAmenities()) + getMerchandisesPrices(orderDTO.getMerchandises()));
         editMerchandiseNumber(orderDTO.getMerchandises());
 
-        if(orderDTO.getTotalNumberOfMerchandise()+orderDTO.getTotalNumberOfAmenities()>5){
-            order.setTotalCost(order.getTotalCost()*0.8);
+        if (orderDTO.getTotalNumberOfMerchandise() + orderDTO.getTotalNumberOfAmenities() > 5) {
+            order.setTotalCost(order.getTotalCost() * 0.8);
         }
 
         return order;
@@ -146,7 +164,7 @@ public class OrderService {
         return merchandiseList;
     }
 
-    private double getAmenitiesPrices(List<AmenitiesDTO> amenitiesDTOS){
+    private double getAmenitiesPrices(List<AmenitiesDTO> amenitiesDTOS) {
         double amenitiesPrice = 0L;
         for (AmenitiesDTO amenitiesDTO : amenitiesDTOS) {
             amenitiesPrice = amenitiesPrice +
@@ -155,7 +173,7 @@ public class OrderService {
         return amenitiesPrice;
     }
 
-    private double getMerchandisesPrices(List<MerchandiseDTO> merchandiseDTOS){
+    private double getMerchandisesPrices(List<MerchandiseDTO> merchandiseDTOS) {
         double merchandisesPrice = 0L;
         for (MerchandiseDTO merchandiseDTO : merchandiseDTOS) {
             merchandisesPrice = merchandisesPrice +
@@ -164,10 +182,12 @@ public class OrderService {
         return merchandisesPrice;
     }
 
-    private void editMerchandiseNumber(List<MerchandiseDTO> merchandises){
+    private void editMerchandiseNumber(List<MerchandiseDTO> merchandises) {
         for (MerchandiseDTO merchandiseDTO : merchandises) {
             merchandiseDTO.setNumberInWarehouse(merchandiseDTO.getNumberInWarehouse() - 1);
             merchandiseService.editMerchandise(merchandiseDTO);
         }
     }
+
+
 }
