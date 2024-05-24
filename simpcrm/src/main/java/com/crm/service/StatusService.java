@@ -3,38 +3,49 @@ package com.crm.service;
 import com.crm.dto.StatusDTO;
 import com.crm.entity.Status;
 import com.crm.reposotiry.StatusRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StatusService {
     public final StatusRepository statusRepository;
 
-    public StatusService(StatusRepository statusRepository) {
-        this.statusRepository = statusRepository;
-    }
-
-    public List<Status> findAllUsers() {
-        return statusRepository.findAll();
-    }
-    public List<Status> findByStatus(String status){return statusRepository.findByStatus(status);}
-    private Status makeAStatus(StatusDTO statusDTO, boolean idEnable){
-        Status status = new Status();
-        if (idEnable) {
-            status.setId(statusDTO.getId());
+    public List<StatusDTO> findAllStatuses() {
+        List<Status> statuses = statusRepository.findAll();
+        ArrayList<StatusDTO> statuseDTOS = new ArrayList<>();
+        for (Status status : statuses) {
+            statuseDTOS.add(makeAStatusDTO(new StatusDTO(), status));
         }
+        return statuseDTOS;
+    }
+    private StatusDTO makeAStatusDTO(StatusDTO statusDTO, Status status){
+        statusDTO.setId(status.getId());
+        statusDTO.setStatus(status.getStatus());
+        return statusDTO;
+    }
+    private Status makeAStatus(StatusDTO statusDTO, Status status){
         status.setStatus(statusDTO.getStatus());
         return status;
     }
 
-    public Status saveStatus(StatusDTO statusDTO) {
-        return statusRepository.save(makeAStatus(statusDTO, false));
+    public StatusDTO saveStatus(StatusDTO statusDTO) {
+        Status status = new Status();
+        statusRepository.save(makeAStatus(statusDTO, status));
+        statusDTO.setId(status.getId());
+        return statusDTO;
     }
-    public void deleteStatus(StatusDTO statusDTO) {
-        statusRepository.delete(makeAStatus(statusDTO, true));
+    public void deleteStatus(Long id) {
+       statusRepository.deleteById(id);
     }
-    public Status editStatus(StatusDTO statusDTO){
-        return statusRepository.save(makeAStatus(statusDTO, true));
+    public StatusDTO editStatus(StatusDTO statusDTO){
+        Status status = new Status();
+        status.setId(statusDTO.getId());
+        statusRepository.save(makeAStatus(statusDTO, status));
+        return statusDTO;
     }
 }

@@ -2,13 +2,12 @@ package com.crm.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 
 @Data
 @NoArgsConstructor
 public class FileStorage {
 
-    private ObjectId id;
+    private String id;
 
     private Long size;
 
@@ -17,4 +16,6 @@ public class FileStorage {
     private String description;
 
     private byte[] file;
+
+    private Long orderId;
 }

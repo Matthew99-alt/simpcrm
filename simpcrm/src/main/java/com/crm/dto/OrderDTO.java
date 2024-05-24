@@ -1,9 +1,12 @@
 package com.crm.dto;
 
+import com.crm.entity.Status;
+import com.crm.entity.UserEntity;
+import java.util.List;
+
+import com.crm.uploadClass.UploadClass;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Setter
 @Getter
@@ -11,22 +14,27 @@ public class OrderDTO {
 
     private Long id;
 
-    private String order_name;
+    private String orderName;
 
     private Long priority;
 
-    private String statusTitle;
+    private Status status;
 
     private String description;
 
-    private List<String> ITServicesTitles;
+    private List<AmenitiesDTO> amenities;
 
-    private List<String> ProgramsTitles;
+    private List<MerchandiseDTO> merchandises;
 
     private String comments;
 
-    private String clientTitle;
+    private UserEntity client;
 
-    private String userTitle;
+    private UserEntity users;
 
+    private int totalNumberOfMerchandise;
+
+    private int totalNumberOfAmenities;
+
+    private double totalCostOfOrder;
 }

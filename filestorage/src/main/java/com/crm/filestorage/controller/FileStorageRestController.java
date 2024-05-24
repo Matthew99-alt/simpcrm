@@ -3,14 +3,21 @@ package com.crm.filestorage.controller;
 import com.crm.filestorage.dto.FileStorageDTO;
 import com.crm.filestorage.entity.FileStorage;
 import com.crm.filestorage.service.FileStorageService;
+import com.crm.filestorage.uploadClasses.UploadFileRequest;
 import java.io.IOException;
 import java.util.List;
-
 import org.bson.types.ObjectId;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/rest/fileStorage")
@@ -27,34 +34,33 @@ public class FileStorageRestController {
         return fileStorageService.findAll();
     }
 
-    @GetMapping("/fileTitle")
-    public String getFileTitle(@RequestBody FileStorageDTO fileStorageDTO) {
-        return fileStorageService.findById(fileStorageDTO.getId());
+    @GetMapping("/fileByOrderId")
+    public FileStorageDTO getFileByOrderId(@RequestParam(name = "orderId") Long orderId) {
+        return fileStorageService.findByIdOrderId(orderId);
+    }
+
+    @GetMapping("/{fileId}")
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable ObjectId fileId) {
+        return fileStorageService.downloadFile(fileId);
     }
 
     @PostMapping("/upload")
-    //TODO: сделать класс-тело запроса, поместить в него ровно те же поля
-    // @RequestBody - class uploadFileRequest
-    public String uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("description") String description) throws IOException {
-        return fileStorageService.addFile(file, description);
-    }
-
-    @GetMapping("/files/{fileId}")
-    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable ObjectId fileId) throws IOException {
-        return fileStorageService.downladFile(fileId);
-    }
-
-    @DeleteMapping("/delete")
-    public void deleteUser(@RequestBody FileStorageDTO fileStorageDTO) {
-        fileStorageService.deleteFile(fileStorageDTO);
+    public String uploadFile(@ModelAttribute UploadFileRequest uploadFileRequest) throws IOException {
+        return fileStorageService.addFile(uploadFileRequest);
     }
 
     @PutMapping("/edit")
-    public void editFile(@RequestParam("file") MultipartFile file,
-                         @RequestParam("description") String description,
-                         @RequestParam("id") ObjectId id)
-            throws IOException {
-        fileStorageService.editFile(file, description, id);
+    public void editFile(@ModelAttribute UploadFileRequest uploadFileRequest) throws IOException {
+        fileStorageService.editFile(uploadFileRequest.getFile(), uploadFileRequest.getId(), uploadFileRequest.getOrderId());
     }
 
+    @DeleteMapping("/delete")
+    public void deleteFile(@RequestParam("id") ObjectId id) {
+        fileStorageService.deleteFile(id);
+    }
+
+    @DeleteMapping("/deleteByOrderId")
+    public void deleteFile(@RequestParam("orderId") Long orderId) {
+        fileStorageService.deleteFileByOrderId(orderId);
+    }
 }

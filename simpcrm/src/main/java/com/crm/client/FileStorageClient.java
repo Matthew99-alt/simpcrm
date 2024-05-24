@@ -1,12 +1,12 @@
+
 package com.crm.client;
 
 import com.crm.dto.FileStorage;
-import com.crm.dto.HealthCheckFileStorageResponse;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.bson.types.ObjectId;
+import com.crm.uploadClass.UploadClass;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,27 +16,24 @@ import org.springframework.web.multipart.MultipartFile;
 @FeignClient(name = "file-storage-client", url = "${service.clients.file-storage-client.url}")
 public interface FileStorageClient {
 
-    @GetMapping(value = "/main/health", consumes = MediaType.APPLICATION_JSON_VALUE)
-    HealthCheckFileStorageResponse healthCheckFileStorageApp();
-
-    @GetMapping("/rest/fileStorage/all")
+    @GetMapping("/all")
     List<FileStorage> getAllFiles();
 
-    @GetMapping("/rest/fileStorage/files/{fileId}")
-    ResponseEntity<byte[]> downloadFile(@PathVariable ObjectId fileId) throws IOException;
+    @GetMapping("/fileByOrderId")
+    FileStorage getFileByOrderId(@RequestParam(name = "orderId") Long orderId);
 
-    @GetMapping(value = "/rest/fileStorage/fileTitle", consumes = MediaType.APPLICATION_JSON_VALUE)
-    String getFileTitle(@RequestBody FileStorage fileStorage);
+    @GetMapping("/{fileId}")
+    ResponseEntity<byte[]> downloadFile(@PathVariable String fileId) throws IOException;
 
-    @DeleteMapping("/rest/fileStorage/delete")
-    void deleteFile(@RequestBody FileStorage FileStorage);
+    @DeleteMapping("/delete")
+    void deleteFile(@RequestParam("id") String id);
 
-    @PutMapping(value = "/rest/fileStorage/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    void editFile(@RequestPart MultipartFile file,
-                  @RequestParam("description") String description,
-                  @RequestParam("id") ObjectId id);
+    @DeleteMapping("/deleteByOrderId")
+    void deleteFileByOrderId(@RequestParam("orderId") Long orderId);
 
-    @PostMapping(value = "/rest/fileStorage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    String uploadFile(@RequestPart MultipartFile file,
-                      @RequestParam("description") String description) throws IOException;
+    @PutMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    void editFile(@ModelAttribute UploadClass uploadClass) throws IOException;
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    String uploadFile(@ModelAttribute UploadClass uploadClass) throws IOException;
 }

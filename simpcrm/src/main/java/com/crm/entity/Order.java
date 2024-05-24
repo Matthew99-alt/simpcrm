@@ -1,89 +1,67 @@
 package com.crm.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Table(name = "order")
+import java.util.List;
+
+
+@Getter
+@Setter
+@Entity(name = "draft_order")
 public class Order {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(value = "order_name")
+
+    @Column(name = "order_name")
     private String orderName;
-    @Column(value = "priority")
+
+    @Column(name = "priority")
     private Long priority;
-    @Column(value = "status_id")
-    private Long status_id;
-    @Column(value = "description")
+
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name="status_id", referencedColumnName = "id")
+    private Status status;
+
+    @Column(name = "description")
     private String description;
-    @Column(value = "comments")
+
+    @Column(name = "comments")
     private String comments;
-    @Column(value = "client_id")
-    private Long client_id;
-    @Column(value = "user_id")
-    private Long user_id;
 
-    public Long getId() {
-        return id;
-    }
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name="client_id", referencedColumnName = "id")
+    private UserEntity client;
 
-    public String getOrder_name() {
-        return orderName;
-    }
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name="user_id", referencedColumnName = "id")
+    private UserEntity userEntity;
 
-    public Long getPriority() {
-        return priority;
-    }
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(
+            name="order_amenities",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "amenities_id")
+    )
+    private List<Amenities> amenities;
 
-    public Long getStatus_id() {
-        return status_id;
-    }
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(
+            name="order_merchandise",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "merchandise_id")
+    )
+    private List<Merchandise> merchandises;
 
-    public String getDescription() {
-        return description;
-    }
+    @Column(name = "total_number_of_merchandises")
+    private int totalNumberOfMerchandises;
 
-    public String getComments() {
-        return comments;
-    }
+    @Column(name = "total_number_of_amenities")
+    private int totalNumberOfAmenities;
 
-    public Long getClient_id() {
-        return client_id;
-    }
-
-    public Long getUser_id() {
-        return user_id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setOrder_name(String order_name) {
-        this.orderName = order_name;
-    }
-
-    public void setPriority(Long priority) {
-        this.priority = priority;
-    }
-
-    public void setStatus_id(Long status_id) {
-        this.status_id = status_id;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public void setClient_id(Long client_id) {
-        this.client_id = client_id;
-    }
-
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
-    }
+    @Column(name = "total_cost")
+    private double totalCost;
 }

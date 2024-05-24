@@ -1,54 +1,77 @@
 package com.crm.service;
 
 import com.crm.dto.UserDTO;
-import com.crm.entity.User;
+import com.crm.entity.UserEntity;
 import com.crm.reposotiry.UserRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    public final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
 
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public List<User> findByFirstName(String firstName) {
-        return userRepository.findByFirstName(firstName);
-    }
-
-
-    private User makeAnUser(UserDTO userDTO, boolean idEnable){
-        User user = new User();
-        if(idEnable){
-            user.setId(userDTO.getId());
+    public List<UserDTO> findAllUsers() {
+        List<UserEntity> userEntityEntities = userRepository.findAll();
+        ArrayList<UserDTO> userDTOS = new ArrayList<>();
+        for (UserEntity userEntity : userEntityEntities) {
+            userDTOS.add(makeAnUserDTO(new UserDTO(), userEntity));
         }
-        user.setFirstName(userDTO.getFirstName());
-        user.setSecondName(userDTO.getSecondName());
-        user.setMiddleName(userDTO.getMiddleName());
-        user.setAddress(userDTO.getAddress());
-        user.setPhone(userDTO.getPhone());
-        user.setEmail(userDTO.getEmail());
-
-        return user;
+        return userDTOS;
     }
 
-    public User saveUser(UserDTO userDTO) {
-        return userRepository.save(makeAnUser(userDTO, false));
-    }
-    public void deleteUser(UserDTO userDTO) {
-        userRepository.delete(makeAnUser(userDTO, true));
+    private UserDTO makeAnUserDTO(UserDTO userDTO, UserEntity userEntity) {
+        userDTO.setId(userEntity.getId());
+        userDTO.setFirstName(userEntity.getFirstName());
+        userDTO.setSecondName(userEntity.getSecondName());
+        userDTO.setMiddleName(userEntity.getMiddleName());
+        userDTO.setAddress(userEntity.getAddress());
+        userDTO.setPhone(userEntity.getPhone());
+        userDTO.setEmail(userEntity.getEmail());
+        userDTO.setUserType(userEntity.getUserType());
+        userDTO.setLocality(userEntity.getLocality());
+
+        return userDTO;
     }
 
-    public User editUser(UserDTO userDTO){
-        return userRepository.save(makeAnUser(userDTO, true));
+    private UserEntity makeAnUser(UserDTO userDTO, UserEntity userEntity) {
+        userDTO.setId(userEntity.getId());
+        userEntity.setFirstName(userDTO.getFirstName());
+        userEntity.setSecondName(userDTO.getSecondName());
+        userEntity.setMiddleName(userDTO.getMiddleName());
+        userEntity.setAddress(userDTO.getAddress());
+        userEntity.setPhone(userDTO.getPhone());
+        userEntity.setEmail(userDTO.getEmail());
+        userEntity.setUserType(userDTO.getUserType());
+        userEntity.setLocality(userDTO.getLocality());
+
+        return userEntity;
     }
 
+    public UserDTO saveUser(UserDTO userDTO) {
+        UserEntity userEntity = new UserEntity();
+        userRepository.save(makeAnUser(userDTO, userEntity));
+        userDTO.setId(userEntity.getId());
+        return userDTO;
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public UserDTO editUser(UserDTO userDTO) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userDTO.getId());
+        userRepository.save(makeAnUser(userDTO, userEntity));
+        return userDTO;
+    }
+
+    public UserDTO findById(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        return makeAnUserDTO(new UserDTO(), userEntity);
+    }
 }

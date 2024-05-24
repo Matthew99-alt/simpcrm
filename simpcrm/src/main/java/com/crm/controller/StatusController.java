@@ -1,11 +1,16 @@
 package com.crm.controller;
 
 import com.crm.dto.StatusDTO;
-import com.crm.entity.Status;
 import com.crm.service.StatusService;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/rest/status")
@@ -17,25 +22,22 @@ public class StatusController {
     }
 
     @GetMapping("/all")
-    public List<Status> getAllStatus() {
-        return statusService.findAllUsers();
-    }
-
-    @GetMapping("/title")
-    public List<Status> getByStatus(@RequestBody StatusDTO statusDTO) {
-        return statusService.findByStatus(statusDTO.getStatus());
+    public List<StatusDTO> getAllStatuses() {
+        return statusService.findAllStatuses();
     }
 
     @PostMapping("/save")
-    public Status saveStatus(@RequestBody StatusDTO statusDTO) {
+    public StatusDTO saveStatus(@RequestBody StatusDTO statusDTO) {
         return statusService.saveStatus(statusDTO);
     }
 
     @DeleteMapping("/delete")
-    public void deleteStatus(@RequestBody StatusDTO statusDTO) {
-        statusService.deleteStatus(statusDTO);
+    public void deleteStatus(@RequestParam Long id) {
+        statusService.deleteStatus(id);
     }
 
     @PutMapping("/edit")
-    public Status editStatus(@RequestBody StatusDTO statusDTO){ return statusService.editStatus(statusDTO);}
+    public StatusDTO editStatus(@RequestBody StatusDTO statusDTO) {
+        return statusService.editStatus(statusDTO);
+    }
 }

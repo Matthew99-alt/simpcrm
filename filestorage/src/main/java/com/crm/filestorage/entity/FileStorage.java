@@ -28,10 +28,10 @@ public class FileStorage {
     @Field(name = "title")
     private String title;
 
-    @Field(name = "description")
-    private String description;
-
     @Field(name = "file")
     private byte[] file;
+
+    @Field(name = "order_id")
+    private Long orderId;
 
 }

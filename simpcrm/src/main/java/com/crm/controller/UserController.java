@@ -1,11 +1,16 @@
 package com.crm.controller;
 
 import com.crm.dto.UserDTO;
-import com.crm.entity.User;
 import com.crm.service.UserService;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/rest/user")
@@ -18,25 +23,22 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/name")
-    public List<User> getAllUserByFirstName(@RequestBody UserDTO userDTO) {
-        return userService.findByFirstName(userDTO.getFirstName());
-    }
-
     @PostMapping("/save")
-    public User saveUser(@RequestBody UserDTO userDTO) {
+    public UserDTO saveUser(@RequestBody UserDTO userDTO) {
         return userService.saveUser(userDTO);
     }
 
     @DeleteMapping("/delete")
-    public void deleteUser(@RequestBody UserDTO userDTO) {
-        userService.deleteUser(userDTO);
+    public void deleteUser(@RequestParam("id") Long id) {
+        userService.deleteUser(id);
     }
 
     @PutMapping("/edit")
-    public User editUser(@RequestBody UserDTO userDTO){ return userService.editUser(userDTO);}
+    public UserDTO editUser(@RequestBody UserDTO userDTO) {
+        return userService.editUser(userDTO);
+    }
 }
