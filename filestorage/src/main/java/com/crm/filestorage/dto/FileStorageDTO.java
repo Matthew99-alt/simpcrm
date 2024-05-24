@@ -16,8 +16,6 @@ public class FileStorageDTO {
 
     private String title;
 
-    private String description;
-
     private byte[] file;
 
     private Long orderId;

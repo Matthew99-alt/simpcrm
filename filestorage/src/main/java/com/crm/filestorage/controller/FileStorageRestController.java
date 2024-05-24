@@ -51,7 +51,7 @@ public class FileStorageRestController {
 
     @PutMapping("/edit")
     public void editFile(@ModelAttribute UploadFileRequest uploadFileRequest) throws IOException {
-        fileStorageService.editFile(uploadFileRequest.getFile(), uploadFileRequest.getDescription(), uploadFileRequest.getId(), uploadFileRequest.getOrderId());
+        fileStorageService.editFile(uploadFileRequest.getFile(), uploadFileRequest.getId(), uploadFileRequest.getOrderId());
     }
 
     @DeleteMapping("/delete")

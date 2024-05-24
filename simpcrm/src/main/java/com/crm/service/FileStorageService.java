@@ -39,7 +39,7 @@ public class FileStorageService {
         return fileStorageClient.uploadFile(uploadClass);
     }
 
-    public FileStorage getFileById(Long orderId) {
+    public FileStorage getFileByOrderId(Long orderId) {
         return fileStorageClient.getFileByOrderId(orderId);
     }
 }

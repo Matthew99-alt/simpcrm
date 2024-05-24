@@ -1,4 +1,4 @@
-package com.crm.controller.rest;
+package com.crm.controller;
 
 import com.crm.dto.StatusDTO;
 import com.crm.service.StatusService;

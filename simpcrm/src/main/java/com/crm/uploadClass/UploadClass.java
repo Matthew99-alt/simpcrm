@@ -10,8 +10,6 @@ public class UploadClass {
 
     private MultipartFile file;
 
-    private String description;
-
     private String id;
 
     private Long orderId;

@@ -1,4 +1,4 @@
-package com.crm.controller.rest;
+package com.crm.controller;
 
 import com.crm.dto.MerchandiseDTO;
 import com.crm.service.MerchandiseService;

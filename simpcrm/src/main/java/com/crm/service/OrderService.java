@@ -1,6 +1,7 @@
 package com.crm.service;
 
 import com.crm.dto.AmenitiesDTO;
+import com.crm.dto.FileStorage;
 import com.crm.dto.MerchandiseDTO;
 import com.crm.dto.OrderDTO;
 import com.crm.entity.Amenities;
@@ -14,6 +15,8 @@ import com.crm.reposotiry.UserRepository;
 import com.crm.uploadClass.UploadClass;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +64,11 @@ public class OrderService {
                 fileStorageService.addFile(uploadClass);
             }
 
+            //в order было проведено вычисление итоговой стоимости, количества товаров и услуг.
+            //эти параметры не отражены в принятом orderDTO
+            //поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
+            orderDTO = makeOrderDTOFromOrder(savedOrder);
+
             return orderDTO;
         } catch (Exception exception) {
             log.error(exception.getMessage());
@@ -74,14 +82,30 @@ public class OrderService {
         fileStorageService.deleteFileByOrderId(id);
     }
 
-    public OrderDTO editOrder(OrderDTO orderDTO) {
+    public OrderDTO editOrder(String orderDTOStr, MultipartFile file) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        OrderDTO orderDTO = objectMapper.readValue(orderDTOStr, OrderDTO.class);
+
         Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(EntityNotFoundException::new);
         orderRepository.save(makeOrderFromOrderDTO(orderDTO, order));
-        return orderDTO;
-    }
 
-    public OrderDTO findOrderById(Long id) {
-        return makeOrderDTOFromOrder(orderRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+            if (file != null) {
+                UploadClass uploadClass = new UploadClass();
+                FileStorage fileStorage = fileStorageService.getFileByOrderId(orderDTO.getId());
+                uploadClass.setId(fileStorage.getId());
+                uploadClass.setOrderId(orderDTO.getId());
+                uploadClass.setFile(file);
+
+                fileStorageService.editFile(uploadClass);
+            }
+
+            //в order было проведено вычисление итоговой стоимости, количества товаров и услуг.
+            //эти параметры не отражены в принятом orderDTO
+            //поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
+            orderDTO = makeOrderDTOFromOrder(order);
+
+        return orderDTO;
     }
 
     private OrderDTO makeOrderDTOFromOrder(Order savedOrder) {
@@ -188,6 +212,4 @@ public class OrderService {
             merchandiseService.editMerchandise(merchandiseDTO);
         }
     }
-
-
 }

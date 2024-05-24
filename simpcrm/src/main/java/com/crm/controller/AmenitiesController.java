@@ -1,5 +1,5 @@
 
-package com.crm.controller.rest;
+package com.crm.controller;
 
 import com.crm.dto.AmenitiesDTO;
 import com.crm.service.AmenitiesService;

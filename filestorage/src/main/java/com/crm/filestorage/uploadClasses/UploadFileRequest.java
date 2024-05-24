@@ -11,8 +11,6 @@ public class UploadFileRequest {
 
     private MultipartFile file;
 
-    private String description;
-
     private Long orderId;
 
     private ObjectId id;

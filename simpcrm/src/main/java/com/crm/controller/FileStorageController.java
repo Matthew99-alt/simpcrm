@@ -1,4 +1,4 @@
-package com.crm.controller.rest;
+package com.crm.controller;
 
 import com.crm.dto.FileStorage;
 import com.crm.service.FileStorageService;
@@ -26,7 +26,7 @@ public class FileStorageController {
 
     @GetMapping("/fileByOrderId")
     FileStorage getFileByOrderId(@RequestParam(name = "orderId") Long orderId) {
-        return fileStorageService.getFileById(orderId);
+        return fileStorageService.getFileByOrderId(orderId);
     }
 
     @GetMapping("/getAllFiles")
@@ -42,6 +42,11 @@ public class FileStorageController {
     @DeleteMapping("/delete")
     public void deleteFile(@RequestParam("id") String id) {
         fileStorageService.deleteFileById(id);
+    }
+
+    @DeleteMapping("/deleteByOrderId")
+    public void deleteFile(@RequestParam("orderId") Long orderId) {
+        fileStorageService.deleteFileByOrderId(orderId);
     }
 
     @PutMapping("/edit")

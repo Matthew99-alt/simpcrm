@@ -39,9 +39,8 @@ public class FileStorageService {
 
     private FileStorageDTO convertToDto(FileStorage fileSTorage) {
         FileStorageDTO fileStorageDTO = new FileStorageDTO();
-        //Э? Это нормально?
+
         fileStorageDTO.setId(fileSTorage.getId().toString());
-        fileStorageDTO.setDescription(fileSTorage.getDescription());
         fileStorageDTO.setFile(fileSTorage.getFile());
         fileStorageDTO.setSize(fileSTorage.getSize());
         fileStorageDTO.setTitle(fileSTorage.getTitle());
@@ -59,13 +58,11 @@ public class FileStorageService {
     }
 
     public void editFile(MultipartFile file,
-                         String description,
                          ObjectId id, Long orderId) throws IOException {
         FileStorage files = FileStorage
                 .builder()
                 .id(id)
                 .title(file.getOriginalFilename())
-                .description(description)
                 .size(file.getSize())
                 .file(file.getBytes())
                 .orderId(orderId)
@@ -78,7 +75,6 @@ public class FileStorageService {
                 .builder()
                 .title(uploadClass.getFile().getOriginalFilename())
                 .size(uploadClass.getFile().getSize())
-                .description(uploadClass.getDescription())
                 .orderId(uploadClass.getOrderId())
                 .file(uploadClass.getFile().getBytes())
                 .build();
