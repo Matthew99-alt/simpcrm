@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class OrderService {
 
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
+
     private final OrderRepository orderRepository;
     private final AmenitiesRepository itServicesRepository;
     private final MerchandiseRepository merchandiseRepository;
@@ -38,7 +39,6 @@ public class OrderService {
     private final AmenitiesService amenitiesService;
     private final MerchandiseService merchandiseService;
     private final FileStorageService fileStorageService;
-
     private final ObjectMapper objectMapper;
 
     public List<OrderDTO> findAllOrders() {
@@ -64,9 +64,9 @@ public class OrderService {
                 fileStorageService.addFile(uploadClass);
             }
 
-            //в order было проведено вычисление итоговой стоимости, количества товаров и услуг.
-            //эти параметры не отражены в принятом orderDTO
-            //поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
+            //В order было проведено вычисление итоговой стоимости, количества товаров и услуг.
+            //Эти параметры не отражены в принятом orderDTO
+            //Поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
             orderDTO = makeOrderDTOFromOrder(savedOrder);
 
             return orderDTO;
@@ -100,8 +100,8 @@ public class OrderService {
                 fileStorageService.editFile(uploadClass);
             }
 
-            //в order было проведено вычисление итоговой стоимости, количества товаров и услуг.
-            //эти параметры не отражены в принятом orderDTO
+            //В order было проведено вычисление итоговой стоимости, количества товаров и услуг.
+            //Эти параметры не отражены в принятом orderDTO
             //поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
             orderDTO = makeOrderDTOFromOrder(order);
 
@@ -118,7 +118,7 @@ public class OrderService {
         responseOrderDto.setDescription(savedOrder.getDescription());
         responseOrderDto.setComments(savedOrder.getComments());
         responseOrderDto.setClient(savedOrder.getClient());
-        responseOrderDto.setUsers(savedOrder.getUserEntity());
+        responseOrderDto.setUsers(savedOrder.getUser());
         responseOrderDto.setAmenities(getAmenitiesDTO(savedOrder.getAmenities()));
         responseOrderDto.setMerchandises(getMerchandiseDTO(savedOrder.getMerchandises()));
         responseOrderDto.setTotalNumberOfAmenities(savedOrder.getTotalNumberOfAmenities());
@@ -137,7 +137,7 @@ public class OrderService {
         order.setClient(userRepository.findById(orderDTO.getClient().getId()).orElseThrow(EntityNotFoundException::new));
         order.setStatus(statusRepository.findById(orderDTO.getStatus().getId()).orElseThrow(EntityNotFoundException::new));
         if (orderDTO.getUsers() != null) {
-            order.setUserEntity(userRepository.findById(orderDTO.getUsers().getId()).orElseThrow(EntityNotFoundException::new));
+            order.setUser(userRepository.findById(orderDTO.getUsers().getId()).orElseThrow(EntityNotFoundException::new));
         }
         order.setAmenities(getAmenities(orderDTO.getAmenities()));
         order.setMerchandises(getMerchandise(orderDTO.getMerchandises()));
