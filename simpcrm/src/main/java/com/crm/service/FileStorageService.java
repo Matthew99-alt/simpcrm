@@ -5,6 +5,8 @@ import com.crm.dto.FileStorage;
 import com.crm.uploadClass.UploadClass;
 import java.io.IOException;
 import java.util.List;
+
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,14 @@ public class FileStorageService {
     }
 
     public FileStorage getFileByOrderId(Long orderId) {
-        return fileStorageClient.getFileByOrderId(orderId);
+        try {
+            return fileStorageClient.getFileByOrderId(orderId);
+        } catch (FeignException e) {
+            if (e.status() == 500) {
+                // Возвращаем пустое значение или null при ошибке 500
+                return null;
+            }
+            throw e; // Пробрасываем другие ошибки
+        }
     }
 }
