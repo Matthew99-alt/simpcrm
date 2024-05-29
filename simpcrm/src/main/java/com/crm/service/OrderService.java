@@ -90,27 +90,15 @@ public class OrderService {
         Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(EntityNotFoundException::new);
         orderRepository.save(makeOrderFromOrderDTO(orderDTO, order));
 
-        if (file != null) {
-            UploadClass uploadClass = new UploadClass();
-            try {
+            if (file != null) {
+                UploadClass uploadClass = new UploadClass();
                 FileStorage fileStorage = fileStorageService.getFileByOrderId(orderDTO.getId());
-                if (fileStorage != null) {
-                    uploadClass.setId(fileStorage.getId());
-                }
-            } catch (Exception e) {
-                // Логирование исключения
-                System.out.println("Файл не найден, будет создан новый файл.");
-            }
+                uploadClass.setId(fileStorage.getId());
+                uploadClass.setOrderId(orderDTO.getId());
+                uploadClass.setFile(file);
 
-            uploadClass.setOrderId(orderDTO.getId());
-            uploadClass.setFile(file);
-
-            if (uploadClass.getId() != null) {
                 fileStorageService.editFile(uploadClass);
-            } else {
-                fileStorageService.addFile(uploadClass);
             }
-        }
 
             //в order было проведено вычисление итоговой стоимости, количества товаров и услуг.
             //эти параметры не отражены в принятом orderDTO
@@ -142,18 +130,10 @@ public class OrderService {
 
     private Order makeOrderFromOrderDTO(OrderDTO orderDTO, Order order) {
         order.setId(orderDTO.getId());
-        if(orderDTO.getOrderName()!=null) {
-            order.setOrderName(orderDTO.getOrderName());
-        }
-        if(orderDTO.getDescription()!=null) {
-            order.setDescription(orderDTO.getDescription());
-        }
-        if(orderDTO.getPriority()!=null) {
-            order.setPriority(orderDTO.getPriority());
-        }
-        if(orderDTO.getComments()!=null) {
-            order.setComments(orderDTO.getComments());
-        }
+        order.setOrderName(orderDTO.getOrderName());
+        order.setDescription(orderDTO.getDescription());
+        order.setPriority(orderDTO.getPriority());
+        order.setComments(orderDTO.getComments());
         order.setClient(userRepository.findById(orderDTO.getClient().getId()).orElseThrow(EntityNotFoundException::new));
         order.setStatus(statusRepository.findById(orderDTO.getStatus().getId()).orElseThrow(EntityNotFoundException::new));
         if (orderDTO.getUsers() != null) {
