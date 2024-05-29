@@ -9,6 +9,8 @@ public class UserDTO {
 
     private Long id;
 
+    private String login;
+
     private String firstName;
 
     private String secondName;
@@ -21,7 +23,7 @@ public class UserDTO {
 
     private String address;
 
-    private String userType;
+    private String role;
 
-    private String locality;
+    private String city;
 }

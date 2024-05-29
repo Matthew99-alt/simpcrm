@@ -9,7 +9,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity(name = "draft_order")
+@Entity
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -34,11 +35,11 @@ public class Order {
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name="client_id", referencedColumnName = "id")
-    private UserEntity client;
+    private User client;
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name="user_id", referencedColumnName = "id")
-    private UserEntity userEntity;
+    private User user;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(

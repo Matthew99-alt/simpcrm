@@ -1,10 +1,9 @@
 package com.crm.dto;
 
 import com.crm.entity.Status;
-import com.crm.entity.UserEntity;
+import com.crm.entity.User;
 import java.util.List;
 
-import com.crm.uploadClass.UploadClass;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,9 +27,9 @@ public class OrderDTO {
 
     private String comments;
 
-    private UserEntity client;
+    private User client;
 
-    private UserEntity users;
+    private User users;
 
     private int totalNumberOfMerchandise;
 
