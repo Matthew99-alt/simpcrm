@@ -1,56 +1,34 @@
 package com.crm.aspects;
 
-import com.crm.entity.User;
-import com.crm.exception.PermissionDeniedException;
-import com.crm.reposotiry.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.crm.annotation.LoggingMethod;
+import com.crm.exception.UnauthorizedException;
+import com.crm.service.SecurityService;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.JoinPoint;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Aspect
 @Component
 @RequiredArgsConstructor
 public class LoggingAspect {
-    private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
-    private final UserRepository userRepository;
 
-    @Pointcut("execution(* com.crm.controller.UserController.*(..)) && args(.., @RequestHeader login, @RequestHeader password)")
-    public void allMethods(String login, String password) {}
+    private final SecurityService securityService;
 
-    @Before("allMethods(login, password)")
-    public void checkPermissions(JoinPoint joinPoint, String login, String password) {
-        logger.debug("Checking permissions for method: {}", joinPoint.getSignature());
-        logger.debug("Login: {}, Password: {}", login, password);
-        User user = userRepository.findByLoginAndPassword(login, password)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        logger.debug("User found: {}", user);
+    @Around(value = "args(login, password) && @annotation(loggingMethod)", argNames = "joinPoint, loggingMethod, login, password")
+    public Object authAdvice(final ProceedingJoinPoint joinPoint, LoggingMethod loggingMethod, String login, String password)
+            throws Throwable {
+        log.info("start auth with params login: {}, password: {}", login, password);
 
-        if (!"admin".equals(user.getRole())) {
-            logger.warn("Permission denied for user: {}", user);
-            throw new PermissionDeniedException("Access Denied");
-        }
-    }
+        List<String> roles = Arrays.asList(loggingMethod.role());
+        if (!securityService.checkUser(login, password, roles))
+            throw new RuntimeException("При авторизации произошла неведомая ошибка, спасайтесь!");
 
-    @Pointcut("execution(* com.crm.controller.OrderController.*(..)) && args(.., @RequestHeader login, @RequestHeader password)")
-    public void orderMethods(String login, String password) {}
-
-    @Before("orderMethods(login, password)")
-    public void checkOrderPermissions(JoinPoint joinPoint, String login, String password) {
-        logger.debug("Checking order permissions for method: {}", joinPoint.getSignature());
-        logger.debug("Login: {}, Password: {}", login, password);
-        User user = userRepository.findByLoginAndPassword(login, password)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        logger.debug("User found: {}", user);
-
-        if (!"admin".equals(user.getRole()) && !"user".equals(user.getRole())) {
-            logger.warn("Permission denied for user: {}", user);
-            throw new PermissionDeniedException("Access Denied");
-        }
+        return joinPoint.proceed();
     }
 }

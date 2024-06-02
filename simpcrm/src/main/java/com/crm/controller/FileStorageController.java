@@ -26,21 +26,23 @@ public class FileStorageController {
     FileStorage getFileByOrderId(@RequestHeader("login") String login,
                                  @RequestHeader("password") String password,
                                  @RequestParam(name = "orderId") Long orderId) {
-        if (securityService.checkAdminRole(login, password)) {
-            return fileStorageService.getFileByOrderId(orderId);
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        return fileStorageService.getFileByOrderId(orderId);
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            return fileStorageService.getFileByOrderId(orderId);
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
     }
 
     @GetMapping("/getAllFiles")
     public List<FileStorage> getAllFilesFromMongoApp(@RequestHeader("login") String login,
                                                      @RequestHeader("password") String password) {
-        if (securityService.checkAdminRole(login, password)) {
-            return fileStorageService.getAllFilesFromStorage();
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        return fileStorageService.getAllFilesFromStorage();
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            return fileStorageService.getAllFilesFromStorage();
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
 
     }
 
@@ -48,11 +50,13 @@ public class FileStorageController {
     public ResponseEntity<byte[]> downloadFile(@RequestHeader("login") String login,
                                                @RequestHeader("password") String password,
                                                @PathVariable String fileId) throws IOException {
-        if (securityService.checkAdminRole(login, password)) {
-            return fileStorageService.downloadFile(fileId);
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+
+        return fileStorageService.downloadFile(fileId);
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            return fileStorageService.downloadFile(fileId);
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
 
     }
 
@@ -60,11 +64,12 @@ public class FileStorageController {
     public void deleteFile(@RequestHeader("login") String login,
                            @RequestHeader("password") String password,
                            @RequestParam("id") String id) {
-        if (securityService.checkAdminRole(login, password)) {
-            fileStorageService.deleteFileById(id);
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        fileStorageService.deleteFileById(id);
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            fileStorageService.deleteFileById(id);
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
 
     }
 
@@ -72,11 +77,12 @@ public class FileStorageController {
     public void deleteFile(@RequestHeader("login") String login,
                            @RequestHeader("password") String password,
                            @RequestParam("orderId") Long orderId) {
-        if (securityService.checkAdminRole(login, password)) {
-            fileStorageService.deleteFileByOrderId(orderId);
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        fileStorageService.deleteFileByOrderId(orderId);
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            fileStorageService.deleteFileByOrderId(orderId);
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
 
     }
 
@@ -84,11 +90,12 @@ public class FileStorageController {
     public void editFile(@RequestHeader("login") String login,
                          @RequestHeader("password") String password,
                          @ModelAttribute UploadClass uploadClass) throws IOException {
-        if (securityService.checkAdminRole(login, password)) {
-            fileStorageService.editFile(uploadClass);
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        fileStorageService.editFile(uploadClass);
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            fileStorageService.editFile(uploadClass);
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
 
     }
 
@@ -96,10 +103,11 @@ public class FileStorageController {
     String uploadFile(@RequestHeader("login") String login,
                       @RequestHeader("password") String password,
                       @ModelAttribute UploadClass uploadClass) throws IOException {
-        if (securityService.checkAdminRole(login, password)) {
-            return fileStorageService.addFile(uploadClass);
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        return fileStorageService.addFile(uploadClass);
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            return fileStorageService.addFile(uploadClass);
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
     }
 }

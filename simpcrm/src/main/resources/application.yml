@@ -2,14 +2,14 @@ server:
   port: 8181
   tomcat:
     max-swallow-size: 100MB
-    max-http-post-size: 100MB
+    max-http-form-post-size: 100MB
 
-logging:
-  level:
-    org:
-      springframework:
-        web: trace
-      apache: trace
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        web: trace
+#      apache: trace
 
 feign:
   client:
@@ -17,6 +17,7 @@ feign:
       default:
         connectTimeout: 50000
         readTimeout: 3000000
+
 
 spring:
   servlet:
@@ -33,9 +34,9 @@ spring:
     #    defer-datasource-initialization: true - убрали настройку потому что отключили Hibernate и создаем и наполняем таблицы сами
     hibernate:
       ddl-auto: update
-  aop:
-    proxy-target-class: true
-    auto: true
+#  aop:
+#    proxy-target-class: true
+#    auto: true
 
 service:
   clients:

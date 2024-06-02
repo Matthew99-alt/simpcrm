@@ -22,11 +22,12 @@ public class AmenitiesController {
     @GetMapping("/all")
     public List<AmenitiesDTO> getAllAmenities(@RequestHeader("login") String login,
                                               @RequestHeader("password") String password) {
-        if (securityService.checkAdminRole(login, password)) {
-            return amenitiesService.findAllAmenities();
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        return amenitiesService.findAllAmenities();
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            return amenitiesService.findAllAmenities();
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
 
     }
 
@@ -34,11 +35,12 @@ public class AmenitiesController {
     public AmenitiesDTO saveAmenities(@RequestHeader("login") String login,
                                       @RequestHeader("password") String password,
                                       @RequestBody AmenitiesDTO amenitiesDTO) {
-        if (securityService.checkAdminRole(login, password)) {
-            return amenitiesService.saveAmenities(amenitiesDTO);
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        return amenitiesService.saveAmenities(amenitiesDTO);
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            return amenitiesService.saveAmenities(amenitiesDTO);
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
 
     }
 
@@ -46,21 +48,23 @@ public class AmenitiesController {
     public void deleteAmenities(@RequestHeader("login") String login,
                                 @RequestHeader("password") String password,
                                 @RequestParam Long id) {
-        if (securityService.checkAdminRole(login, password)) {
-            amenitiesService.deleteAmenities(id);
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        amenitiesService.deleteAmenities(id);
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            amenitiesService.deleteAmenities(id);
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
     }
 
     @PutMapping("/edit")
     public AmenitiesDTO editAmenities(@RequestHeader("login") String login,
                                       @RequestHeader("password") String password,
                                       @RequestBody AmenitiesDTO amenitiesDTO) {
-        if (securityService.checkAdminRole(login, password)) {
-            return amenitiesService.editITService(amenitiesDTO);
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        return amenitiesService.editITService(amenitiesDTO);
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            return amenitiesService.editITService(amenitiesDTO);
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
     }
 }

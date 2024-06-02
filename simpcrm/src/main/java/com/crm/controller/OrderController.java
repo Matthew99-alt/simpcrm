@@ -22,11 +22,12 @@ public class OrderController {
     @GetMapping("/getAllOrders")
     public List<OrderDTO> getAllOrders(@RequestHeader("login") String login,
                                 @RequestHeader("password") String password) {
-        if (securityService.checkAdminRole(login, password)) {
-            return orderService.findAllOrders();
-        } else {
-            throw new PermissionDeniedException("В доступе отказано");
-        }
+        return orderService.findAllOrders();
+//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
+//            return orderService.findAllOrders();
+//        } else {
+//            throw new PermissionDeniedException("В доступе отказано");
+//        }
     }
 
     @PostMapping(value = "/save", consumes = {"multipart/form-data"})
@@ -34,7 +35,7 @@ public class OrderController {
                               @RequestHeader("password") String password,
                               @RequestPart("orderDTO") String orderDTOStr,
                               @RequestPart(value = "file", required = false) MultipartFile file) {
-        if (securityService.checkAdminRole(login, password)) {
+        if (securityService.checkAdminRole(login, password, "loggingMethod.role()")) {
             return orderService.saveOrder(orderDTOStr, file);
         } else {
             throw new PermissionDeniedException("В доступе отказано");
@@ -45,7 +46,7 @@ public class OrderController {
     public void deleteOrder(@RequestHeader("login") String login,
                             @RequestHeader("password") String password,
                             @RequestParam("id") Long id) {
-        if (securityService.checkAdminRole(login, password)) {
+        if (securityService.checkAdminRole(login, password, "loggingMethod.role()")) {
             orderService.deleteOrder(id);
         } else {
             throw new PermissionDeniedException("В доступе отказано");
@@ -57,7 +58,7 @@ public class OrderController {
                               @RequestHeader("password") String password,
                               @RequestPart("orderDTO") String orderDTOStr,
                               @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
-        if (securityService.checkAdminRole(login, password)) {
+        if (securityService.checkAdminRole(login, password, "loggingMethod.role()")) {
             return orderService.editOrder(orderDTOStr, file);
         } else {
             throw new PermissionDeniedException("В доступе отказано");
