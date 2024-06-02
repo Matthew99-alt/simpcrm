@@ -1,9 +1,12 @@
 package com.crm.controller;
 
 import com.crm.dto.UserDTO;
+import com.crm.exception.PermissionDeniedException;
 import com.crm.service.SecurityService;
 import com.crm.service.UserService;
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,41 +19,55 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/rest/user")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final SecurityService securityService;
-
-    public UserController(UserService userService, SecurityService securityService) {
-        this.userService = userService;
-        this.securityService = securityService;
-    }
 
     @GetMapping("/all")
     public List<UserDTO> getAllUsers(
             @RequestHeader("login") String login,
             @RequestHeader("password") String password
     ) {
-        if (securityService.checkLoginAndPassword(login, password)) {
+        if (securityService.checkAdminRole(login, password)) {
             return userService.findAllUsers();
         } else {
-            return List.of();
+            throw new PermissionDeniedException("В доступе отказано");
         }
     }
 
     @PostMapping("/save")
-    public UserDTO saveUser(@RequestBody UserDTO userDTO) {
-        return userService.saveUser(userDTO);
+    public UserDTO saveUser(@RequestHeader("login") String login,
+                            @RequestHeader("password") String password,
+                            @RequestBody UserDTO userDTO) {
+        if (securityService.checkAdminRole(login, password)) {
+            return userService.saveUser(userDTO);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @DeleteMapping("/delete")
-    public void deleteUser(@RequestParam("id") Long id) {
-        userService.deleteUser(id);
+    public void deleteUser(@RequestHeader("login") String login,
+                           @RequestHeader("password") String password,
+                           @RequestParam("id") Long id) {
+        if (securityService.checkAdminRole(login, password)) {
+        userService.deleteUser(id);}
+        else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @PutMapping("/edit")
-    public UserDTO editUser(@RequestBody UserDTO userDTO) {
-        return userService.editUser(userDTO);
+    public UserDTO editUser(@RequestHeader("login") String login,
+                            @RequestHeader("password") String password,
+                            @RequestBody UserDTO userDTO) {
+        if (securityService.checkAdminRole(login, password)) {
+            return userService.editUser(userDTO);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
 }

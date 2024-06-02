@@ -1,36 +1,29 @@
 package com.crm.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"password","login"})})
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "login", nullable = false)
+    @Column(name = "login", nullable = false, unique = true)
     private String login;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, unique = true)
     private String password;
 
     @Column(name = "user_role", nullable = false)
     private String role;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_details_id")
     private UserDetails userDetails;
 

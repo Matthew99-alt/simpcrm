@@ -1,21 +1,17 @@
 package com.crm.controller;
 
 import com.crm.dto.FileStorage;
+import com.crm.exception.PermissionDeniedException;
 import com.crm.service.FileStorageService;
+import com.crm.service.SecurityService;
 import com.crm.uploadClass.UploadClass;
+
 import java.io.IOException;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/rest/fileStorage")
@@ -24,38 +20,86 @@ public class FileStorageController {
 
     private final FileStorageService fileStorageService;
 
+    private final SecurityService securityService;
+
     @GetMapping("/fileByOrderId")
-    FileStorage getFileByOrderId(@RequestParam(name = "orderId") Long orderId) {
-        return fileStorageService.getFileByOrderId(orderId);
+    FileStorage getFileByOrderId(@RequestHeader("login") String login,
+                                 @RequestHeader("password") String password,
+                                 @RequestParam(name = "orderId") Long orderId) {
+        if (securityService.checkAdminRole(login, password)) {
+            return fileStorageService.getFileByOrderId(orderId);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @GetMapping("/getAllFiles")
-    public List<FileStorage> getAllFilesFromMongoApp() {
-        return fileStorageService.getAllFilesFromStorage();
+    public List<FileStorage> getAllFilesFromMongoApp(@RequestHeader("login") String login,
+                                                     @RequestHeader("password") String password) {
+        if (securityService.checkAdminRole(login, password)) {
+            return fileStorageService.getAllFilesFromStorage();
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
+
     }
 
     @GetMapping("/files/{fileId}")
-    public ResponseEntity<byte[]> downloadFile(@PathVariable String fileId) throws IOException {
-        return fileStorageService.downloadFile(fileId);
+    public ResponseEntity<byte[]> downloadFile(@RequestHeader("login") String login,
+                                               @RequestHeader("password") String password,
+                                               @PathVariable String fileId) throws IOException {
+        if (securityService.checkAdminRole(login, password)) {
+            return fileStorageService.downloadFile(fileId);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
+
     }
 
     @DeleteMapping("/delete")
-    public void deleteFile(@RequestParam("id") String id) {
-        fileStorageService.deleteFileById(id);
+    public void deleteFile(@RequestHeader("login") String login,
+                           @RequestHeader("password") String password,
+                           @RequestParam("id") String id) {
+        if (securityService.checkAdminRole(login, password)) {
+            fileStorageService.deleteFileById(id);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
+
     }
 
     @DeleteMapping("/deleteByOrderId")
-    public void deleteFile(@RequestParam("orderId") Long orderId) {
-        fileStorageService.deleteFileByOrderId(orderId);
+    public void deleteFile(@RequestHeader("login") String login,
+                           @RequestHeader("password") String password,
+                           @RequestParam("orderId") Long orderId) {
+        if (securityService.checkAdminRole(login, password)) {
+            fileStorageService.deleteFileByOrderId(orderId);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
+
     }
 
     @PutMapping("/edit")
-    public void editFile(@ModelAttribute UploadClass uploadClass) throws IOException {
-        fileStorageService.editFile(uploadClass);
+    public void editFile(@RequestHeader("login") String login,
+                         @RequestHeader("password") String password,
+                         @ModelAttribute UploadClass uploadClass) throws IOException {
+        if (securityService.checkAdminRole(login, password)) {
+            fileStorageService.editFile(uploadClass);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
+
     }
 
     @PostMapping("/upload")
-    String uploadFile(@ModelAttribute UploadClass uploadClass) throws IOException {
-        return fileStorageService.addFile(uploadClass);
+    String uploadFile(@RequestHeader("login") String login,
+                      @RequestHeader("password") String password,
+                      @ModelAttribute UploadClass uploadClass) throws IOException {
+        if (securityService.checkAdminRole(login, password)) {
+            return fileStorageService.addFile(uploadClass);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 }

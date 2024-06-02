@@ -8,11 +8,8 @@ logging:
   level:
     org:
       springframework:
-        web: DEBUG
-        DEBUG: DEBUG
-      apache:
-        coyote:
-          http11: DEBUG
+        web: trace
+      apache: trace
 
 feign:
   client:
@@ -36,6 +33,9 @@ spring:
     #    defer-datasource-initialization: true - убрали настройку потому что отключили Hibernate и создаем и наполняем таблицы сами
     hibernate:
       ddl-auto: update
+  aop:
+    proxy-target-class: true
+    auto: true
 
 service:
   clients:

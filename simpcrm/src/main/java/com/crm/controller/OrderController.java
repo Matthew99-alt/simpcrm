@@ -1,23 +1,14 @@
 package com.crm.controller;
 
 import com.crm.dto.OrderDTO;
-import com.crm.service.FileStorageService;
+import com.crm.exception.PermissionDeniedException;
 import com.crm.service.OrderService;
-import com.crm.uploadClass.UploadClass;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.crm.service.SecurityService;
 import java.io.IOException;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -26,25 +17,50 @@ import org.springframework.web.multipart.MultipartFile;
 public class OrderController {
     private final OrderService orderService;
 
+    private final SecurityService securityService;
+
     @GetMapping("/getAllOrders")
-    public List<OrderDTO> getAllOrders() {
-        return orderService.findAllOrders();
+    public List<OrderDTO> getAllOrders(@RequestHeader("login") String login,
+                                @RequestHeader("password") String password) {
+        if (securityService.checkAdminRole(login, password)) {
+            return orderService.findAllOrders();
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @PostMapping(value = "/save", consumes = {"multipart/form-data"})
-    public OrderDTO saveOrder(@RequestPart("orderDTO") String orderDTOStr,
+    public OrderDTO saveOrder(@RequestHeader("login") String login,
+                              @RequestHeader("password") String password,
+                              @RequestPart("orderDTO") String orderDTOStr,
                               @RequestPart(value = "file", required = false) MultipartFile file) {
-        return orderService.saveOrder(orderDTOStr, file);
+        if (securityService.checkAdminRole(login, password)) {
+            return orderService.saveOrder(orderDTOStr, file);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @DeleteMapping("/delete")
-    public void deleteOrder(@RequestParam("id") Long id) {
-        orderService.deleteOrder(id);
+    public void deleteOrder(@RequestHeader("login") String login,
+                            @RequestHeader("password") String password,
+                            @RequestParam("id") Long id) {
+        if (securityService.checkAdminRole(login, password)) {
+            orderService.deleteOrder(id);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @PutMapping(value = "/edit", consumes = {"multipart/form-data"})
-    public OrderDTO editOrder(@RequestPart("orderDTO") String orderDTOStr,
+    public OrderDTO editOrder(@RequestHeader("login") String login,
+                              @RequestHeader("password") String password,
+                              @RequestPart("orderDTO") String orderDTOStr,
                               @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
-        return orderService.editOrder(orderDTOStr, file);
+        if (securityService.checkAdminRole(login, password)) {
+            return orderService.editOrder(orderDTOStr, file);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 }

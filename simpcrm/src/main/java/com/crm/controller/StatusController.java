@@ -1,43 +1,63 @@
 package com.crm.controller;
 
 import com.crm.dto.StatusDTO;
+import com.crm.exception.PermissionDeniedException;
+import com.crm.service.SecurityService;
 import com.crm.service.StatusService;
+
 import java.util.List;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/rest/status")
+@RequiredArgsConstructor
 public class StatusController {
     private final StatusService statusService;
 
-    public StatusController(StatusService statusService) {
-        this.statusService = statusService;
-    }
+    private final SecurityService securityService;
 
     @GetMapping("/all")
-    public List<StatusDTO> getAllStatuses() {
-        return statusService.findAllStatuses();
+    public List<StatusDTO> getAllStatuses(@RequestHeader("login") String login,
+                                          @RequestHeader("password") String password) {
+        if (securityService.checkAdminRole(login, password)) {
+            return statusService.findAllStatuses();
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @PostMapping("/save")
-    public StatusDTO saveStatus(@RequestBody StatusDTO statusDTO) {
-        return statusService.saveStatus(statusDTO);
+    public StatusDTO saveStatus(@RequestHeader("login") String login,
+                                @RequestHeader("password") String password,
+                                @RequestBody StatusDTO statusDTO) {
+        if (securityService.checkAdminRole(login, password)) {
+            return statusService.saveStatus(statusDTO);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @DeleteMapping("/delete")
-    public void deleteStatus(@RequestParam Long id) {
-        statusService.deleteStatus(id);
+    public void deleteStatus(@RequestHeader("login") String login,
+                             @RequestHeader("password") String password,
+                             @RequestParam Long id) {
+        if (securityService.checkAdminRole(login, password)) {
+            statusService.deleteStatus(id);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @PutMapping("/edit")
-    public StatusDTO editStatus(@RequestBody StatusDTO statusDTO) {
-        return statusService.editStatus(statusDTO);
+    public StatusDTO editStatus(@RequestHeader("login") String login,
+                                @RequestHeader("password") String password,
+                                @RequestBody StatusDTO statusDTO) {
+        if (securityService.checkAdminRole(login, password)) {
+            return statusService.editStatus(statusDTO);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 }

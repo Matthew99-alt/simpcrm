@@ -1,44 +1,64 @@
 package com.crm.controller;
 
 import com.crm.dto.MerchandiseDTO;
+import com.crm.exception.PermissionDeniedException;
 import com.crm.service.MerchandiseService;
+
 import java.util.List;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
+import com.crm.service.SecurityService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/rest/merchandise")
+@RequiredArgsConstructor
 public class MerchandiseController {
     private final MerchandiseService merchandiseService;
 
-    public MerchandiseController(MerchandiseService merchandiseService) {
-        this.merchandiseService = merchandiseService;
-    }
+    private final SecurityService securityService;
 
     @GetMapping("/all")
-    public List<MerchandiseDTO> getAllMerchandise() {
-        return merchandiseService.findAllPrograms();
+    public List<MerchandiseDTO> getAllMerchandise(@RequestHeader("login") String login,
+                                                  @RequestHeader("password") String password) {
+        if (securityService.checkAdminRole(login, password)) {
+            return merchandiseService.findAllPrograms();
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @PostMapping("/save")
-    public MerchandiseDTO saveMerchandise(@RequestBody MerchandiseDTO merchandiseDTO) {
-        return merchandiseService.saveMerchandise(merchandiseDTO);
+    public MerchandiseDTO saveMerchandise(@RequestHeader("login") String login,
+                                          @RequestHeader("password") String password,
+                                          @RequestBody MerchandiseDTO merchandiseDTO) {
+        if (securityService.checkAdminRole(login, password)) {
+            return merchandiseService.saveMerchandise(merchandiseDTO);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @DeleteMapping("/delete")
-    public void deleteMerchandise(@RequestParam Long id) {
-        merchandiseService.deleteMerchandise(id);
+    public void deleteMerchandise(@RequestHeader("login") String login,
+                                  @RequestHeader("password") String password,
+                                  @RequestParam Long id) {
+        if (securityService.checkAdminRole(login, password)) {
+            merchandiseService.deleteMerchandise(id);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
     @PutMapping("/edit")
-    public MerchandiseDTO editMerchandise(@RequestBody MerchandiseDTO merchandiseDTO) {
-        return merchandiseService.editMerchandise(merchandiseDTO);
+    public MerchandiseDTO editMerchandise(@RequestHeader("login") String login,
+                                          @RequestHeader("password") String password,
+                                          @RequestBody MerchandiseDTO merchandiseDTO) {
+        if (securityService.checkAdminRole(login, password)) {
+            return merchandiseService.editMerchandise(merchandiseDTO);
+        } else {
+            throw new PermissionDeniedException("В доступе отказано");
+        }
     }
 
 }
