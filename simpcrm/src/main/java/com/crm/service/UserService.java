@@ -3,6 +3,8 @@ package com.crm.service;
 import com.crm.dto.UserDTO;
 import com.crm.entity.User;
 import com.crm.entity.UserDetails;
+import com.crm.exception.MyEntityNotFoundException;
+import com.crm.reposotiry.UserDetailsRepository;
 import com.crm.reposotiry.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -16,6 +18,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final UserDetailsRepository userDetailsRepository;
+
     public List<UserDTO> findAllUsers() {
         List<User> userEntities = userRepository.findAll();
         ArrayList<UserDTO> userDTOS = new ArrayList<>();
@@ -26,9 +30,11 @@ public class UserService {
     }
 
     private UserDTO makeAnUserDTO(UserDTO userDTO, User user) {
-        UserDetails userDetails = user.getUserDetails();
         userDTO.setId(user.getId());
         userDTO.setLogin(user.getLogin());
+        userDTO.setPassword(user.getPassword());
+
+        UserDetails userDetails = user.getUserDetails();
         if (userDetails != null) {
             userDTO.setFirstName(userDetails.getFirstName());
             userDTO.setSecondName(userDetails.getSecondName());
@@ -38,6 +44,7 @@ public class UserService {
             userDTO.setEmail(userDetails.getEmail());
             userDTO.setCity(userDetails.getCity());
         }
+
         userDTO.setRole(user.getRole());
 
         return userDTO;
@@ -45,14 +52,23 @@ public class UserService {
 
     private User makeAnUser(UserDTO userDTO, User user) {
         userDTO.setId(user.getId());
-        user.getUserDetails().setFirstName(userDTO.getFirstName());
-        user.getUserDetails().setSecondName(userDTO.getSecondName());
-        user.getUserDetails().setMiddleName(userDTO.getMiddleName());
-        user.getUserDetails().setAddress(userDTO.getAddress());
-        user.getUserDetails().setPhone(userDTO.getPhone());
-        user.getUserDetails().setEmail(userDTO.getEmail());
         user.setRole(userDTO.getRole());
-        user.getUserDetails().setCity(userDTO.getCity());
+        user.setLogin(userDTO.getLogin());
+        user.setPassword(userDTO.getPassword());
+
+        UserDetails userDetails = user.getUserDetails();
+        if (userDetails == null) {
+            // Если UserDetails не существует, создайте новый объект
+            userDetails = new UserDetails();
+            user.setUserDetails(userDetails); // Установите новый объект UserDetails в User
+        }
+        userDetails.setFirstName(userDTO.getFirstName());
+        userDetails.setSecondName(userDTO.getSecondName());
+        userDetails.setMiddleName(userDTO.getMiddleName());
+        userDetails.setAddress(userDTO.getAddress());
+        userDetails.setPhone(userDTO.getPhone());
+        userDetails.setEmail(userDTO.getEmail());
+        userDetails.setCity(userDTO.getCity());
 
         return user;
     }
@@ -62,24 +78,32 @@ public class UserService {
         UserDetails userDetails = new UserDetails();
         user.setUserDetails(userDetails);
 
+        userDetailsRepository.save(makeAnUser(userDTO, user).getUserDetails());
+
         userRepository.save(makeAnUser(userDTO, user));
         userDTO.setId(user.getId());
         return userDTO;
     }
 
     public void deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Данный пользователь не найден"));
+
+        Long userDetailsId = user.getUserDetails().getId();
+
         userRepository.deleteById(id);
+        userDetailsRepository.deleteById(userDetailsId);
     }
 
     public UserDTO editUser(UserDTO userDTO) {
-        User user = new User();
+        User user = userRepository.findById(userDTO.getId()).orElseThrow(() -> new MyEntityNotFoundException("Данный пользователь не найден"));
         user.setId(userDTO.getId());
+
         userRepository.save(makeAnUser(userDTO, user));
         return userDTO;
     }
 
     public UserDTO findById(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(() -> new MyEntityNotFoundException("Данный пользователь не найден"));
         return makeAnUserDTO(new UserDTO(), user);
     }
 }

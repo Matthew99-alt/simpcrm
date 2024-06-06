@@ -7,6 +7,7 @@ import com.crm.dto.OrderDTO;
 import com.crm.entity.Amenities;
 import com.crm.entity.Merchandise;
 import com.crm.entity.Order;
+import com.crm.exception.MyEntityNotFoundException;
 import com.crm.reposotiry.AmenitiesRepository;
 import com.crm.reposotiry.MerchandiseRepository;
 import com.crm.reposotiry.OrderRepository;
@@ -14,7 +15,6 @@ import com.crm.reposotiry.StatusRepository;
 import com.crm.reposotiry.UserRepository;
 import com.crm.uploadClass.UploadClass;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityNotFoundException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,19 +30,28 @@ import org.springframework.web.multipart.MultipartFile;
 public class OrderService {
 
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
-
     private final OrderRepository orderRepository;
-    private final AmenitiesRepository itServicesRepository;
+    private final AmenitiesRepository amenitiesRepository;
     private final MerchandiseRepository merchandiseRepository;
     private final StatusRepository statusRepository;
     private final UserRepository userRepository;
     private final AmenitiesService amenitiesService;
     private final MerchandiseService merchandiseService;
     private final FileStorageService fileStorageService;
+
     private final ObjectMapper objectMapper;
 
     public List<OrderDTO> findAllOrders() {
         List<Order> orders = orderRepository.findAll();
+        ArrayList<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order order : orders) {
+            orderDTOList.add(makeOrderDTOFromOrder(order));
+        }
+        return orderDTOList;
+    }
+
+    public List<OrderDTO> findUserOrders(String login, String password) {
+        List<Order> orders = orderRepository.findOrdersByClientLoginAndClientPassword(login, password);
         ArrayList<OrderDTO> orderDTOList = new ArrayList<>();
         for (Order order : orders) {
             orderDTOList.add(makeOrderDTOFromOrder(order));
@@ -64,9 +73,9 @@ public class OrderService {
                 fileStorageService.addFile(uploadClass);
             }
 
-            //В order было проведено вычисление итоговой стоимости, количества товаров и услуг.
-            //Эти параметры не отражены в принятом orderDTO
-            //Поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
+            //в order было проведено вычисление итоговой стоимости, количества товаров и услуг.
+            //эти параметры не отражены в принятом orderDTO
+            //поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
             orderDTO = makeOrderDTOFromOrder(savedOrder);
 
             return orderDTO;
@@ -87,21 +96,33 @@ public class OrderService {
         ObjectMapper objectMapper = new ObjectMapper();
         OrderDTO orderDTO = objectMapper.readValue(orderDTOStr, OrderDTO.class);
 
-        Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(EntityNotFoundException::new);
+        Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(() -> new MyEntityNotFoundException("Данный заказ не найден"));
         orderRepository.save(makeOrderFromOrderDTO(orderDTO, order));
 
-            if (file != null) {
-                UploadClass uploadClass = new UploadClass();
+        if (file != null) {
+            UploadClass uploadClass = new UploadClass();
+            try {
                 FileStorage fileStorage = fileStorageService.getFileByOrderId(orderDTO.getId());
-                uploadClass.setId(fileStorage.getId());
-                uploadClass.setOrderId(orderDTO.getId());
-                uploadClass.setFile(file);
-
-                fileStorageService.editFile(uploadClass);
+                if (fileStorage != null) {
+                    uploadClass.setId(fileStorage.getId());
+                }
+            } catch (Exception e) {
+                // Логирование исключения
+                System.out.println("Файл не найден, будет создан новый файл.");
             }
 
-            //В order было проведено вычисление итоговой стоимости, количества товаров и услуг.
-            //Эти параметры не отражены в принятом orderDTO
+            uploadClass.setOrderId(orderDTO.getId());
+            uploadClass.setFile(file);
+
+            if (uploadClass.getId() != null) {
+                fileStorageService.editFile(uploadClass);
+            } else {
+                fileStorageService.addFile(uploadClass);
+            }
+        }
+
+            //в order было проведено вычисление итоговой стоимости, количества товаров и услуг.
+            //эти параметры не отражены в принятом orderDTO
             //поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
             orderDTO = makeOrderDTOFromOrder(order);
 
@@ -130,14 +151,22 @@ public class OrderService {
 
     private Order makeOrderFromOrderDTO(OrderDTO orderDTO, Order order) {
         order.setId(orderDTO.getId());
-        order.setOrderName(orderDTO.getOrderName());
-        order.setDescription(orderDTO.getDescription());
-        order.setPriority(orderDTO.getPriority());
-        order.setComments(orderDTO.getComments());
-        order.setClient(userRepository.findById(orderDTO.getClient().getId()).orElseThrow(EntityNotFoundException::new));
-        order.setStatus(statusRepository.findById(orderDTO.getStatus().getId()).orElseThrow(EntityNotFoundException::new));
+        if(orderDTO.getOrderName()!=null) {
+            order.setOrderName(orderDTO.getOrderName());
+        }
+        if(orderDTO.getDescription()!=null) {
+            order.setDescription(orderDTO.getDescription());
+        }
+        if(orderDTO.getPriority()!=null) {
+            order.setPriority(orderDTO.getPriority());
+        }
+        if(orderDTO.getComments()!=null) {
+            order.setComments(orderDTO.getComments());
+        }
+        order.setClient(userRepository.findById(orderDTO.getClient().getId()).orElseThrow(() -> new MyEntityNotFoundException("Клиент оставивший заявку не найден")));
+        order.setStatus(statusRepository.findById(orderDTO.getStatus().getId()).orElseThrow(() -> new MyEntityNotFoundException("Данный пользователь не найден")));
         if (orderDTO.getUsers() != null) {
-            order.setUser(userRepository.findById(orderDTO.getUsers().getId()).orElseThrow(EntityNotFoundException::new));
+            order.setUser(userRepository.findById(orderDTO.getUsers().getId()).orElseThrow(() -> new MyEntityNotFoundException("Ответственный по заявке не найден")));
         }
         order.setAmenities(getAmenities(orderDTO.getAmenities()));
         order.setMerchandises(getMerchandise(orderDTO.getMerchandises()));
@@ -171,19 +200,19 @@ public class OrderService {
     }
 
     private ArrayList<Amenities> getAmenities(List<AmenitiesDTO> itServicesDTOList) {
-        ArrayList<Amenities> itServicesList = new ArrayList<>();
+        ArrayList<Amenities> amenitiesList = new ArrayList<>();
         for (AmenitiesDTO amenitiesDTO : itServicesDTOList) {
-            itServicesList.add(itServicesRepository.findById(amenitiesDTO.getId())
-                    .orElseThrow(EntityNotFoundException::new));
+            amenitiesList.add(amenitiesRepository.findById(amenitiesDTO.getId())
+                    .orElseThrow(() -> new MyEntityNotFoundException("Услуга не найдена")));
         }
-        return itServicesList;
+        return amenitiesList;
     }
 
     private ArrayList<Merchandise> getMerchandise(List<MerchandiseDTO> merchandiseDTOList) {
         ArrayList<Merchandise> merchandiseList = new ArrayList<>();
         for (MerchandiseDTO merchandiseDTO : merchandiseDTOList) {
             merchandiseList.add(merchandiseRepository.findById(merchandiseDTO.getId())
-                    .orElseThrow(EntityNotFoundException::new));
+                    .orElseThrow(() -> new MyEntityNotFoundException("Товар не найден")));
         }
         return merchandiseList;
     }

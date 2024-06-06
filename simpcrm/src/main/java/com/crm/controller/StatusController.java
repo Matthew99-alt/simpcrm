@@ -1,43 +1,63 @@
 package com.crm.controller;
 
+import com.crm.annotation.LoggingMethod;
 import com.crm.dto.StatusDTO;
 import com.crm.service.StatusService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/rest/status")
+@RequiredArgsConstructor
 public class StatusController {
     private final StatusService statusService;
 
-    public StatusController(StatusService statusService) {
-        this.statusService = statusService;
-    }
-
+    @LoggingMethod(role = {"admin", "user"})
     @GetMapping("/all")
-    public List<StatusDTO> getAllStatuses() {
+    public List<StatusDTO> getAllStatuses(
+            @RequestHeader(value = "login", required = false) String login,
+            @RequestHeader(value = "password", required = false) String password
+    ) {
         return statusService.findAllStatuses();
     }
 
+    @LoggingMethod(role = {"admin"})
     @PostMapping("/save")
-    public StatusDTO saveStatus(@RequestBody StatusDTO statusDTO) {
+    public StatusDTO saveStatus(
+            @RequestHeader(value = "login", required = false) String login,
+            @RequestHeader(value = "password", required = false) String password,
+            @RequestBody StatusDTO statusDTO
+    ) {
         return statusService.saveStatus(statusDTO);
     }
 
+    @LoggingMethod(role = "admin")
     @DeleteMapping("/delete")
-    public void deleteStatus(@RequestParam Long id) {
+    public void deleteStatus(
+            @RequestHeader(value = "login", required = false) String login,
+            @RequestHeader(value = "password", required = false) String password,
+            @RequestParam Long id
+    ) {
         statusService.deleteStatus(id);
     }
 
+    @LoggingMethod(role = {"admin"})
     @PutMapping("/edit")
-    public StatusDTO editStatus(@RequestBody StatusDTO statusDTO) {
+    public StatusDTO editStatus(
+            @RequestHeader(value = "login", required = false) String login,
+            @RequestHeader(value = "password", required = false) String password,
+            @RequestBody StatusDTO statusDTO
+    ) {
         return statusService.editStatus(statusDTO);
     }
 }
