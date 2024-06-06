@@ -1,12 +1,9 @@
 package com.crm.service;
 
 import com.crm.entity.User;
-import com.crm.exception.PermissionDeniedException;
 import com.crm.exception.UnauthorizedException;
 import com.crm.reposotiry.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +15,9 @@ public class SecurityService {
 
     public boolean checkUser(String login, String password, List<String> roles) {
         User user = userRepository.findByLoginAndPassword(login, password).orElseThrow(() -> new UnauthorizedException("Некорректные логин или пароль"));
-        if (roles.contains("ALL"))
+        if (roles.contains("ALL")) {
             return true;
+        }
         return roles.contains(user.getRole());
     }
 }
