@@ -3,15 +3,20 @@ package com.crm.controller;
 
 import com.crm.annotation.LoggingMethod;
 import com.crm.dto.AmenitiesDTO;
-import com.crm.exception.PermissionDeniedException;
 import com.crm.service.AmenitiesService;
-
 import java.util.List;
-
-import com.crm.service.SecurityService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/rest/amenities")
 @RequiredArgsConstructor
@@ -20,29 +25,37 @@ public class AmenitiesController {
 
     @LoggingMethod(role = {"admin", "user"})
     @GetMapping("/all")
-    public List<AmenitiesDTO> getAllAmenities(@RequestHeader("login") String login,
-                                              @RequestHeader("password") String password) {
+    public List<AmenitiesDTO> getAllAmenities(
+            @RequestHeader(value = "password", required = false) String password,
+            @RequestHeader(value = "login", required = false) String login
+    ) {
         return amenitiesService.findAllAmenities();
     }
 
     @PostMapping("/save")
-    public AmenitiesDTO saveAmenities(@RequestHeader("login") String login,
-                                      @RequestHeader("password") String password,
-                                      @RequestBody AmenitiesDTO amenitiesDTO) {
+    public AmenitiesDTO saveAmenities(
+            @RequestHeader(value = "password", required = false) String password,
+            @RequestHeader(value = "login", required = false) String login,
+            @RequestBody AmenitiesDTO amenitiesDTO
+    ) {
         return amenitiesService.saveAmenities(amenitiesDTO);
     }
 
     @DeleteMapping("/delete")
-    public void deleteAmenities(@RequestHeader("login") String login,
-                                @RequestHeader("password") String password,
-                                @RequestParam Long id) {
+    public void deleteAmenities(
+            @RequestHeader(value = "password", required = false) String password,
+            @RequestHeader(value = "login", required = false) String login,
+            @RequestParam Long id
+    ) {
         amenitiesService.deleteAmenities(id);
     }
 
     @PutMapping("/edit")
-    public AmenitiesDTO editAmenities(@RequestHeader("login") String login,
-                                      @RequestHeader("password") String password,
-                                      @RequestBody AmenitiesDTO amenitiesDTO) {
+    public AmenitiesDTO editAmenities(
+            @RequestHeader(value = "password", required = false) String password,
+            @RequestHeader(value = "login", required = false) String login,
+            @RequestBody AmenitiesDTO amenitiesDTO
+    ) {
         return amenitiesService.editITService(amenitiesDTO);
     }
 }
