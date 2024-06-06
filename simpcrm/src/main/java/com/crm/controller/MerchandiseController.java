@@ -1,5 +1,6 @@
 package com.crm.controller;
 
+import com.crm.annotation.LoggingMethod;
 import com.crm.dto.MerchandiseDTO;
 import com.crm.exception.PermissionDeniedException;
 import com.crm.service.MerchandiseService;
@@ -16,53 +17,35 @@ import org.springframework.web.bind.annotation.*;
 public class MerchandiseController {
     private final MerchandiseService merchandiseService;
 
-    private final SecurityService securityService;
-
+    @LoggingMethod(role = {"admin", "user"})
     @GetMapping("/all")
     public List<MerchandiseDTO> getAllMerchandise(@RequestHeader("login") String login,
                                                   @RequestHeader("password") String password) {
         return merchandiseService.findAllPrograms();
-//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
-//            return merchandiseService.findAllPrograms();
-//        } else {
-//            throw new PermissionDeniedException("В доступе отказано");
-//        }
     }
 
+    @LoggingMethod(role = "admin")
     @PostMapping("/save")
     public MerchandiseDTO saveMerchandise(@RequestHeader("login") String login,
                                           @RequestHeader("password") String password,
                                           @RequestBody MerchandiseDTO merchandiseDTO) {
         return merchandiseService.saveMerchandise(merchandiseDTO);
-//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
-//            return merchandiseService.saveMerchandise(merchandiseDTO);
-//        } else {
-//            throw new PermissionDeniedException("В доступе отказано");
-//        }
     }
 
+    @LoggingMethod(role = "admin")
     @DeleteMapping("/delete")
     public void deleteMerchandise(@RequestHeader("login") String login,
                                   @RequestHeader("password") String password,
                                   @RequestParam Long id) {
         merchandiseService.deleteMerchandise(id);
-//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
-//            merchandiseService.deleteMerchandise(id);
-//        } else {
-//            throw new PermissionDeniedException("В доступе отказано");
-//        }
     }
 
+    @LoggingMethod(role = "admin")
     @PutMapping("/edit")
     public MerchandiseDTO editMerchandise(@RequestHeader("login") String login,
                                           @RequestHeader("password") String password,
                                           @RequestBody MerchandiseDTO merchandiseDTO) {
         return merchandiseService.editMerchandise(merchandiseDTO);
-//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
-//            return merchandiseService.editMerchandise(merchandiseDTO);
-//        } else {
-//            throw new PermissionDeniedException("В доступе отказано");
-//        }
     }
 
 }

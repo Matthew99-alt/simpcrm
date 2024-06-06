@@ -7,6 +7,7 @@ import com.crm.service.SecurityService;
 import com.crm.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+@Slf4j
 @RestController
 @RequestMapping("/rest/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-    private final SecurityService securityService;
 
     @LoggingMethod(role = {"admin", "user"})
     @GetMapping("/all")
@@ -34,41 +34,29 @@ public class UserController {
         return userService.findAllUsers();
     }
 
-    @LoggingMethod(role = "admin")
+    @LoggingMethod(role = {"admin", "user"})
     @PostMapping("/save")
     public UserDTO saveUser(@RequestHeader("login") String login,
                             @RequestHeader("password") String password,
                             @RequestBody UserDTO userDTO) {
+        log.info("login and password: {} {}", login, password);
         return userService.saveUser(userDTO);
-//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
-//            return userService.saveUser(userDTO);
-//        } else {
-//            throw new PermissionDeniedException("В доступе отказано");
-//        }
     }
 
+    @LoggingMethod(role = "admin")
     @DeleteMapping("/delete")
     public void deleteUser(@RequestHeader("login") String login,
                            @RequestHeader("password") String password,
                            @RequestParam("id") Long id) {
         userService.deleteUser(id);
-//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
-//            userService.deleteUser(id);
-//        } else {
-//            throw new PermissionDeniedException("В доступе отказано");
-//        }
     }
 
+    @LoggingMethod(role = "admin")
     @PutMapping("/edit")
     public UserDTO editUser(@RequestHeader("login") String login,
                             @RequestHeader("password") String password,
                             @RequestBody UserDTO userDTO) {
         return userService.editUser(userDTO);
-//        if (securityService.checkAdminRole(login, password, loggingMethod.role())) {
-//            return userService.editUser(userDTO);
-//        } else {
-//            throw new PermissionDeniedException("В доступе отказано");
-//        }
     }
 
 }
