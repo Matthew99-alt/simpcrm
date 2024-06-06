@@ -34,6 +34,9 @@ public class FileStorageService {
 
     public FileStorageDTO findByIdOrderId(Long id) {
         FileStorage fileStorage = fileStorageRepository.findByOrderId(id);
+        if (fileStorage == null) {
+            return new FileStorageDTO(); // возвращаем пустой объект
+        }
         return convertToDto(fileStorage);
     }
 
