@@ -35,14 +35,10 @@ public class UserController {
         return userService.findAllUsers();
     }
 
-    @LoggingMethod(role = {"admin", "user"})
     @PostMapping("/save")
     public UserDTO saveUser(
-            @RequestHeader(value = "login", required = false) String login,
-            @RequestHeader(value = "password", required = false) String password,
             @RequestBody UserDTO userDTO
     ) {
-        log.info("login and password: {} {}", login, password);
         return userService.saveUser(userDTO);
     }
 
@@ -53,7 +49,6 @@ public class UserController {
             @RequestHeader(value = "password", required = false) String password,
             @RequestParam("id") Long id
     ) {
-        log.info("Login:{} password: {}", login, password);
         userService.deleteUser(id);
     }
 

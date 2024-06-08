@@ -31,6 +31,13 @@ public class MerchandiseController {
         return merchandiseService.findAllPrograms();
     }
 
+    @GetMapping("/findById")
+    public MerchandiseDTO getById(
+            @RequestParam Long id
+    ){
+        return merchandiseService.findById(id);
+    }
+
     @LoggingMethod(role = "admin")
     @PostMapping("/save")
     public MerchandiseDTO saveMerchandise(

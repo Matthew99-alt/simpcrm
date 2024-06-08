@@ -61,4 +61,9 @@ public class AmenitiesController {
     ) {
         return amenitiesService.editITService(amenitiesDTO);
     }
+
+    @GetMapping("/findById")
+    public AmenitiesDTO findById(@RequestParam Long id){
+        return amenitiesService.findById(id);
+    }
 }

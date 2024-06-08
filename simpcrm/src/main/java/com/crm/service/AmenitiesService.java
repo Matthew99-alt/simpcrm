@@ -3,6 +3,7 @@ package com.crm.service;
 
 import com.crm.dto.AmenitiesDTO;
 import com.crm.entity.Amenities;
+import com.crm.exception.MyEntityNotFoundException;
 import com.crm.reposotiry.AmenitiesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,4 +62,8 @@ public class AmenitiesService {
         return amenitiesDTO;
     }
 
+    public AmenitiesDTO findById(Long id){
+        return makeAmenitiesDTO(new AmenitiesDTO(),amenitiesRepository.findById(id).orElseThrow(()
+                -> new MyEntityNotFoundException("Данная услуга не найдена")));
+    }
 }

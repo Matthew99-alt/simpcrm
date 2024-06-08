@@ -3,6 +3,7 @@ package com.crm.service;
 
 import com.crm.dto.MerchandiseDTO;
 import com.crm.entity.Merchandise;
+import com.crm.exception.MyEntityNotFoundException;
 import com.crm.reposotiry.MerchandiseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -63,5 +64,10 @@ public class MerchandiseService {
         merchandise.setId(merchandiseDTO.getId());
         merchandiseRepository.save(makeAMerchandise(merchandiseDTO, merchandise));
         return merchandiseDTO;
+    }
+
+    public MerchandiseDTO findById(Long id){
+        return makeAMerchandiseDTO(new MerchandiseDTO(), merchandiseRepository.findById(id).orElseThrow(()
+        -> new MyEntityNotFoundException("Данный товар не удалось найти")));
     }
 }
