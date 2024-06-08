@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ControllerAdvice {
 
     @ExceptionHandler(PermissionDeniedException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorDTO handlePermissionDeniedException(PermissionDeniedException exception) {
         ErrorDTO errorDTO = new ErrorDTO();
         errorDTO.setMessage(exception.getMessage());
-        errorDTO.setStatus(HttpStatus.UNAUTHORIZED.value());
+        errorDTO.setStatus(HttpStatus.FORBIDDEN.value());
         return errorDTO;
     }
 
