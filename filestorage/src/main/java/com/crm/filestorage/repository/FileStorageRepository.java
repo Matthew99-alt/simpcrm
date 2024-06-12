@@ -5,6 +5,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface FileStorageRepository extends MongoRepository<FileStorage, ObjectId> {
 
@@ -12,4 +14,5 @@ public interface FileStorageRepository extends MongoRepository<FileStorage, Obje
 
     void deleteByOrderId(Long orderId);
 
+    List<FileStorage> findByOrderIdIsNull();
 }

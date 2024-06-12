@@ -39,6 +39,11 @@ public class FileStorageRestController {
         return fileStorageService.findByIdOrderId(orderId);
     }
 
+    @GetMapping("/findAllWithoutOrderId")
+    public List<FileStorageDTO> getFilesWithoutOrderId(){
+        return fileStorageService.findAllFilesWithoutOrderId();
+    }
+
     @GetMapping("/{fileId}")
     public ResponseEntity<InputStreamResource> downloadFile(@PathVariable ObjectId fileId) {
         return fileStorageService.downloadFile(fileId);

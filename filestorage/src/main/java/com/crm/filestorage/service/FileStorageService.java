@@ -5,6 +5,7 @@ import com.crm.filestorage.entity.FileStorage;
 import com.crm.filestorage.repository.FileStorageRepository;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -38,6 +39,18 @@ public class FileStorageService {
             return new FileStorageDTO(); // возвращаем пустой объект
         }
         return convertToDto(fileStorage);
+    }
+
+    public List<FileStorageDTO> findAllFilesWithoutOrderId(){
+        List<FileStorage> files = fileStorageRepository.findByOrderIdIsNull();
+        List<FileStorageDTO> filesDTO = new ArrayList<>();
+        for (FileStorage file : files) {
+            if (file.getOrderId() == null) {
+                filesDTO.add(convertToDto(file));
+            }
+        }
+        return filesDTO;
+
     }
 
     private FileStorageDTO convertToDto(FileStorage fileSTorage) {
