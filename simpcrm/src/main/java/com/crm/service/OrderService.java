@@ -68,22 +68,16 @@ public class OrderService {
             if (file != null) {
                 UploadClass uploadClass = new UploadClass();
                 uploadClass.setFile(file);
-
                 uploadClass.setOrderId(savedOrder.getId());
                 fileStorageService.addFile(uploadClass);
             }
 
-            //в order было проведено вычисление итоговой стоимости, количества товаров и услуг.
-            //эти параметры не отражены в принятом orderDTO
-            //поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
             orderDTO = makeOrderDTOFromOrder(savedOrder);
-
             return orderDTO;
         } catch (Exception exception) {
-            log.error(exception.getMessage());
+            log.error(exception.getMessage(), exception);
+            throw new RuntimeException("Не удалось сохранить заявку", exception);
         }
-
-        throw new RuntimeException("Не удалось сохранить заявку");
     }
 
     public void deleteOrder(Long id) {
@@ -92,41 +86,39 @@ public class OrderService {
     }
 
     public OrderDTO editOrder(String orderDTOStr, MultipartFile file) throws IOException {
+        try {
+            OrderDTO orderDTO = objectMapper.readValue(orderDTOStr, OrderDTO.class);
+            Order order = orderRepository.findById(orderDTO.getId())
+                    .orElseThrow(() -> new MyEntityNotFoundException("Данный заказ не найден"));
+            orderRepository.save(makeOrderFromOrderDTO(orderDTO, order));
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        OrderDTO orderDTO = objectMapper.readValue(orderDTOStr, OrderDTO.class);
-
-        Order order = orderRepository.findById(orderDTO.getId()).orElseThrow(() -> new MyEntityNotFoundException("Данный заказ не найден"));
-        orderRepository.save(makeOrderFromOrderDTO(orderDTO, order));
-
-        if (file != null) {
-            UploadClass uploadClass = new UploadClass();
-            try {
-                FileStorage fileStorage = fileStorageService.getFileByOrderId(orderDTO.getId());
-                if (fileStorage != null) {
-                    uploadClass.setId(fileStorage.getId());
+            if (file != null) {
+                UploadClass uploadClass = new UploadClass();
+                try {
+                    FileStorage fileStorage = fileStorageService.getFileByOrderId(orderDTO.getId());
+                    if (fileStorage != null) {
+                        uploadClass.setId(fileStorage.getId());
+                    }
+                } catch (Exception e) {
+                    log.warn("Файл не найден, будет создан новый файл.", e);
                 }
-            } catch (Exception e) {
-                // Логирование исключения
-                System.out.println("Файл не найден, будет создан новый файл.");
+
+                uploadClass.setOrderId(orderDTO.getId());
+                uploadClass.setFile(file);
+
+                if (uploadClass.getId() != null) {
+                    fileStorageService.editFile(uploadClass);
+                } else {
+                    fileStorageService.addFile(uploadClass);
+                }
             }
 
-            uploadClass.setOrderId(orderDTO.getId());
-            uploadClass.setFile(file);
-
-            if (uploadClass.getId() != null) {
-                fileStorageService.editFile(uploadClass);
-            } else {
-                fileStorageService.addFile(uploadClass);
-            }
-        }
-
-            //в order было проведено вычисление итоговой стоимости, количества товаров и услуг.
-            //эти параметры не отражены в принятом orderDTO
-            //поэтому при сохранении заказа мы переопределяем orderDTO со всеми необходимыми данными
             orderDTO = makeOrderDTOFromOrder(order);
-
-        return orderDTO;
+            return orderDTO;
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            throw new RuntimeException("Не удалось редактировать заявку", exception);
+        }
     }
 
     private OrderDTO makeOrderDTOFromOrder(Order savedOrder) {
@@ -151,44 +143,75 @@ public class OrderService {
 
     private Order makeOrderFromOrderDTO(OrderDTO orderDTO, Order order) {
         order.setId(orderDTO.getId());
-        if(orderDTO.getOrderName()!=null) {
+        if(orderDTO.getOrderName() != null) {
             order.setOrderName(orderDTO.getOrderName());
         }
-        if(orderDTO.getDescription()!=null) {
+        if(orderDTO.getDescription() != null) {
             order.setDescription(orderDTO.getDescription());
         }
-        if(orderDTO.getPriority()!=null) {
+        if(orderDTO.getPriority() != null) {
             order.setPriority(orderDTO.getPriority());
         }
-        if(orderDTO.getComments()!=null) {
+        if(orderDTO.getComments() != null) {
             order.setComments(orderDTO.getComments());
         }
-        order.setClient(userRepository.findById(orderDTO.getClient().getId()).orElseThrow(() -> new MyEntityNotFoundException("Клиент оставивший заявку не найден")));
-        order.setStatus(statusRepository.findById(orderDTO.getStatus().getId()).orElseThrow(() -> new MyEntityNotFoundException("Данный пользователь не найден")));
-        if (orderDTO.getUsers() != null) {
-            order.setUser(userRepository.findById(orderDTO.getUsers().getId()).orElseThrow(() -> new MyEntityNotFoundException("Ответственный по заявке не найден")));
+        order.setClient(userRepository.findById(orderDTO.getClient().getId())
+                .orElseThrow(() -> new MyEntityNotFoundException("Клиент оставивший заявку не найден")));
+        if(orderDTO.getStatus() != null) {
+            order.setStatus(statusRepository.findById(orderDTO.getStatus().getId())
+                    .orElseThrow(() -> new MyEntityNotFoundException("Данный статус не найден")));
         }
-        order.setAmenities(getAmenities(orderDTO.getAmenities()));
-        order.setMerchandises(getMerchandise(orderDTO.getMerchandises()));
-        order.setTotalNumberOfMerchandises(orderDTO.getMerchandises().size());
-        order.setTotalNumberOfAmenities(orderDTO.getAmenities().size());
-        order.setTotalCost(
-                getAmenitiesPrices(orderDTO.getAmenities()) + getMerchandisesPrices(orderDTO.getMerchandises()));
+        if (orderDTO.getUsers() != null) {
+            order.setUser(userRepository.findById(orderDTO.getUsers().getId())
+                    .orElseThrow(() -> new MyEntityNotFoundException("Ответственный по заявке не найден")));
+        }
+
+        List<Amenities> amenities = orderDTO.getAmenities() != null ? getAmenities(orderDTO.getAmenities()) : new ArrayList<>();
+        List<Merchandise> merchandises = orderDTO.getMerchandises() != null ? getMerchandise(orderDTO.getMerchandises()) : new ArrayList<>();
+
+        order.setAmenities(amenities);
+        order.setMerchandises(merchandises);
+        order.setTotalNumberOfMerchandises(merchandises.size());
+        order.setTotalNumberOfAmenities(amenities.size());
+
+        double totalCost = getAmenitiesPrices(orderDTO.getAmenities()) + getMerchandisesPrices(orderDTO.getMerchandises());
+        order.setTotalCost(totalCost);
+
         editMerchandiseNumber(orderDTO.getMerchandises());
 
-        if (orderDTO.getTotalNumberOfMerchandise() + orderDTO.getTotalNumberOfAmenities() > 5) {
-            order.setTotalCost(order.getTotalCost() * 0.8);
+        if (order.getTotalNumberOfMerchandises() + order.getTotalNumberOfAmenities() > 5) {
+            order.setTotalCost(totalCost * 0.8);
         }
+
+        if (amenities.isEmpty() && !merchandises.isEmpty()) {
+            order.setMerchandises(getMerchandise(orderDTO.getMerchandises()));
+            order.setTotalNumberOfMerchandises(orderDTO.getMerchandises().size());
+        } else if (!amenities.isEmpty() && merchandises.isEmpty()) {
+            order.setAmenities(getAmenities(orderDTO.getAmenities()));
+            order.setTotalNumberOfAmenities(orderDTO.getAmenities().size());
+        } else {
+            order.setAmenities(getAmenities(orderDTO.getAmenities()));
+            order.setMerchandises(getMerchandise(orderDTO.getMerchandises()));
+            order.setTotalNumberOfMerchandises(orderDTO.getMerchandises().size());
+            order.setTotalNumberOfAmenities(orderDTO.getAmenities().size());
+        }
+
+        order.setTotalCost(getAmenitiesPrices(orderDTO.getAmenities()) + getMerchandisesPrices(orderDTO.getMerchandises()));
+        editMerchandiseNumber(orderDTO.getMerchandises());
 
         return order;
     }
 
-    private ArrayList<AmenitiesDTO> getAmenitiesDTO(List<Amenities> itServicesList) {
-        ArrayList<AmenitiesDTO> itServicesDTOList = new ArrayList<>();
-        for (Amenities amenities : itServicesList) {
-            itServicesDTOList.add(amenitiesService.makeAmenitiesDTO(new AmenitiesDTO(), amenities));
+    public OrderDTO getOrderById(Long id){
+        return makeOrderDTOFromOrder(orderRepository.findById(id).orElseThrow(()->new MyEntityNotFoundException("Заказ не найден")));
+    }
+
+    private ArrayList<AmenitiesDTO> getAmenitiesDTO(List<Amenities> amenitiesList) {
+        ArrayList<AmenitiesDTO> amenitiesDTOList = new ArrayList<>();
+        for (Amenities amenities : amenitiesList) {
+            amenitiesDTOList.add(amenitiesService.makeAmenitiesDTO(new AmenitiesDTO(), amenities));
         }
-        return itServicesDTOList;
+        return amenitiesDTOList;
     }
 
     private ArrayList<MerchandiseDTO> getMerchandiseDTO(List<Merchandise> merchandiseList) {
@@ -199,46 +222,56 @@ public class OrderService {
         return merchandiseDTOList;
     }
 
-    private ArrayList<Amenities> getAmenities(List<AmenitiesDTO> itServicesDTOList) {
+    private ArrayList<Amenities> getAmenities(List<AmenitiesDTO> amenitiesDTOList) {
         ArrayList<Amenities> amenitiesList = new ArrayList<>();
-        for (AmenitiesDTO amenitiesDTO : itServicesDTOList) {
-            amenitiesList.add(amenitiesRepository.findById(amenitiesDTO.getId())
-                    .orElseThrow(() -> new MyEntityNotFoundException("Услуга не найдена")));
+        if (amenitiesDTOList != null) {
+            for (AmenitiesDTO amenitiesDTO : amenitiesDTOList) {
+                amenitiesList.add(amenitiesRepository.findById(amenitiesDTO.getId())
+                        .orElseThrow(() -> new MyEntityNotFoundException("Услуга не найдена")));
+            }
         }
         return amenitiesList;
     }
 
     private ArrayList<Merchandise> getMerchandise(List<MerchandiseDTO> merchandiseDTOList) {
         ArrayList<Merchandise> merchandiseList = new ArrayList<>();
-        for (MerchandiseDTO merchandiseDTO : merchandiseDTOList) {
-            merchandiseList.add(merchandiseRepository.findById(merchandiseDTO.getId())
-                    .orElseThrow(() -> new MyEntityNotFoundException("Товар не найден")));
+        if (merchandiseDTOList != null) {
+            for (MerchandiseDTO merchandiseDTO : merchandiseDTOList) {
+                merchandiseList.add(merchandiseRepository.findById(merchandiseDTO.getId())
+                        .orElseThrow(() -> new MyEntityNotFoundException("Товар не найден")));
+            }
         }
         return merchandiseList;
     }
 
     private double getAmenitiesPrices(List<AmenitiesDTO> amenitiesDTOS) {
         double amenitiesPrice = 0L;
-        for (AmenitiesDTO amenitiesDTO : amenitiesDTOS) {
-            amenitiesPrice = amenitiesPrice +
-                    amenitiesDTO.getPrice() * amenitiesDTO.getRatio();
+        if (amenitiesDTOS != null) {
+            for (AmenitiesDTO amenitiesDTO : amenitiesDTOS) {
+                amenitiesPrice = amenitiesPrice +
+                        amenitiesDTO.getPrice() * amenitiesDTO.getRatio();
+            }
         }
         return amenitiesPrice;
     }
 
     private double getMerchandisesPrices(List<MerchandiseDTO> merchandiseDTOS) {
         double merchandisesPrice = 0L;
-        for (MerchandiseDTO merchandiseDTO : merchandiseDTOS) {
-            merchandisesPrice = merchandisesPrice +
-                    merchandiseDTO.getPrice() * merchandiseDTO.getRatio();
+        if (merchandiseDTOS != null) {
+            for (MerchandiseDTO merchandiseDTO : merchandiseDTOS) {
+                merchandisesPrice = merchandisesPrice +
+                        merchandiseDTO.getPrice() * merchandiseDTO.getRatio();
+            }
         }
         return merchandisesPrice;
     }
 
     private void editMerchandiseNumber(List<MerchandiseDTO> merchandises) {
-        for (MerchandiseDTO merchandiseDTO : merchandises) {
-            merchandiseDTO.setNumberInWarehouse(merchandiseDTO.getNumberInWarehouse() - 1);
-            merchandiseService.editMerchandise(merchandiseDTO);
+        if (merchandises != null) {
+            for (MerchandiseDTO merchandiseDTO : merchandises) {
+                merchandiseDTO.setNumberInWarehouse(merchandiseDTO.getNumberInWarehouse() - 1);
+                merchandiseService.editMerchandise(merchandiseDTO);
+            }
         }
     }
 }

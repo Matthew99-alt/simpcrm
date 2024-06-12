@@ -9,6 +9,8 @@ import com.crm.reposotiry.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,11 @@ public class UserService {
             userDTOS.add(makeAnUserDTO(new UserDTO(), user));
         }
         return userDTOS;
+    }
+
+    public UserDTO findByUserLoginAndPassword(String login, String password){
+        return makeAnUserDTO(new UserDTO(), userRepository.findByLoginAndPassword(login, password)
+                .orElseThrow(()-> new MyEntityNotFoundException("Пользователь не найден")));
     }
 
     private UserDTO makeAnUserDTO(UserDTO userDTO, User user) {

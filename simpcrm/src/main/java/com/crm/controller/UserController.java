@@ -62,4 +62,9 @@ public class UserController {
         return userService.editUser(userDTO);
     }
 
+    @LoggingMethod(role = "admin")
+    @GetMapping("/loginAndPassword")
+    public UserDTO findByLoginAndPassword(@RequestParam String login, @RequestParam String password){
+        return userService.findByUserLoginAndPassword(login, password);
+    }
 }

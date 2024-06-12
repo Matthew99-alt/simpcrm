@@ -22,6 +22,9 @@ public interface FileStorageClient {
     @GetMapping("/fileByOrderId")
     FileStorage getFileByOrderId(@RequestParam(name = "orderId") Long orderId);
 
+    @GetMapping("/findAllWithoutOrderId")
+    List<FileStorage> getFilesWithoutOrderId();
+
     @GetMapping("/{fileId}")
     ResponseEntity<byte[]> downloadFile(@PathVariable String fileId) throws IOException;
 

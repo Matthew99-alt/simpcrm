@@ -2,7 +2,9 @@ package com.crm.controller;
 
 import com.crm.annotation.LoggingMethod;
 import com.crm.dto.FileStorage;
+import com.crm.entity.Order;
 import com.crm.service.FileStorageService;
+import com.crm.service.OrderService;
 import com.crm.uploadClass.UploadClass;
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +29,6 @@ public class FileStorageController {
 
     private final FileStorageService fileStorageService;
 
-
     @LoggingMethod(role = "admin")
     @GetMapping("/fileByOrderId")
     FileStorage getFileByOrderId(
@@ -36,6 +37,13 @@ public class FileStorageController {
             @RequestParam(name = "orderId") Long orderId
     ) {
         return fileStorageService.getFileByOrderId(orderId);
+    }
+
+    @LoggingMethod(role = "admin")
+    @GetMapping("/findAllWithoutOrderId")
+    public List<FileStorage> getAllFilesWithoutOrderId(@RequestHeader(value = "login", required = false) String login,
+                                          @RequestHeader(value = "password", required = false) String password){
+        return fileStorageService.getFilesWithoutOrderId();
     }
 
     @LoggingMethod(role = {"admin", "user"})
@@ -59,7 +67,7 @@ public class FileStorageController {
     }
 
 
-    @LoggingMethod(role = {"admin", "user"})
+    @LoggingMethod(role = {"admin"})
     @DeleteMapping("/delete")
     public void deleteFile(
             @RequestHeader(value = "login", required = false) String login,
@@ -89,7 +97,7 @@ public class FileStorageController {
         fileStorageService.editFile(uploadClass);
     }
 
-    @LoggingMethod(role = "admin")
+    @LoggingMethod(role = {"admin", "user"})
     @PostMapping("/upload")
     String uploadFile(
             @RequestHeader(value = "login", required = false) String login,

@@ -53,7 +53,7 @@ public class OrderController {
         return orderService.saveOrder(orderDTOStr, file);
     }
 
-    @LoggingMethod(role = {"admin", "user"})
+    @LoggingMethod(role = {"admin"})
     @DeleteMapping("/delete")
     public void deleteOrder(
             @RequestHeader(value = "login", required = false) String login,

@@ -22,7 +22,7 @@ public class FileStorageService {
     }
 
     public void deleteFileById(String id) {
-        fileStorageClient.deleteFile(id);
+            fileStorageClient.deleteFile(id);
     }
 
     public void deleteFileByOrderId(Long orderId) {
@@ -51,5 +51,9 @@ public class FileStorageService {
             }
             throw e; // Пробрасываем другие ошибки
         }
+    }
+
+    public List<FileStorage> getFilesWithoutOrderId(){
+        return fileStorageClient.getFilesWithoutOrderId();
     }
 }
