@@ -109,8 +109,12 @@ public class UserService {
         return userDTO;
     }
 
-    public UserDTO findById(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new MyEntityNotFoundException("Данный пользователь не найден"));
-        return makeAnUserDTO(new UserDTO(), user);
+    public List<UserDTO> findAllAdmins(){
+        List<User> userEntities = userRepository.findByRole("admin");
+        ArrayList<UserDTO> userDTOS = new ArrayList<>();
+        for (User user : userEntities) {
+            userDTOS.add(makeAnUserDTO(new UserDTO(), user));
+        }
+        return userDTOS;
     }
 }

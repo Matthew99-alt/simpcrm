@@ -63,7 +63,7 @@ public class OrderController {
         orderService.deleteOrder(id);
     }
 
-    @LoggingMethod(role = {"admin"})
+    @LoggingMethod(role = {"admin", "user"})
     @PutMapping(value = "/edit", consumes = {"multipart/form-data"})
     public OrderDTO editOrder(
             @RequestHeader(value = "login", required = false) String login,

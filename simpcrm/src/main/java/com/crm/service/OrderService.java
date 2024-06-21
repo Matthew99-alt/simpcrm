@@ -175,14 +175,14 @@ public class OrderService {
         order.setTotalNumberOfAmenities(amenities.size());
 
         double totalCost = getAmenitiesPrices(orderDTO.getAmenities()) + getMerchandisesPrices(orderDTO.getMerchandises());
-        order.setTotalCost(totalCost);
 
         editMerchandiseNumber(orderDTO.getMerchandises());
 
-        if (order.getTotalNumberOfMerchandises() + order.getTotalNumberOfAmenities() > 5) {
+        if (order.getTotalNumberOfMerchandises() + order.getTotalNumberOfAmenities() >= 5) {
             order.setTotalCost(totalCost * 0.8);
+        }else{
+            order.setTotalCost(totalCost);
         }
-
         if (amenities.isEmpty() && !merchandises.isEmpty()) {
             order.setMerchandises(getMerchandise(orderDTO.getMerchandises()));
             order.setTotalNumberOfMerchandises(orderDTO.getMerchandises().size());
@@ -196,7 +196,6 @@ public class OrderService {
             order.setTotalNumberOfAmenities(orderDTO.getAmenities().size());
         }
 
-        order.setTotalCost(getAmenitiesPrices(orderDTO.getAmenities()) + getMerchandisesPrices(orderDTO.getMerchandises()));
         editMerchandiseNumber(orderDTO.getMerchandises());
 
         return order;

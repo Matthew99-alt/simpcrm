@@ -35,6 +35,11 @@ public class UserController {
         return userService.findAllUsers();
     }
 
+    @GetMapping("/allAdmins")
+    public List<UserDTO> findAllAdmins(){
+        return userService.findAllAdmins();
+    }
+
     @PostMapping("/save")
     public UserDTO saveUser(
             @RequestBody UserDTO userDTO
@@ -62,7 +67,6 @@ public class UserController {
         return userService.editUser(userDTO);
     }
 
-    @LoggingMethod(role = "admin")
     @GetMapping("/loginAndPassword")
     public UserDTO findByLoginAndPassword(@RequestParam String login, @RequestParam String password){
         return userService.findByUserLoginAndPassword(login, password);
